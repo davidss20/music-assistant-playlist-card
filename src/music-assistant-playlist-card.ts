@@ -137,6 +137,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
         domain: 'music_assistant',
         service: 'get_library',
         service_data: {
+          config_entry_id: this._config.config_entry_id,
           media_type: 'playlist',
           favorite: this._config.favorites_only ?? false,
           limit: this._config.limit ?? 25,
