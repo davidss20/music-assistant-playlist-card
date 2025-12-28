@@ -1,0 +1,30 @@
+{
+  "common": {
+    "loading": "Загрузка плейлистов...",
+    "error": "Произошла ошибка",
+    "no_playlists": "Плейлисты не найдены",
+    "play": "Воспроизвести",
+    "select_speaker": "Выбрать колонку",
+    "no_speaker_selected": "Колонка не выбрана",
+    "nothing_playing": "Сейчас ничего не воспроизводится",
+    "queue_empty": "Очередь пуста"
+  },
+  "config": {
+    "title": "Заголовок карточки",
+    "config_entry_id": "Экземпляр Music Assistant",
+    "speakers": "Колонки",
+    "limit": "Количество плейлистов",
+    "columns": "Столбцы",
+    "columns_auto": "Авто",
+    "favorites_only": "Только избранное",
+    "language": "Язык",
+    "language_auto": "Авто (из Home Assistant)"
+  },
+  "error": {
+    "missing_config": "Отсутствует конфигурация. Настройте карточку.",
+    "missing_speakers": "Колонки не настроены. Добавьте колонки в настройках.",
+    "load_failed": "Не удалось загрузить плейлисты. Проверьте настройки Music Assistant.",
+    "play_failed": "Не удалось воспроизвести плейлист"
+  }
+}
+

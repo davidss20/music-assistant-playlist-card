@@ -1,0 +1,30 @@
+{
+  "common": {
+    "loading": "جاري تحميل قوائم التشغيل...",
+    "error": "حدث خطأ",
+    "no_playlists": "لم يتم العثور على قوائم تشغيل",
+    "play": "تشغيل",
+    "select_speaker": "اختر مكبر الصوت",
+    "no_speaker_selected": "لم يتم اختيار مكبر صوت",
+    "nothing_playing": "لا يوجد شيء قيد التشغيل حالياً",
+    "queue_empty": "قائمة الانتظار فارغة"
+  },
+  "config": {
+    "title": "عنوان البطاقة",
+    "config_entry_id": "مثيل Music Assistant",
+    "speakers": "مكبرات الصوت",
+    "limit": "عدد قوائم التشغيل",
+    "columns": "الأعمدة",
+    "columns_auto": "تلقائي",
+    "favorites_only": "المفضلة فقط",
+    "language": "اللغة",
+    "language_auto": "تلقائي (من Home Assistant)"
+  },
+  "error": {
+    "missing_config": "الإعدادات مفقودة. يرجى تهيئة البطاقة.",
+    "missing_speakers": "لم يتم تهيئة مكبرات الصوت. يرجى إضافة مكبرات صوت.",
+    "load_failed": "فشل تحميل قوائم التشغيل. يرجى التحقق من إعدادات Music Assistant.",
+    "play_failed": "فشل تشغيل قائمة التشغيل"
+  }
+}
+

@@ -1,0 +1,30 @@
+{
+  "common": {
+    "loading": "プレイリストを読み込み中...",
+    "error": "エラーが発生しました",
+    "no_playlists": "プレイリストが見つかりません",
+    "play": "再生",
+    "select_speaker": "スピーカーを選択",
+    "no_speaker_selected": "スピーカーが選択されていません",
+    "nothing_playing": "現在再生中のものはありません",
+    "queue_empty": "キューは空です"
+  },
+  "config": {
+    "title": "カードタイトル",
+    "config_entry_id": "Music Assistant インスタンス",
+    "speakers": "スピーカー",
+    "limit": "プレイリスト数",
+    "columns": "列数",
+    "columns_auto": "自動",
+    "favorites_only": "お気に入りのみ",
+    "language": "言語",
+    "language_auto": "自動（Home Assistantから）"
+  },
+  "error": {
+    "missing_config": "設定がありません。カードを設定してください。",
+    "missing_speakers": "スピーカーが設定されていません。スピーカーを追加してください。",
+    "load_failed": "プレイリストの読み込みに失敗しました。Music Assistantの設定を確認してください。",
+    "play_failed": "プレイリストの再生に失敗しました"
+  }
+}
+

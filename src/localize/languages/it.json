@@ -1,0 +1,30 @@
+{
+  "common": {
+    "loading": "Caricamento playlist...",
+    "error": "Si è verificato un errore",
+    "no_playlists": "Nessuna playlist trovata",
+    "play": "Riproduci",
+    "select_speaker": "Seleziona altoparlante",
+    "no_speaker_selected": "Nessun altoparlante selezionato",
+    "nothing_playing": "Nessuna riproduzione in corso",
+    "queue_empty": "La coda è vuota"
+  },
+  "config": {
+    "title": "Titolo scheda",
+    "config_entry_id": "Istanza Music Assistant",
+    "speakers": "Altoparlanti",
+    "limit": "Numero di playlist",
+    "columns": "Colonne",
+    "columns_auto": "Auto",
+    "favorites_only": "Solo preferiti",
+    "language": "Lingua",
+    "language_auto": "Auto (da Home Assistant)"
+  },
+  "error": {
+    "missing_config": "Configurazione mancante. Configura la scheda.",
+    "missing_speakers": "Nessun altoparlante configurato. Aggiungi altoparlanti.",
+    "load_failed": "Impossibile caricare le playlist. Controlla la configurazione di Music Assistant.",
+    "play_failed": "Impossibile riprodurre la playlist"
+  }
+}
+

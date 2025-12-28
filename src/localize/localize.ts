@@ -1,13 +1,22 @@
 /**
  * Localization system for Music Assistant Playlist Card
  * Supports multiple languages with auto-detection from Home Assistant
+ * Includes RTL support for Hebrew and Arabic
  */
 
 import * as en from './languages/en.json';
 import * as he from './languages/he.json';
+import * as ar from './languages/ar.json';
 import * as de from './languages/de.json';
 import * as fr from './languages/fr.json';
 import * as es from './languages/es.json';
+import * as it from './languages/it.json';
+import * as pt from './languages/pt.json';
+import * as nl from './languages/nl.json';
+import * as ru from './languages/ru.json';
+import * as pl from './languages/pl.json';
+import * as zh from './languages/zh.json';
+import * as ja from './languages/ja.json';
 
 // Type for translation structure
 type TranslationDict = typeof en;
@@ -16,10 +25,21 @@ type TranslationDict = typeof en;
 const languages: Record<string, TranslationDict> = {
   en,
   he,
+  ar,
   de,
   fr,
   es,
+  it,
+  pt,
+  nl,
+  ru,
+  pl,
+  zh,
+  ja,
 };
+
+// RTL languages
+const RTL_LANGUAGES = ['he', 'ar'];
 
 // Default language
 const DEFAULT_LANGUAGE = 'en';
@@ -47,6 +67,21 @@ export function setLanguage(lang: string): void {
  */
 export function getLanguage(): string {
   return currentLanguage;
+}
+
+/**
+ * Check if the current language is RTL (Right-to-Left)
+ */
+export function isRTL(): boolean {
+  return RTL_LANGUAGES.includes(currentLanguage);
+}
+
+/**
+ * Check if a specific language is RTL
+ */
+export function isLanguageRTL(lang: string): boolean {
+  const baseLang = lang.split('-')[0].toLowerCase();
+  return RTL_LANGUAGES.includes(baseLang);
 }
 
 /**

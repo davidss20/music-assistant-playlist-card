@@ -1,0 +1,30 @@
+{
+  "common": {
+    "loading": "Ładowanie playlist...",
+    "error": "Wystąpił błąd",
+    "no_playlists": "Nie znaleziono playlist",
+    "play": "Odtwórz",
+    "select_speaker": "Wybierz głośnik",
+    "no_speaker_selected": "Nie wybrano głośnika",
+    "nothing_playing": "Nic nie jest obecnie odtwarzane",
+    "queue_empty": "Kolejka jest pusta"
+  },
+  "config": {
+    "title": "Tytuł karty",
+    "config_entry_id": "Instancja Music Assistant",
+    "speakers": "Głośniki",
+    "limit": "Liczba playlist",
+    "columns": "Kolumny",
+    "columns_auto": "Auto",
+    "favorites_only": "Tylko ulubione",
+    "language": "Język",
+    "language_auto": "Auto (z Home Assistant)"
+  },
+  "error": {
+    "missing_config": "Brak konfiguracji. Skonfiguruj kartę.",
+    "missing_speakers": "Nie skonfigurowano głośników. Dodaj głośniki.",
+    "load_failed": "Nie udało się załadować playlist. Sprawdź konfigurację Music Assistant.",
+    "play_failed": "Nie udało się odtworzyć playlisty"
+  }
+}
+

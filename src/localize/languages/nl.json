@@ -1,0 +1,30 @@
+{
+  "common": {
+    "loading": "Afspeellijsten laden...",
+    "error": "Er is een fout opgetreden",
+    "no_playlists": "Geen afspeellijsten gevonden",
+    "play": "Afspelen",
+    "select_speaker": "Speaker selecteren",
+    "no_speaker_selected": "Geen speaker geselecteerd",
+    "nothing_playing": "Er wordt momenteel niets afgespeeld",
+    "queue_empty": "Wachtrij is leeg"
+  },
+  "config": {
+    "title": "Kaarttitel",
+    "config_entry_id": "Music Assistant instantie",
+    "speakers": "Speakers",
+    "limit": "Aantal afspeellijsten",
+    "columns": "Kolommen",
+    "columns_auto": "Automatisch",
+    "favorites_only": "Alleen favorieten",
+    "language": "Taal",
+    "language_auto": "Automatisch (van Home Assistant)"
+  },
+  "error": {
+    "missing_config": "Configuratie ontbreekt. Configureer de kaart.",
+    "missing_speakers": "Geen speakers geconfigureerd. Voeg speakers toe.",
+    "load_failed": "Kan afspeellijsten niet laden. Controleer de Music Assistant configuratie.",
+    "play_failed": "Kan afspeellijst niet afspelen"
+  }
+}
+

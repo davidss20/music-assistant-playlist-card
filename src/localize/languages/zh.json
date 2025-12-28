@@ -1,0 +1,30 @@
+{
+  "common": {
+    "loading": "正在加载播放列表...",
+    "error": "发生错误",
+    "no_playlists": "未找到播放列表",
+    "play": "播放",
+    "select_speaker": "选择扬声器",
+    "no_speaker_selected": "未选择扬声器",
+    "nothing_playing": "当前没有播放内容",
+    "queue_empty": "队列为空"
+  },
+  "config": {
+    "title": "卡片标题",
+    "config_entry_id": "Music Assistant 实例",
+    "speakers": "扬声器",
+    "limit": "播放列表数量",
+    "columns": "列数",
+    "columns_auto": "自动",
+    "favorites_only": "仅收藏",
+    "language": "语言",
+    "language_auto": "自动（从 Home Assistant）"
+  },
+  "error": {
+    "missing_config": "缺少配置。请配置卡片。",
+    "missing_speakers": "未配置扬声器。请添加扬声器。",
+    "load_failed": "无法加载播放列表。请检查 Music Assistant 配置。",
+    "play_failed": "无法播放播放列表"
+  }
+}
+

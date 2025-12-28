@@ -7,7 +7,7 @@
 import { LitElement, html, TemplateResult, PropertyValues, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { cardStyles } from './styles';
-import { localize, setLanguage } from './localize/localize';
+import { localize, setLanguage, isRTL } from './localize/localize';
 import type {
   HomeAssistant,
   MusicAssistantPlaylistCardConfig,
@@ -128,10 +128,24 @@ export class MusicAssistantPlaylistCard extends LitElement {
         setLanguage(this.hass.language);
       }
 
+      // Update RTL direction
+      this._updateDirection();
+
       // Load playlists if config is ready
       if (this._config && changedProps.get('hass') === undefined) {
         this._loadPlaylists();
       }
+    }
+  }
+
+  /**
+   * Update text direction based on language
+   */
+  private _updateDirection(): void {
+    if (isRTL()) {
+      this.setAttribute('dir', 'rtl');
+    } else {
+      this.setAttribute('dir', 'ltr');
     }
   }
 

@@ -1,6 +1,7 @@
 /**
  * Music Assistant Playlist Card - Styles
  * Mushroom Cards inspired styling
+ * Includes RTL support for Hebrew and Arabic
  */
 
 import { css } from 'lit';
@@ -17,6 +18,59 @@ export const cardStyles = css`
   :host {
     display: block;
     height: 100%;
+  }
+
+  /* RTL Support */
+  :host([dir="rtl"]) {
+    direction: rtl;
+  }
+
+  :host([dir="rtl"]) .card-header {
+    flex-direction: row-reverse;
+  }
+
+  :host([dir="rtl"]) .speaker-button {
+    flex-direction: row-reverse;
+    text-align: right;
+  }
+
+  :host([dir="rtl"]) .speaker-button-check {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  :host([dir="rtl"]) .queue-item {
+    flex-direction: row-reverse;
+    text-align: right;
+  }
+
+  :host([dir="rtl"]) .now-playing-info {
+    text-align: center;
+  }
+
+  :host([dir="rtl"]) .secondary-controls {
+    flex-direction: row-reverse;
+  }
+
+  :host([dir="rtl"]) .secondary-controls-left,
+  :host([dir="rtl"]) .secondary-controls-right {
+    flex-direction: row-reverse;
+  }
+
+  :host([dir="rtl"]) .volume-container {
+    flex-direction: row-reverse;
+  }
+
+  :host([dir="rtl"]) .progress-time {
+    flex-direction: row-reverse;
+  }
+
+  :host([dir="rtl"]) .tab-button {
+    flex-direction: column;
+  }
+
+  :host([dir="rtl"]) .playlist-info {
+    text-align: center;
   }
 
   ha-card {
