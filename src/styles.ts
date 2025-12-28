@@ -14,9 +14,15 @@ export const cardStyles = css`
     --playlist-item-gap: 12px;
   }
 
+  :host {
+    display: block;
+    height: 100%;
+  }
+
   ha-card {
     overflow: hidden;
-    height: var(--card-height, 400px);
+    height: 100%;
+    min-height: var(--card-min-height, 200px);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;

@@ -416,10 +416,9 @@ export class MusicAssistantPlaylistCard extends LitElement {
     }
 
     const isValid = this._isConfigValid();
-    const cardHeight = this._config.card_height || 400;
 
     return html`
-      <ha-card style="--card-height: ${cardHeight}px">
+      <ha-card>
         ${this._config.title
           ? html`
               <div class="card-header">
