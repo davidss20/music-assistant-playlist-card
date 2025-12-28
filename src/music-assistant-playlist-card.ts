@@ -465,9 +465,18 @@ export class MusicAssistantPlaylistCard extends LitElement {
   private _getFilteredPlaylists(): MusicAssistantPlaylist[] {
     let playlists = [...this._playlists];
 
+    // Debug: log favorites status
+    if (this._showFavoritesOnly) {
+      console.log('[music-assistant-playlist-card] Filtering favorites:', {
+        total: this._playlists.length,
+        favorites: this._playlists.filter(p => p.favorite).length,
+        playlists: this._playlists.map(p => ({ name: p.name, favorite: p.favorite }))
+      });
+    }
+
     // Filter by favorites
     if (this._showFavoritesOnly) {
-      playlists = playlists.filter(p => p.favorite);
+      playlists = playlists.filter(p => p.favorite === true);
     }
 
     // Filter by search query

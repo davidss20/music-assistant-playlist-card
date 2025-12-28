@@ -18,6 +18,7 @@ export const cardStyles = css`
   :host {
     display: block;
     height: 100%;
+    min-height: 100%;
   }
 
   /* RTL Support */
@@ -76,7 +77,7 @@ export const cardStyles = css`
   ha-card {
     overflow: hidden;
     height: 100%;
-    min-height: var(--card-min-height, 200px);
+    min-height: 100%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
