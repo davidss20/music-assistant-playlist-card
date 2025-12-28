@@ -262,16 +262,6 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
           </ha-select>
         </div>
 
-        <div class="form-row">
-          <ha-formfield .label=${localize('config.favorites_only')}>
-            <ha-checkbox
-              .checked=${this._config.favorites_only || false}
-              data-config-key="favorites_only"
-              @change=${this._valueChanged}
-            ></ha-checkbox>
-          </ha-formfield>
-        </div>
-
         <!-- Language Settings -->
         <div class="section-title">${localize('config.language')}</div>
 

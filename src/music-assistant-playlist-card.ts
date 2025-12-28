@@ -80,8 +80,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
    */
   public setConfig(config: MusicAssistantPlaylistCardConfig): void {
     this._config = {
-      limit: 25,
-      favorites_only: false,
+      limit: 50,
       columns: 'auto',
       ...config,
     };
@@ -120,8 +119,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
     return {
       config_entry_id: '',
       speakers: [],
-      limit: 25,
-      favorites_only: false,
+      limit: 50,
     };
   }
 
@@ -191,8 +189,8 @@ export class MusicAssistantPlaylistCard extends LitElement {
         service_data: {
           config_entry_id: this._config.config_entry_id,
           media_type: 'playlist',
-          favorite: this._config.favorites_only ?? false,
-          limit: this._config.limit ?? 25,
+          favorite: false, // Always load all playlists, filter in UI
+          limit: this._config.limit ?? 50,
           offset: 0,
         },
         return_response: true,

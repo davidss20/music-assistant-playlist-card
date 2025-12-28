@@ -148,8 +148,6 @@ export interface MusicAssistantPlaylistCardConfig extends LovelaceCardConfig {
   language?: string;
   /** Card title (optional) */
   title?: string;
-  /** Show only favorites (default: false) */
-  favorites_only?: boolean;
   /** Card height in pixels (default: 400) */
   card_height?: number;
 }
@@ -288,7 +286,6 @@ export type TranslationKey =
   | 'config.speakers'
   | 'config.limit'
   | 'config.columns'
-  | 'config.favorites_only'
   | 'config.language'
   | 'error.missing_config'
   | 'error.missing_speakers'
