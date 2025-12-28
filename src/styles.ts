@@ -16,8 +16,10 @@ export const cardStyles = css`
 
   ha-card {
     overflow: hidden;
-    height: 100%;
+    height: var(--card-height, 400px);
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
   }
 
   .card-header {
@@ -37,6 +39,26 @@ export const cardStyles = css`
 
   .card-content {
     padding: var(--playlist-card-spacing);
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .card-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .card-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .card-content::-webkit-scrollbar-thumb {
+    background: var(--divider-color, rgba(0, 0, 0, 0.2));
+    border-radius: 3px;
+  }
+
+  .card-content::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-text-color);
   }
 
   /* Speaker Selector */

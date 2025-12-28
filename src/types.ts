@@ -98,6 +98,8 @@ export interface MusicAssistantPlaylistCardConfig extends LovelaceCardConfig {
   title?: string;
   /** Show only favorites (default: false) */
   favorites_only?: boolean;
+  /** Card height in pixels (default: 400) */
+  card_height?: number;
 }
 
 // ============================================================================
@@ -111,8 +113,8 @@ export interface MusicAssistantPlaylist {
   uri: string;
   /** Playlist name */
   name: string;
-  /** Playlist image URL */
-  image?: MusicAssistantImage;
+  /** Playlist image - can be URL string or object */
+  image?: string | MusicAssistantImage;
   /** Provider that owns this playlist */
   provider: string;
   /** Whether playlist is a favorite */
@@ -123,6 +125,8 @@ export interface MusicAssistantPlaylist {
   owner?: string;
   /** Checksum for change detection */
   checksum?: string;
+  /** Media type */
+  media_type?: string;
 }
 
 export interface MusicAssistantImage {
@@ -133,6 +137,9 @@ export interface MusicAssistantImage {
   /** Whether image is locally stored */
   locally_stored?: boolean;
 }
+
+// Image can be either a string URL or an object
+export type MusicAssistantImageType = string | MusicAssistantImage;
 
 export interface MusicAssistantLibraryResponse {
   /** List of items */

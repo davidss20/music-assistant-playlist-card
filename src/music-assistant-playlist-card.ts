@@ -229,14 +229,20 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Get image URL for a playlist
    */
   private _getPlaylistImage(playlist: MusicAssistantPlaylist): string | null {
-    if (!playlist.image?.path) return null;
+    // Handle both string and object image formats
+    if (!playlist.image) return null;
     
-    // If it's a local path, construct the full URL
-    if (playlist.image.path.startsWith('/')) {
+    // If image is a string (direct URL)
+    if (typeof playlist.image === 'string') {
+      return playlist.image;
+    }
+    
+    // If image is an object with path property
+    if (typeof playlist.image === 'object' && playlist.image.path) {
       return playlist.image.path;
     }
     
-    return playlist.image.path;
+    return null;
   }
 
   /**
@@ -410,9 +416,10 @@ export class MusicAssistantPlaylistCard extends LitElement {
     }
 
     const isValid = this._isConfigValid();
+    const cardHeight = this._config.card_height || 400;
 
     return html`
-      <ha-card>
+      <ha-card style="--card-height: ${cardHeight}px">
         ${this._config.title
           ? html`
               <div class="card-header">
