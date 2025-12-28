@@ -5,7 +5,9 @@
     "no_playlists": "No playlists found",
     "play": "Play",
     "select_speaker": "Select Speaker",
-    "no_speaker_selected": "No speaker selected"
+    "no_speaker_selected": "No speaker selected",
+    "nothing_playing": "Nothing is currently playing",
+    "queue_empty": "Queue is empty"
   },
   "config": {
     "title": "Card Title",

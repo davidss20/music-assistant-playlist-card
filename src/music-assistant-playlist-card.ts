@@ -12,9 +12,11 @@ import type {
   HomeAssistant,
   MusicAssistantPlaylistCardConfig,
   MusicAssistantPlaylist,
-  MusicAssistantLibraryResponse,
-  HassEntity,
+  TabId,
+  MediaPlayerState,
+  QueueItem,
 } from './types';
+import { TABS } from './types';
 
 // Card information for HACS
 const CARD_VERSION = '1.0.0';
@@ -45,6 +47,18 @@ export class MusicAssistantPlaylistCard extends LitElement {
 
   // Selected speaker
   @state() private _selectedSpeaker: string = '';
+
+  // Active tab
+  @state() private _activeTab: TabId = 'playlists';
+
+  // Queue items
+  @state() private _queueItems: QueueItem[] = [];
+
+  // Queue loading state
+  @state() private _queueLoading = false;
+
+  // Current queue item index
+  @state() private _currentQueueIndex = -1;
 
   // Apply styles
   static styles = cardStyles;
@@ -209,20 +223,162 @@ export class MusicAssistantPlaylistCard extends LitElement {
   }
 
   /**
-   * Handle speaker selection change
+   * Handle tab change
    */
-  private _handleSpeakerChange(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    this._selectedSpeaker = select.value;
+  private _handleTabChange(tabId: TabId): void {
+    this._activeTab = tabId;
+    
+    // Load queue when switching to queue tab
+    if (tabId === 'queue') {
+      this._loadQueue();
+    }
   }
 
   /**
-   * Get friendly name for an entity
+   * Load queue from Music Assistant
    */
-  private _getEntityName(entityId: string): string {
-    if (!this.hass) return entityId;
-    const entity: HassEntity | undefined = this.hass.states[entityId];
-    return entity?.attributes?.friendly_name || entityId;
+  private async _loadQueue(): Promise<void> {
+    if (!this.hass || !this._selectedSpeaker) {
+      this._queueItems = [];
+      return;
+    }
+
+    this._queueLoading = true;
+
+    try {
+      // Get the queue for the selected player
+      const entity = this.hass.states[this._selectedSpeaker];
+      if (!entity) {
+        this._queueItems = [];
+        return;
+      }
+
+      // Try to get queue items from entity attributes
+      const queueItems = entity.attributes.queue_items as QueueItem[] | undefined;
+      const currentIndex = entity.attributes.queue_position as number | undefined;
+
+      if (queueItems && Array.isArray(queueItems)) {
+        this._queueItems = queueItems;
+        this._currentQueueIndex = currentIndex ?? -1;
+      } else {
+        // If no queue in attributes, try Music Assistant API
+        try {
+          const response = await this.hass.callWS<{
+            response: {
+              items?: QueueItem[];
+              queue_items?: QueueItem[];
+              current_index?: number;
+            };
+          }>({
+            type: 'call_service',
+            domain: 'music_assistant',
+            service: 'get_queue',
+            service_data: {
+              entity_id: this._selectedSpeaker,
+            },
+            return_response: true,
+          });
+
+          if (response?.response?.items) {
+            this._queueItems = response.response.items;
+          } else if (response?.response?.queue_items) {
+            this._queueItems = response.response.queue_items;
+          } else {
+            this._queueItems = [];
+          }
+          this._currentQueueIndex = response?.response?.current_index ?? -1;
+        } catch {
+          // Music Assistant get_queue might not exist, that's ok
+          this._queueItems = [];
+        }
+      }
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Failed to load queue:', error);
+      this._queueItems = [];
+    } finally {
+      this._queueLoading = false;
+    }
+  }
+
+  /**
+   * Handle speaker button click (in speakers tab)
+   */
+  private _handleSpeakerSelect(entityId: string): void {
+    this._selectedSpeaker = entityId;
+  }
+
+  /**
+   * Get media player state for selected speaker
+   */
+  private _getMediaPlayerState(): MediaPlayerState | null {
+    if (!this.hass || !this._selectedSpeaker) return null;
+    
+    const entity = this.hass.states[this._selectedSpeaker];
+    if (!entity) return null;
+
+    return {
+      state: entity.state as MediaPlayerState['state'],
+      media_title: entity.attributes.media_title as string | undefined,
+      media_artist: entity.attributes.media_artist as string | undefined,
+      media_album_name: entity.attributes.media_album_name as string | undefined,
+      entity_picture: entity.attributes.entity_picture as string | undefined,
+      media_duration: entity.attributes.media_duration as number | undefined,
+      media_position: entity.attributes.media_position as number | undefined,
+      media_position_updated_at: entity.attributes.media_position_updated_at as string | undefined,
+      volume_level: entity.attributes.volume_level as number | undefined,
+      is_volume_muted: entity.attributes.is_volume_muted as boolean | undefined,
+      shuffle: entity.attributes.shuffle as boolean | undefined,
+      repeat: entity.attributes.repeat as MediaPlayerState['repeat'] | undefined,
+    };
+  }
+
+  /**
+   * Media player controls
+   */
+  private async _mediaPlayPause(): Promise<void> {
+    if (!this.hass || !this._selectedSpeaker) return;
+    await this.hass.callService('media_player', 'media_play_pause', {}, 
+      { entity_id: this._selectedSpeaker });
+  }
+
+  private async _mediaNext(): Promise<void> {
+    if (!this.hass || !this._selectedSpeaker) return;
+    await this.hass.callService('media_player', 'media_next_track', {}, 
+      { entity_id: this._selectedSpeaker });
+  }
+
+  private async _mediaPrevious(): Promise<void> {
+    if (!this.hass || !this._selectedSpeaker) return;
+    await this.hass.callService('media_player', 'media_previous_track', {}, 
+      { entity_id: this._selectedSpeaker });
+  }
+
+  private async _toggleShuffle(): Promise<void> {
+    if (!this.hass || !this._selectedSpeaker) return;
+    const state = this._getMediaPlayerState();
+    await this.hass.callService('media_player', 'shuffle_set', {
+      shuffle: !(state?.shuffle ?? false),
+    }, { entity_id: this._selectedSpeaker });
+  }
+
+  private async _toggleRepeat(): Promise<void> {
+    if (!this.hass || !this._selectedSpeaker) return;
+    const state = this._getMediaPlayerState();
+    const modes: Array<'off' | 'one' | 'all'> = ['off', 'all', 'one'];
+    const currentIndex = modes.indexOf(state?.repeat ?? 'off');
+    const nextMode = modes[(currentIndex + 1) % modes.length];
+    await this.hass.callService('media_player', 'repeat_set', {
+      repeat: nextMode,
+    }, { entity_id: this._selectedSpeaker });
+  }
+
+  private async _setVolume(event: Event): Promise<void> {
+    if (!this.hass || !this._selectedSpeaker) return;
+    const input = event.target as HTMLInputElement;
+    const volume = parseFloat(input.value);
+    await this.hass.callService('media_player', 'volume_set', {
+      volume_level: volume,
+    }, { entity_id: this._selectedSpeaker });
   }
 
   /**
@@ -282,30 +438,297 @@ export class MusicAssistantPlaylistCard extends LitElement {
   }
 
   /**
-   * Render speaker selector
+   * Render tab bar
    */
-  private _renderSpeakerSelector(): TemplateResult {
+  private _renderTabBar(): TemplateResult {
     return html`
-      <div class="speaker-selector">
-        <ha-icon icon="mdi:speaker"></ha-icon>
-        <select
-          class="speaker-select"
-          .value=${this._selectedSpeaker}
-          @change=${this._handleSpeakerChange}
-        >
-          <option value="" disabled>
-            ${localize('common.select_speaker')}
-          </option>
-          ${this._config.speakers.map(
-            (speaker) => html`
-              <option value=${speaker} ?selected=${speaker === this._selectedSpeaker}>
-                ${this._getEntityName(speaker)}
-              </option>
-            `
-          )}
-        </select>
+      <div class="tab-bar">
+        ${TABS.map(
+          (tab) => html`
+            <button
+              class="tab-button ${this._activeTab === tab.id ? 'active' : ''}"
+              @click=${() => this._handleTabChange(tab.id)}
+              title="${tab.label}"
+            >
+              <ha-icon icon="${tab.icon}"></ha-icon>
+              <span class="tab-label">${tab.label}</span>
+            </button>
+          `
+        )}
       </div>
     `;
+  }
+
+  /**
+   * Format time in mm:ss
+   */
+  private _formatTime(seconds: number): string {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  /**
+   * Render Now Playing view
+   */
+  private _renderNowPlaying(): TemplateResult {
+    const state = this._getMediaPlayerState();
+    
+    if (!state || !this._selectedSpeaker) {
+      return html`
+        <div class="now-playing">
+          <div class="now-playing-idle">
+            <ha-icon icon="mdi:speaker-off"></ha-icon>
+            <span class="now-playing-idle-text">${localize('common.no_speaker_selected')}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    const isPlaying = state.state === 'playing';
+    const isIdle = state.state === 'idle' || state.state === 'off' || !state.media_title;
+    
+    if (isIdle) {
+      return html`
+        <div class="now-playing">
+          <div class="now-playing-idle">
+            <ha-icon icon="mdi:music-note-off"></ha-icon>
+            <span class="now-playing-idle-text">${localize('common.nothing_playing')}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    const progress = state.media_duration && state.media_position 
+      ? (state.media_position / state.media_duration) * 100 
+      : 0;
+
+    return html`
+      <div class="now-playing">
+        <div class="now-playing-artwork">
+          ${state.entity_picture
+            ? html`<img src="${state.entity_picture}" alt="Album art" />`
+            : html`
+                <div class="now-playing-artwork-placeholder">
+                  <ha-icon icon="mdi:music"></ha-icon>
+                </div>
+              `}
+        </div>
+
+        <div class="now-playing-info">
+          <h3 class="now-playing-title">${state.media_title || 'Unknown'}</h3>
+          <p class="now-playing-artist">${state.media_artist || 'Unknown artist'}</p>
+        </div>
+
+        ${state.media_duration
+          ? html`
+              <div class="progress-container">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill" style="width: ${progress}%"></div>
+                </div>
+                <div class="progress-time">
+                  <span>${this._formatTime(state.media_position || 0)}</span>
+                  <span>${this._formatTime(state.media_duration)}</span>
+                </div>
+              </div>
+            `
+          : nothing}
+
+        <div class="player-controls">
+          <button class="control-button" @click=${this._mediaPrevious} title="Previous">
+            <ha-icon icon="mdi:skip-previous"></ha-icon>
+          </button>
+          <button class="control-button play-pause" @click=${this._mediaPlayPause} title="${isPlaying ? 'Pause' : 'Play'}">
+            <ha-icon icon="${isPlaying ? 'mdi:pause' : 'mdi:play'}"></ha-icon>
+          </button>
+          <button class="control-button" @click=${this._mediaNext} title="Next">
+            <ha-icon icon="mdi:skip-next"></ha-icon>
+          </button>
+        </div>
+
+        <div class="secondary-controls">
+          <div class="secondary-controls-left">
+            <button 
+              class="control-button small ${state.shuffle ? 'active' : ''}" 
+              @click=${this._toggleShuffle}
+              title="Shuffle"
+            >
+              <ha-icon icon="mdi:shuffle"></ha-icon>
+            </button>
+            <button 
+              class="control-button small ${state.repeat !== 'off' ? 'active' : ''}" 
+              @click=${this._toggleRepeat}
+              title="Repeat: ${state.repeat || 'off'}"
+            >
+              <ha-icon icon="${state.repeat === 'one' ? 'mdi:repeat-once' : 'mdi:repeat'}"></ha-icon>
+            </button>
+          </div>
+          <div class="secondary-controls-right">
+            <div class="volume-container">
+              <ha-icon icon="mdi:volume-high"></ha-icon>
+              <input
+                type="range"
+                class="volume-slider"
+                min="0"
+                max="1"
+                step="0.01"
+                .value=${String(state.volume_level || 0)}
+                @change=${this._setVolume}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Render Speakers view
+   */
+  private _renderSpeakers(): TemplateResult {
+    return html`
+      <div class="speakers-grid">
+        ${this._config.speakers.map((speaker) => {
+          const entity = this.hass?.states[speaker];
+          const isActive = speaker === this._selectedSpeaker;
+          const state = entity?.state || 'unavailable';
+          const friendlyName = entity?.attributes?.friendly_name || speaker;
+          
+          return html`
+            <button
+              class="speaker-button ${isActive ? 'active' : ''}"
+              @click=${() => this._handleSpeakerSelect(speaker)}
+            >
+              <ha-icon icon="mdi:speaker"></ha-icon>
+              <div class="speaker-button-info">
+                <div class="speaker-button-name">${friendlyName}</div>
+                <div class="speaker-button-state">${state}</div>
+              </div>
+              <ha-icon class="speaker-button-check" icon="mdi:check-circle"></ha-icon>
+            </button>
+          `;
+        })}
+      </div>
+    `;
+  }
+
+  /**
+   * Get image URL for a queue item
+   */
+  private _getQueueItemImage(item: QueueItem): string | null {
+    if (!item.image) return null;
+    
+    if (typeof item.image === 'string') {
+      return item.image;
+    }
+    
+    if (typeof item.image === 'object' && item.image.path) {
+      return item.image.path;
+    }
+    
+    return null;
+  }
+
+  /**
+   * Play a specific queue item
+   */
+  private async _playQueueItem(index: number): Promise<void> {
+    if (!this.hass || !this._selectedSpeaker) return;
+    
+    try {
+      await this.hass.callService('music_assistant', 'play_index', {
+        index: index,
+      }, { entity_id: this._selectedSpeaker });
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Failed to play queue item:', error);
+    }
+  }
+
+  /**
+   * Render Queue view
+   */
+  private _renderQueue(): TemplateResult {
+    if (!this._selectedSpeaker) {
+      return html`
+        <div class="queue-empty">
+          <ha-icon icon="mdi:speaker-off"></ha-icon>
+          <span>${localize('common.no_speaker_selected')}</span>
+        </div>
+      `;
+    }
+
+    if (this._queueLoading) {
+      return html`
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <span class="loading-text">${localize('common.loading')}</span>
+        </div>
+      `;
+    }
+
+    if (this._queueItems.length === 0) {
+      return html`
+        <div class="queue-empty">
+          <ha-icon icon="mdi:playlist-play"></ha-icon>
+          <span>${localize('common.queue_empty')}</span>
+        </div>
+      `;
+    }
+
+    return html`
+      <div class="queue-list">
+        ${this._queueItems.map((item, index) => {
+          const imageUrl = this._getQueueItemImage(item);
+          const isPlaying = index === this._currentQueueIndex;
+          
+          return html`
+            <div 
+              class="queue-item ${isPlaying ? 'playing' : ''}"
+              @click=${() => this._playQueueItem(index)}
+            >
+              <div class="queue-item-image">
+                ${imageUrl
+                  ? html`<img src="${imageUrl}" alt="${item.name}" />`
+                  : html`<ha-icon icon="mdi:music-note"></ha-icon>`}
+              </div>
+              <div class="queue-item-info">
+                <div class="queue-item-title">${item.name}</div>
+                ${item.artist
+                  ? html`<div class="queue-item-artist">${item.artist}</div>`
+                  : nothing}
+              </div>
+              ${isPlaying
+                ? html`<ha-icon class="queue-item-playing-icon" icon="mdi:volume-high"></ha-icon>`
+                : nothing}
+            </div>
+          `;
+        })}
+      </div>
+    `;
+  }
+
+  /**
+   * Render tab content based on active tab
+   */
+  private _renderTabContent(): TemplateResult {
+    switch (this._activeTab) {
+      case 'now-playing':
+        return this._renderNowPlaying();
+      case 'playlists':
+        return this._loading
+          ? this._renderLoading()
+          : this._error
+            ? this._renderError()
+            : this._playlists.length === 0
+              ? this._renderEmpty()
+              : this._renderPlaylistGrid();
+      case 'queue':
+        return this._renderQueue();
+      case 'speakers':
+        return this._renderSpeakers();
+      default:
+        return html``;
+    }
   }
 
   /**
@@ -426,20 +849,12 @@ export class MusicAssistantPlaylistCard extends LitElement {
               </div>
             `
           : nothing}
-        <div class="card-content">
+        <div class="tab-content">
           ${!isValid
-            ? this._renderConfigWarning()
-            : html`
-                ${this._renderSpeakerSelector()}
-                ${this._loading
-                  ? this._renderLoading()
-                  : this._error
-                    ? this._renderError()
-                    : this._playlists.length === 0
-                      ? this._renderEmpty()
-                      : this._renderPlaylistGrid()}
-              `}
+            ? html`<div class="tab-view">${this._renderConfigWarning()}</div>`
+            : html`<div class="tab-view">${this._renderTabContent()}</div>`}
         </div>
+        ${this._renderTabBar()}
       </ha-card>
     `;
   }

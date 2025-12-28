@@ -390,6 +390,474 @@ export const cardStyles = css`
     opacity: 1;
     transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
   }
+
+  /* ==========================================================================
+     Tab Navigation
+     ========================================================================== */
+
+  .tab-bar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 4px;
+    background: var(--card-background-color, var(--ha-card-background));
+    border-top: 1px solid var(--divider-color, rgba(0, 0, 0, 0.1));
+    flex-shrink: 0;
+  }
+
+  .tab-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--secondary-text-color);
+    flex: 1;
+    max-width: 80px;
+  }
+
+  .tab-button:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.05));
+  }
+
+  .tab-button.active {
+    color: var(--primary-color);
+    background: color-mix(in srgb, var(--primary-color) 15%, transparent);
+  }
+
+  .tab-button ha-icon {
+    --mdc-icon-size: 24px;
+  }
+
+  .tab-button .tab-label {
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  /* Tab Content */
+  .tab-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tab-view {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: var(--playlist-card-spacing);
+  }
+
+  .tab-view::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .tab-view::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .tab-view::-webkit-scrollbar-thumb {
+    background: var(--divider-color, rgba(0, 0, 0, 0.2));
+    border-radius: 3px;
+  }
+
+  .tab-view::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-text-color);
+  }
+
+  /* ==========================================================================
+     Now Playing View
+     ========================================================================== */
+
+  .now-playing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    height: 100%;
+  }
+
+  .now-playing-artwork {
+    width: 100%;
+    max-width: 280px;
+    aspect-ratio: 1;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .now-playing-artwork img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .now-playing-artwork-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .now-playing-artwork-placeholder ha-icon {
+    --mdc-icon-size: 80px;
+    color: var(--secondary-text-color);
+    opacity: 0.3;
+  }
+
+  .now-playing-info {
+    text-align: center;
+    width: 100%;
+  }
+
+  .now-playing-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-text-color);
+    margin: 0 0 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .now-playing-artist {
+    font-size: 14px;
+    color: var(--secondary-text-color);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .now-playing-idle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex: 1;
+    color: var(--secondary-text-color);
+  }
+
+  .now-playing-idle ha-icon {
+    --mdc-icon-size: 64px;
+    opacity: 0.3;
+  }
+
+  .now-playing-idle-text {
+    font-size: 16px;
+  }
+
+  /* Progress Bar */
+  .progress-container {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--divider-color, rgba(0, 0, 0, 0.1));
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 2px;
+    transition: width 0.1s linear;
+  }
+
+  .progress-time {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--secondary-text-color);
+    margin-top: 4px;
+  }
+
+  /* Player Controls */
+  .player-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .control-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--primary-text-color);
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+
+  .control-button:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+  }
+
+  .control-button:active {
+    transform: scale(0.95);
+  }
+
+  .control-button ha-icon {
+    --mdc-icon-size: 28px;
+  }
+
+  .control-button.play-pause {
+    background: var(--primary-color);
+    color: var(--text-primary-color, #fff);
+    padding: 16px;
+  }
+
+  .control-button.play-pause:hover {
+    filter: brightness(1.1);
+    background: var(--primary-color);
+  }
+
+  .control-button.play-pause ha-icon {
+    --mdc-icon-size: 32px;
+  }
+
+  .control-button.small ha-icon {
+    --mdc-icon-size: 20px;
+  }
+
+  .control-button.active {
+    color: var(--primary-color);
+  }
+
+  /* Secondary Controls */
+  .secondary-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 320px;
+    padding: 0 8px;
+  }
+
+  .secondary-controls-left,
+  .secondary-controls-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Volume Slider */
+  .volume-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .volume-slider {
+    width: 80px;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--divider-color, rgba(0, 0, 0, 0.1));
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+  }
+
+  .volume-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    border: none;
+  }
+
+  /* ==========================================================================
+     Speakers View
+     ========================================================================== */
+
+  .speakers-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .speaker-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.05));
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+  }
+
+  .speaker-button:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+  }
+
+  .speaker-button.active {
+    border-color: var(--primary-color);
+    background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+  }
+
+  .speaker-button ha-icon {
+    --mdc-icon-size: 24px;
+    color: var(--secondary-text-color);
+  }
+
+  .speaker-button.active ha-icon {
+    color: var(--primary-color);
+  }
+
+  .speaker-button-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .speaker-button-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--primary-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .speaker-button-state {
+    font-size: 12px;
+    color: var(--secondary-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .speaker-button-check {
+    --mdc-icon-size: 20px;
+    color: var(--primary-color);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .speaker-button.active .speaker-button-check {
+    opacity: 1;
+  }
+
+  /* ==========================================================================
+     Queue View
+     ========================================================================== */
+
+  .queue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .queue-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: transparent;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+    cursor: pointer;
+  }
+
+  .queue-item:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.05));
+  }
+
+  .queue-item.playing {
+    background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+  }
+
+  .queue-item-image {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    flex-shrink: 0;
+  }
+
+  .queue-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .queue-item-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .queue-item-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--primary-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .queue-item-artist {
+    font-size: 12px;
+    color: var(--secondary-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .queue-item-playing-icon {
+    --mdc-icon-size: 20px;
+    color: var(--primary-color);
+  }
+
+  .queue-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 48px 24px;
+    color: var(--secondary-text-color);
+  }
+
+  .queue-empty ha-icon {
+    --mdc-icon-size: 48px;
+    opacity: 0.3;
+  }
 `;
 
 export const editorStyles = css`

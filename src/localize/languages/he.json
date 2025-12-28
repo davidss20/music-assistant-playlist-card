@@ -5,7 +5,9 @@
     "no_playlists": "לא נמצאו פלייליסטים",
     "play": "הפעל",
     "select_speaker": "בחר רמקול",
-    "no_speaker_selected": "לא נבחר רמקול"
+    "no_speaker_selected": "לא נבחר רמקול",
+    "nothing_playing": "אין כרגע מוזיקה מתנגנת",
+    "queue_empty": "התור ריק"
   },
   "config": {
     "title": "כותרת הכרטיס",

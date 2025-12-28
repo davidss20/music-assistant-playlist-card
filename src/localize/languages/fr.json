@@ -5,7 +5,9 @@
     "no_playlists": "Aucune playlist trouvée",
     "play": "Lecture",
     "select_speaker": "Sélectionner un haut-parleur",
-    "no_speaker_selected": "Aucun haut-parleur sélectionné"
+    "no_speaker_selected": "Aucun haut-parleur sélectionné",
+    "nothing_playing": "Rien n'est en cours de lecture",
+    "queue_empty": "La file d'attente est vide"
   },
   "config": {
     "title": "Titre de la carte",

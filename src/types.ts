@@ -80,6 +80,55 @@ export interface HassWebSocketMessage {
 }
 
 // ============================================================================
+// Tab Navigation Types
+// ============================================================================
+
+export type TabId = 'now-playing' | 'playlists' | 'queue' | 'speakers';
+
+export interface Tab {
+  id: TabId;
+  icon: string;
+  label: string;
+}
+
+export const TABS: Tab[] = [
+  { id: 'now-playing', icon: 'mdi:music-note', label: 'Now Playing' },
+  { id: 'playlists', icon: 'mdi:playlist-music', label: 'Playlists' },
+  { id: 'queue', icon: 'mdi:playlist-play', label: 'Queue' },
+  { id: 'speakers', icon: 'mdi:speaker', label: 'Speakers' },
+];
+
+// ============================================================================
+// Media Player Types
+// ============================================================================
+
+export interface MediaPlayerState {
+  state: 'playing' | 'paused' | 'idle' | 'off' | 'unavailable';
+  media_title?: string;
+  media_artist?: string;
+  media_album_name?: string;
+  entity_picture?: string;
+  media_duration?: number;
+  media_position?: number;
+  media_position_updated_at?: string;
+  volume_level?: number;
+  is_volume_muted?: boolean;
+  shuffle?: boolean;
+  repeat?: 'off' | 'one' | 'all';
+}
+
+export interface QueueItem {
+  queue_item_id: string;
+  name: string;
+  media_type: string;
+  uri: string;
+  image?: string | MusicAssistantImage;
+  artist?: string;
+  album?: string;
+  duration?: number;
+}
+
+// ============================================================================
 // Card Configuration Types
 // ============================================================================
 

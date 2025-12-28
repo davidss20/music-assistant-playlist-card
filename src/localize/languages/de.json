@@ -5,7 +5,9 @@
     "no_playlists": "Keine Wiedergabelisten gefunden",
     "play": "Abspielen",
     "select_speaker": "Lautsprecher auswählen",
-    "no_speaker_selected": "Kein Lautsprecher ausgewählt"
+    "no_speaker_selected": "Kein Lautsprecher ausgewählt",
+    "nothing_playing": "Es wird derzeit nichts abgespielt",
+    "queue_empty": "Warteschlange ist leer"
   },
   "config": {
     "title": "Kartentitel",
