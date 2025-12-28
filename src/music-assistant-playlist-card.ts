@@ -53,14 +53,6 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Set card configuration
    */
   public setConfig(config: MusicAssistantPlaylistCardConfig): void {
-    if (!config.config_entry_id) {
-      throw new Error(localize('error.missing_config'));
-    }
-
-    if (!config.speakers || config.speakers.length === 0) {
-      throw new Error(localize('error.missing_speakers'));
-    }
-
     this._config = {
       limit: 25,
       favorites_only: false,
@@ -69,7 +61,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
     };
 
     // Set default selected speaker
-    if (!this._selectedSpeaker && this._config.speakers.length > 0) {
+    if (!this._selectedSpeaker && this._config.speakers && this._config.speakers.length > 0) {
       this._selectedSpeaker = this._config.speakers[0];
     }
   }
@@ -133,25 +125,48 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Load playlists from Music Assistant
    */
   private async _loadPlaylists(): Promise<void> {
-    if (!this.hass || !this._config) return;
+    if (!this.hass || !this._config?.config_entry_id) return;
 
     this._loading = true;
     this._error = null;
 
     try {
-      const response = await this.hass.callWS<MusicAssistantLibraryResponse>({
-        type: 'music_assistant/get_library',
-        config_entry_id: this._config.config_entry_id,
-        media_type: 'playlist',
+      // Try the Music Assistant WebSocket API
+      const response = await this.hass.callWS<MusicAssistantLibraryResponse | MusicAssistantPlaylist[]>({
+        type: 'mass/library/playlists',
         favorite: this._config.favorites_only ?? false,
         limit: this._config.limit ?? 25,
         offset: 0,
       });
 
-      this._playlists = response.items || [];
+      // Handle both array response and object with items
+      if (Array.isArray(response)) {
+        this._playlists = response;
+      } else if (response && 'items' in response) {
+        this._playlists = response.items || [];
+      } else {
+        this._playlists = [];
+      }
+      
+      console.info('[music-assistant-playlist-card] Loaded playlists:', this._playlists.length);
     } catch (error) {
       console.error('[music-assistant-playlist-card] Failed to load playlists:', error);
-      this._error = localize('error.load_failed');
+      
+      // Try alternative API format
+      try {
+        const altResponse = await this.hass.callWS<MusicAssistantPlaylist[]>({
+          type: 'music_assistant/playlists',
+          config_entry_id: this._config.config_entry_id,
+        });
+        
+        if (Array.isArray(altResponse)) {
+          this._playlists = altResponse;
+          console.info('[music-assistant-playlist-card] Loaded playlists (alt):', this._playlists.length);
+        }
+      } catch (altError) {
+        console.error('[music-assistant-playlist-card] Alternative API also failed:', altError);
+        this._error = localize('error.load_failed');
+      }
     } finally {
       this._loading = false;
     }
@@ -329,6 +344,41 @@ export class MusicAssistantPlaylistCard extends LitElement {
   }
 
   /**
+   * Check if configuration is valid
+   */
+  private _isConfigValid(): boolean {
+    return !!(
+      this._config?.config_entry_id &&
+      this._config?.speakers &&
+      this._config.speakers.length > 0
+    );
+  }
+
+  /**
+   * Render configuration warning
+   */
+  private _renderConfigWarning(): TemplateResult {
+    const missingConfig = !this._config?.config_entry_id;
+    const missingSpeakers = !this._config?.speakers || this._config.speakers.length === 0;
+
+    let message = '';
+    if (missingConfig && missingSpeakers) {
+      message = localize('error.missing_config');
+    } else if (missingSpeakers) {
+      message = localize('error.missing_speakers');
+    } else if (missingConfig) {
+      message = 'Please configure Music Assistant Instance ID';
+    }
+
+    return html`
+      <div class="config-warning">
+        <ha-icon icon="mdi:alert"></ha-icon>
+        <span class="config-warning-message">${message}</span>
+      </div>
+    `;
+  }
+
+  /**
    * Render the card
    */
   protected render(): TemplateResult {
@@ -343,6 +393,8 @@ export class MusicAssistantPlaylistCard extends LitElement {
       `;
     }
 
+    const isValid = this._isConfigValid();
+
     return html`
       <ha-card>
         ${this._config.title
@@ -353,14 +405,18 @@ export class MusicAssistantPlaylistCard extends LitElement {
             `
           : nothing}
         <div class="card-content">
-          ${this._renderSpeakerSelector()}
-          ${this._loading
-            ? this._renderLoading()
-            : this._error
-              ? this._renderError()
-              : this._playlists.length === 0
-                ? this._renderEmpty()
-                : this._renderPlaylistGrid()}
+          ${!isValid
+            ? this._renderConfigWarning()
+            : html`
+                ${this._renderSpeakerSelector()}
+                ${this._loading
+                  ? this._renderLoading()
+                  : this._error
+                    ? this._renderError()
+                    : this._playlists.length === 0
+                      ? this._renderEmpty()
+                      : this._renderPlaylistGrid()}
+              `}
         </div>
       </ha-card>
     `;
