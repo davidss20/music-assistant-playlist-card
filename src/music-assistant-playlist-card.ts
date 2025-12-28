@@ -7,7 +7,7 @@
 import { LitElement, html, TemplateResult, PropertyValues, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { cardStyles } from './styles';
-import { localize, setLanguage, isRTL } from './localize/localize';
+import { localize, setLanguage, isRTL, getLanguage } from './localize/localize';
 import type {
   HomeAssistant,
   MusicAssistantPlaylistCardConfig,
@@ -59,6 +59,9 @@ export class MusicAssistantPlaylistCard extends LitElement {
 
   // Current queue item index
   @state() private _currentQueueIndex = -1;
+
+  // Current language (for triggering re-render)
+  @state() private _currentLanguage = 'en';
 
   // Apply styles
   static styles = cardStyles;
@@ -126,6 +129,12 @@ export class MusicAssistantPlaylistCard extends LitElement {
         setLanguage(configLang);
       } else {
         setLanguage(this.hass.language);
+      }
+
+      // Update internal language state to trigger re-render
+      const newLang = getLanguage();
+      if (this._currentLanguage !== newLang) {
+        this._currentLanguage = newLang;
       }
 
       // Update RTL direction
