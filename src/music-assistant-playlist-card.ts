@@ -132,7 +132,13 @@ export class MusicAssistantPlaylistCard extends LitElement {
 
     try {
       // Use the call_service WebSocket API with return_response
-      const response = await this.hass.callWS<{ response: { playlists: MusicAssistantPlaylist[] } }>({
+      // Response format: { response: { playlists: [...] } } where playlists key is media_type + 's'
+      const response = await this.hass.callWS<{ 
+        response: { 
+          playlists?: MusicAssistantPlaylist[];
+          items?: MusicAssistantPlaylist[];
+        } 
+      }>({
         type: 'call_service',
         domain: 'music_assistant',
         service: 'get_library',
@@ -146,9 +152,24 @@ export class MusicAssistantPlaylistCard extends LitElement {
         return_response: true,
       });
 
-      // Extract playlists from response
+      console.info('[music-assistant-playlist-card] Raw response:', response);
+
+      // Extract playlists from response - check both 'playlists' and 'items' keys
       if (response?.response?.playlists) {
         this._playlists = response.response.playlists;
+      } else if (response?.response?.items) {
+        this._playlists = response.response.items;
+      } else if (response?.response && typeof response.response === 'object') {
+        // Try to find any array in the response
+        const keys = Object.keys(response.response);
+        for (const key of keys) {
+          const value = (response.response as Record<string, unknown>)[key];
+          if (Array.isArray(value) && value.length > 0) {
+            this._playlists = value as MusicAssistantPlaylist[];
+            console.info('[music-assistant-playlist-card] Found playlists in key:', key);
+            break;
+          }
+        }
       } else {
         this._playlists = [];
       }
