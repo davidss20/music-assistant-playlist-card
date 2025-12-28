@@ -131,19 +131,23 @@ export class MusicAssistantPlaylistCard extends LitElement {
     this._error = null;
 
     try {
-      // Try the Music Assistant WebSocket API
-      const response = await this.hass.callWS<MusicAssistantLibraryResponse | MusicAssistantPlaylist[]>({
-        type: 'mass/library/playlists',
-        favorite: this._config.favorites_only ?? false,
-        limit: this._config.limit ?? 25,
-        offset: 0,
+      // Use the call_service WebSocket API with return_response
+      const response = await this.hass.callWS<{ response: { playlists: MusicAssistantPlaylist[] } }>({
+        type: 'call_service',
+        domain: 'music_assistant',
+        service: 'get_library',
+        service_data: {
+          media_type: 'playlist',
+          favorite: this._config.favorites_only ?? false,
+          limit: this._config.limit ?? 25,
+          offset: 0,
+        },
+        return_response: true,
       });
 
-      // Handle both array response and object with items
-      if (Array.isArray(response)) {
-        this._playlists = response;
-      } else if (response && 'items' in response) {
-        this._playlists = response.items || [];
+      // Extract playlists from response
+      if (response?.response?.playlists) {
+        this._playlists = response.response.playlists;
       } else {
         this._playlists = [];
       }
@@ -151,22 +155,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
       console.info('[music-assistant-playlist-card] Loaded playlists:', this._playlists.length);
     } catch (error) {
       console.error('[music-assistant-playlist-card] Failed to load playlists:', error);
-      
-      // Try alternative API format
-      try {
-        const altResponse = await this.hass.callWS<MusicAssistantPlaylist[]>({
-          type: 'music_assistant/playlists',
-          config_entry_id: this._config.config_entry_id,
-        });
-        
-        if (Array.isArray(altResponse)) {
-          this._playlists = altResponse;
-          console.info('[music-assistant-playlist-card] Loaded playlists (alt):', this._playlists.length);
-        }
-      } catch (altError) {
-        console.error('[music-assistant-playlist-card] Alternative API also failed:', altError);
-        this._error = localize('error.load_failed');
-      }
+      this._error = localize('error.load_failed');
     } finally {
       this._loading = false;
     }
@@ -182,11 +171,16 @@ export class MusicAssistantPlaylistCard extends LitElement {
     }
 
     try {
+      // Use uri or item_id for media_id
+      const mediaId = playlist.uri || playlist.item_id;
+      
       await this.hass.callService('music_assistant', 'play_media', {
-        media_id: playlist.uri,
+        media_id: mediaId,
         media_type: 'playlist',
-        entity_id: this._selectedSpeaker,
-      });
+        enqueue: 'replace',
+      }, { entity_id: this._selectedSpeaker });
+      
+      console.info('[music-assistant-playlist-card] Playing playlist:', playlist.name);
     } catch (error) {
       console.error('[music-assistant-playlist-card] Failed to play playlist:', error);
     }
