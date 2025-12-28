@@ -7,7 +7,20 @@
     "select_speaker": "Lautsprecher auswählen",
     "no_speaker_selected": "Kein Lautsprecher ausgewählt",
     "nothing_playing": "Es wird derzeit nichts abgespielt",
-    "queue_empty": "Warteschlange ist leer"
+    "queue_empty": "Warteschlange ist leer",
+    "search": "Suchen",
+    "search_playlists": "Wiedergabelisten suchen...",
+    "favorites": "Favoriten",
+    "all": "Alle",
+    "sort": "Sortieren",
+    "sort_name": "Name (A-Z)",
+    "sort_name_desc": "Name (Z-A)",
+    "sort_tracks": "Anzahl Titel",
+    "sort_recent": "Kürzlich hinzugefügt",
+    "view_grid": "Rasteransicht",
+    "view_list": "Listenansicht",
+    "no_results": "Keine passenden Wiedergabelisten",
+    "tracks": "Titel"
   },
   "config": {
     "title": "Kartentitel",

@@ -7,7 +7,20 @@
     "select_speaker": "Select Speaker",
     "no_speaker_selected": "No speaker selected",
     "nothing_playing": "Nothing is currently playing",
-    "queue_empty": "Queue is empty"
+    "queue_empty": "Queue is empty",
+    "search": "Search",
+    "search_playlists": "Search playlists...",
+    "favorites": "Favorites",
+    "all": "All",
+    "sort": "Sort",
+    "sort_name": "Name (A-Z)",
+    "sort_name_desc": "Name (Z-A)",
+    "sort_tracks": "Track count",
+    "sort_recent": "Recently added",
+    "view_grid": "Grid view",
+    "view_list": "List view",
+    "no_results": "No playlists match your search",
+    "tracks": "tracks"
   },
   "config": {
     "title": "Card Title",

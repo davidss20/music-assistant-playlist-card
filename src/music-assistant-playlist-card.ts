@@ -15,6 +15,8 @@ import type {
   TabId,
   MediaPlayerState,
   QueueItem,
+  SortOption,
+  ViewMode,
 } from './types';
 import { TABS } from './types';
 
@@ -62,6 +64,13 @@ export class MusicAssistantPlaylistCard extends LitElement {
 
   // Current language (for triggering re-render)
   @state() private _currentLanguage = 'en';
+
+  // Playlist filtering and display
+  @state() private _searchQuery = '';
+  @state() private _showFavoritesOnly = false;
+  @state() private _sortOption: SortOption = 'name';
+  @state() private _viewMode: ViewMode = 'grid';
+  @state() private _showSortMenu = false;
 
   // Apply styles
   static styles = cardStyles;
@@ -404,6 +413,92 @@ export class MusicAssistantPlaylistCard extends LitElement {
     }, { entity_id: this._selectedSpeaker });
   }
 
+  // ==========================================================================
+  // Playlist Filtering & Sorting
+  // ==========================================================================
+
+  /**
+   * Handle search input
+   */
+  private _handleSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this._searchQuery = input.value;
+  }
+
+  /**
+   * Toggle favorites filter
+   */
+  private _toggleFavorites(): void {
+    this._showFavoritesOnly = !this._showFavoritesOnly;
+  }
+
+  /**
+   * Set sort option
+   */
+  private _setSortOption(option: SortOption): void {
+    this._sortOption = option;
+    this._showSortMenu = false;
+  }
+
+  /**
+   * Toggle sort menu
+   */
+  private _toggleSortMenu(): void {
+    this._showSortMenu = !this._showSortMenu;
+  }
+
+  /**
+   * Close sort menu when clicking outside
+   */
+  private _closeSortMenu(): void {
+    this._showSortMenu = false;
+  }
+
+  /**
+   * Toggle view mode
+   */
+  private _setViewMode(mode: ViewMode): void {
+    this._viewMode = mode;
+  }
+
+  /**
+   * Get filtered and sorted playlists
+   */
+  private _getFilteredPlaylists(): MusicAssistantPlaylist[] {
+    let playlists = [...this._playlists];
+
+    // Filter by favorites
+    if (this._showFavoritesOnly) {
+      playlists = playlists.filter(p => p.favorite);
+    }
+
+    // Filter by search query
+    if (this._searchQuery.trim()) {
+      const query = this._searchQuery.toLowerCase().trim();
+      playlists = playlists.filter(p => 
+        p.name.toLowerCase().includes(query)
+      );
+    }
+
+    // Sort playlists
+    switch (this._sortOption) {
+      case 'name':
+        playlists.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'name_desc':
+        playlists.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case 'tracks':
+        playlists.sort((a, b) => (b.track_count || 0) - (a.track_count || 0));
+        break;
+      case 'recent':
+        // Keep original order (usually most recent first from API)
+        break;
+    }
+
+    return playlists;
+  }
+
   /**
    * Get image URL for a playlist
    */
@@ -456,6 +551,112 @@ export class MusicAssistantPlaylistCard extends LitElement {
       <div class="empty-container">
         <ha-icon icon="mdi:playlist-music"></ha-icon>
         <span class="empty-message">${localize('common.no_playlists')}</span>
+      </div>
+    `;
+  }
+
+  /**
+   * Render no results state (after filtering)
+   */
+  private _renderNoResults(): TemplateResult {
+    return html`
+      <div class="empty-container">
+        <ha-icon icon="mdi:magnify"></ha-icon>
+        <span class="empty-message">${localize('common.no_results')}</span>
+      </div>
+    `;
+  }
+
+  /**
+   * Render playlist toolbar
+   */
+  private _renderPlaylistToolbar(): TemplateResult {
+    return html`
+      <div class="playlist-toolbar">
+        <div class="search-container">
+          <ha-icon class="search-icon" icon="mdi:magnify"></ha-icon>
+          <input
+            type="text"
+            class="search-input"
+            placeholder="${localize('common.search_playlists')}"
+            .value=${this._searchQuery}
+            @input=${this._handleSearchInput}
+          />
+        </div>
+        <div class="toolbar-actions">
+          <button
+            class="filter-button ${this._showFavoritesOnly ? 'active' : ''}"
+            @click=${this._toggleFavorites}
+            title="${localize('common.favorites')}"
+          >
+            <ha-icon icon="${this._showFavoritesOnly ? 'mdi:star' : 'mdi:star-outline'}"></ha-icon>
+            <span>${this._showFavoritesOnly ? localize('common.favorites') : localize('common.all')}</span>
+          </button>
+          
+          <div class="sort-dropdown">
+            <button
+              class="filter-button"
+              @click=${this._toggleSortMenu}
+              title="${localize('common.sort')}"
+            >
+              <ha-icon icon="mdi:sort"></ha-icon>
+              <span>${localize('common.sort')}</span>
+            </button>
+            ${this._showSortMenu
+              ? html`
+                  <div class="sort-menu" @mouseleave=${this._closeSortMenu}>
+                    <button
+                      class="sort-option ${this._sortOption === 'name' ? 'active' : ''}"
+                      @click=${() => this._setSortOption('name')}
+                    >
+                      <ha-icon icon="mdi:sort-alphabetical-ascending"></ha-icon>
+                      ${localize('common.sort_name')}
+                    </button>
+                    <button
+                      class="sort-option ${this._sortOption === 'name_desc' ? 'active' : ''}"
+                      @click=${() => this._setSortOption('name_desc')}
+                    >
+                      <ha-icon icon="mdi:sort-alphabetical-descending"></ha-icon>
+                      ${localize('common.sort_name_desc')}
+                    </button>
+                    <button
+                      class="sort-option ${this._sortOption === 'tracks' ? 'active' : ''}"
+                      @click=${() => this._setSortOption('tracks')}
+                    >
+                      <ha-icon icon="mdi:music-note-outline"></ha-icon>
+                      ${localize('common.sort_tracks')}
+                    </button>
+                    <button
+                      class="sort-option ${this._sortOption === 'recent' ? 'active' : ''}"
+                      @click=${() => this._setSortOption('recent')}
+                    >
+                      <ha-icon icon="mdi:clock-outline"></ha-icon>
+                      ${localize('common.sort_recent')}
+                    </button>
+                  </div>
+                `
+              : nothing}
+          </div>
+
+          <div class="toolbar-spacer"></div>
+
+          <div class="view-toggle">
+            <button
+              class="view-button ${this._viewMode === 'grid' ? 'active' : ''}"
+              @click=${() => this._setViewMode('grid')}
+              title="${localize('common.view_grid')}"
+            >
+              <ha-icon icon="mdi:view-grid"></ha-icon>
+            </button>
+            <button
+              class="view-button ${this._viewMode === 'list' ? 'active' : ''}"
+              @click=${() => this._setViewMode('list')}
+              title="${localize('common.view_list')}"
+            >
+              <ha-icon icon="mdi:view-list"></ha-icon>
+            </button>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -742,9 +943,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
           ? this._renderLoading()
           : this._error
             ? this._renderError()
-            : this._playlists.length === 0
-              ? this._renderEmpty()
-              : this._renderPlaylistGrid();
+            : this._renderPlaylistsView();
       case 'queue':
         return this._renderQueue();
       case 'speakers':
@@ -755,9 +954,27 @@ export class MusicAssistantPlaylistCard extends LitElement {
   }
 
   /**
+   * Render playlists view (with toolbar)
+   */
+  private _renderPlaylistsView(): TemplateResult {
+    const filteredPlaylists = this._getFilteredPlaylists();
+
+    return html`
+      ${this._renderPlaylistToolbar()}
+      ${filteredPlaylists.length === 0 && (this._searchQuery || this._showFavoritesOnly)
+        ? this._renderNoResults()
+        : filteredPlaylists.length === 0
+          ? this._renderEmpty()
+          : this._viewMode === 'grid'
+            ? this._renderPlaylistGrid(filteredPlaylists)
+            : this._renderPlaylistList(filteredPlaylists)}
+    `;
+  }
+
+  /**
    * Render playlist grid
    */
-  private _renderPlaylistGrid(): TemplateResult {
+  private _renderPlaylistGrid(playlists: MusicAssistantPlaylist[]): TemplateResult {
     const columnsClass =
       this._config.columns && this._config.columns !== 'auto'
         ? `columns-${this._config.columns}`
@@ -765,7 +982,18 @@ export class MusicAssistantPlaylistCard extends LitElement {
 
     return html`
       <div class="playlist-grid ${columnsClass}">
-        ${this._playlists.map((playlist) => this._renderPlaylistItem(playlist))}
+        ${playlists.map((playlist) => this._renderPlaylistItem(playlist))}
+      </div>
+    `;
+  }
+
+  /**
+   * Render playlist list
+   */
+  private _renderPlaylistList(playlists: MusicAssistantPlaylist[]): TemplateResult {
+    return html`
+      <div class="playlist-list">
+        ${playlists.map((playlist) => this._renderPlaylistItem(playlist))}
       </div>
     `;
   }
@@ -804,7 +1032,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
         <div class="playlist-info">
           <p class="playlist-name">${playlist.name}</p>
           ${playlist.track_count
-            ? html`<p class="playlist-meta">${playlist.track_count} tracks</p>`
+            ? html`<p class="playlist-meta">${playlist.track_count} ${localize('common.tracks')}</p>`
             : nothing}
         </div>
       </div>

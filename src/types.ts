@@ -85,6 +85,9 @@ export interface HassWebSocketMessage {
 
 export type TabId = 'now-playing' | 'playlists' | 'queue' | 'speakers';
 
+export type SortOption = 'name' | 'name_desc' | 'tracks' | 'recent';
+export type ViewMode = 'grid' | 'list';
+
 export interface Tab {
   id: TabId;
   icon: string;

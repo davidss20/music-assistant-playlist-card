@@ -7,7 +7,20 @@
     "select_speaker": "Выбрать колонку",
     "no_speaker_selected": "Колонка не выбрана",
     "nothing_playing": "Сейчас ничего не воспроизводится",
-    "queue_empty": "Очередь пуста"
+    "queue_empty": "Очередь пуста",
+    "search": "Поиск",
+    "search_playlists": "Поиск плейлистов...",
+    "favorites": "Избранное",
+    "all": "Все",
+    "sort": "Сортировка",
+    "sort_name": "Имя (А-Я)",
+    "sort_name_desc": "Имя (Я-А)",
+    "sort_tracks": "Количество треков",
+    "sort_recent": "Недавно добавленные",
+    "view_grid": "Сетка",
+    "view_list": "Список",
+    "no_results": "Плейлисты не найдены",
+    "tracks": "треков"
   },
   "config": {
     "title": "Заголовок карточки",

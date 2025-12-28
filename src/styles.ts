@@ -170,6 +170,191 @@ export const cardStyles = css`
     color: var(--primary-text-color);
   }
 
+  /* ==========================================================================
+     Playlist Toolbar
+     ========================================================================== */
+
+  .playlist-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+
+  .search-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 10px 12px 10px 40px;
+    border: none;
+    border-radius: 10px;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    color: var(--primary-text-color);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: box-shadow 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  :host([dir="rtl"]) .search-input {
+    padding: 10px 40px 10px 12px;
+  }
+
+  .search-input::placeholder {
+    color: var(--secondary-text-color);
+  }
+
+  .search-input:focus {
+    box-shadow: 0 0 0 2px var(--primary-color);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    --mdc-icon-size: 20px;
+    color: var(--secondary-text-color);
+    pointer-events: none;
+  }
+
+  :host([dir="rtl"]) .search-icon {
+    left: auto;
+    right: 12px;
+  }
+
+  .toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .filter-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    border: none;
+    border-radius: 8px;
+    color: var(--secondary-text-color);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .filter-button:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.15));
+  }
+
+  .filter-button.active {
+    background: color-mix(in srgb, var(--primary-color) 20%, transparent);
+    color: var(--primary-color);
+  }
+
+  .filter-button ha-icon {
+    --mdc-icon-size: 18px;
+  }
+
+  .sort-dropdown {
+    position: relative;
+  }
+
+  .sort-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+    background: var(--card-background-color, var(--ha-card-background));
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    overflow: hidden;
+    min-width: 160px;
+  }
+
+  :host([dir="rtl"]) .sort-menu {
+    right: auto;
+    left: 0;
+  }
+
+  .sort-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 14px;
+    background: transparent;
+    border: none;
+    color: var(--primary-text-color);
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s ease;
+  }
+
+  :host([dir="rtl"]) .sort-option {
+    text-align: right;
+  }
+
+  .sort-option:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.05));
+  }
+
+  .sort-option.active {
+    color: var(--primary-color);
+  }
+
+  .sort-option ha-icon {
+    --mdc-icon-size: 18px;
+  }
+
+  .view-toggle {
+    display: flex;
+    align-items: center;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .view-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: transparent;
+    border: none;
+    color: var(--secondary-text-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .view-button:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .view-button.active {
+    background: var(--primary-color);
+    color: var(--text-primary-color, #fff);
+  }
+
+  .view-button ha-icon {
+    --mdc-icon-size: 18px;
+  }
+
+  .toolbar-spacer {
+    flex: 1;
+  }
+
   /* Playlist Grid */
   .playlist-grid {
     display: grid;
@@ -195,6 +380,70 @@ export const cardStyles = css`
 
   .playlist-grid.columns-6 {
     grid-template-columns: repeat(6, 1fr);
+  }
+
+  /* Playlist List View */
+  .playlist-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .playlist-list .playlist-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 10px;
+  }
+
+  .playlist-list .playlist-item:hover {
+    transform: none;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.05));
+  }
+
+  .playlist-list .playlist-image-container {
+    width: 56px;
+    height: 56px;
+    padding-top: 0;
+    flex-shrink: 0;
+    border-radius: 8px;
+  }
+
+  .playlist-list .playlist-info {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    text-align: left;
+  }
+
+  :host([dir="rtl"]) .playlist-list .playlist-info {
+    text-align: right;
+  }
+
+  .playlist-list .playlist-name {
+    font-size: 14px;
+  }
+
+  .playlist-list .play-overlay {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    opacity: 1;
+    flex-shrink: 0;
+  }
+
+  .playlist-list .play-button {
+    width: 40px;
+    height: 40px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .playlist-list .playlist-item:hover .play-button {
+    opacity: 1;
   }
 
   /* Playlist Item */

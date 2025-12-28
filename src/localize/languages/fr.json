@@ -7,7 +7,20 @@
     "select_speaker": "Sélectionner un haut-parleur",
     "no_speaker_selected": "Aucun haut-parleur sélectionné",
     "nothing_playing": "Rien n'est en cours de lecture",
-    "queue_empty": "La file d'attente est vide"
+    "queue_empty": "La file d'attente est vide",
+    "search": "Rechercher",
+    "search_playlists": "Rechercher des playlists...",
+    "favorites": "Favoris",
+    "all": "Tout",
+    "sort": "Trier",
+    "sort_name": "Nom (A-Z)",
+    "sort_name_desc": "Nom (Z-A)",
+    "sort_tracks": "Nombre de pistes",
+    "sort_recent": "Ajoutés récemment",
+    "view_grid": "Vue grille",
+    "view_list": "Vue liste",
+    "no_results": "Aucune playlist correspondante",
+    "tracks": "pistes"
   },
   "config": {
     "title": "Titre de la carte",

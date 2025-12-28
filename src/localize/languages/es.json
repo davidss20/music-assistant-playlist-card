@@ -7,7 +7,20 @@
     "select_speaker": "Seleccionar altavoz",
     "no_speaker_selected": "Ningún altavoz seleccionado",
     "nothing_playing": "No se está reproduciendo nada",
-    "queue_empty": "La cola está vacía"
+    "queue_empty": "La cola está vacía",
+    "search": "Buscar",
+    "search_playlists": "Buscar listas...",
+    "favorites": "Favoritos",
+    "all": "Todo",
+    "sort": "Ordenar",
+    "sort_name": "Nombre (A-Z)",
+    "sort_name_desc": "Nombre (Z-A)",
+    "sort_tracks": "Número de pistas",
+    "sort_recent": "Añadidos recientemente",
+    "view_grid": "Vista cuadrícula",
+    "view_list": "Vista lista",
+    "no_results": "No hay listas coincidentes",
+    "tracks": "pistas"
   },
   "config": {
     "title": "Título de la tarjeta",

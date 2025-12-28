@@ -7,7 +7,20 @@
     "select_speaker": "Wybierz głośnik",
     "no_speaker_selected": "Nie wybrano głośnika",
     "nothing_playing": "Nic nie jest obecnie odtwarzane",
-    "queue_empty": "Kolejka jest pusta"
+    "queue_empty": "Kolejka jest pusta",
+    "search": "Szukaj",
+    "search_playlists": "Szukaj playlist...",
+    "favorites": "Ulubione",
+    "all": "Wszystkie",
+    "sort": "Sortuj",
+    "sort_name": "Nazwa (A-Z)",
+    "sort_name_desc": "Nazwa (Z-A)",
+    "sort_tracks": "Liczba utworów",
+    "sort_recent": "Ostatnio dodane",
+    "view_grid": "Widok siatki",
+    "view_list": "Widok listy",
+    "no_results": "Brak pasujących playlist",
+    "tracks": "utworów"
   },
   "config": {
     "title": "Tytuł karty",

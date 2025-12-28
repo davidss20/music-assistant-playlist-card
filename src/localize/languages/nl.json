@@ -7,7 +7,20 @@
     "select_speaker": "Speaker selecteren",
     "no_speaker_selected": "Geen speaker geselecteerd",
     "nothing_playing": "Er wordt momenteel niets afgespeeld",
-    "queue_empty": "Wachtrij is leeg"
+    "queue_empty": "Wachtrij is leeg",
+    "search": "Zoeken",
+    "search_playlists": "Afspeellijsten zoeken...",
+    "favorites": "Favorieten",
+    "all": "Alles",
+    "sort": "Sorteren",
+    "sort_name": "Naam (A-Z)",
+    "sort_name_desc": "Naam (Z-A)",
+    "sort_tracks": "Aantal nummers",
+    "sort_recent": "Recent toegevoegd",
+    "view_grid": "Rasterweergave",
+    "view_list": "Lijstweergave",
+    "no_results": "Geen overeenkomende afspeellijsten",
+    "tracks": "nummers"
   },
   "config": {
     "title": "Kaarttitel",

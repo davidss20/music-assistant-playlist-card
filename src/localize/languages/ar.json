@@ -7,7 +7,20 @@
     "select_speaker": "اختر مكبر الصوت",
     "no_speaker_selected": "لم يتم اختيار مكبر صوت",
     "nothing_playing": "لا يوجد شيء قيد التشغيل حالياً",
-    "queue_empty": "قائمة الانتظار فارغة"
+    "queue_empty": "قائمة الانتظار فارغة",
+    "search": "بحث",
+    "search_playlists": "البحث في قوائم التشغيل...",
+    "favorites": "المفضلة",
+    "all": "الكل",
+    "sort": "ترتيب",
+    "sort_name": "الاسم (أ-ي)",
+    "sort_name_desc": "الاسم (ي-أ)",
+    "sort_tracks": "عدد المقاطع",
+    "sort_recent": "المضافة حديثاً",
+    "view_grid": "عرض شبكي",
+    "view_list": "عرض قائمة",
+    "no_results": "لا توجد قوائم تشغيل مطابقة",
+    "tracks": "مقاطع"
   },
   "config": {
     "title": "عنوان البطاقة",

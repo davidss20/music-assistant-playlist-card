@@ -7,7 +7,20 @@
     "select_speaker": "Seleziona altoparlante",
     "no_speaker_selected": "Nessun altoparlante selezionato",
     "nothing_playing": "Nessuna riproduzione in corso",
-    "queue_empty": "La coda è vuota"
+    "queue_empty": "La coda è vuota",
+    "search": "Cerca",
+    "search_playlists": "Cerca playlist...",
+    "favorites": "Preferiti",
+    "all": "Tutti",
+    "sort": "Ordina",
+    "sort_name": "Nome (A-Z)",
+    "sort_name_desc": "Nome (Z-A)",
+    "sort_tracks": "Numero di tracce",
+    "sort_recent": "Aggiunti di recente",
+    "view_grid": "Vista griglia",
+    "view_list": "Vista elenco",
+    "no_results": "Nessuna playlist corrispondente",
+    "tracks": "tracce"
   },
   "config": {
     "title": "Titolo scheda",

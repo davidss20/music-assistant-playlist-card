@@ -7,7 +7,20 @@
     "select_speaker": "スピーカーを選択",
     "no_speaker_selected": "スピーカーが選択されていません",
     "nothing_playing": "現在再生中のものはありません",
-    "queue_empty": "キューは空です"
+    "queue_empty": "キューは空です",
+    "search": "検索",
+    "search_playlists": "プレイリストを検索...",
+    "favorites": "お気に入り",
+    "all": "すべて",
+    "sort": "並び替え",
+    "sort_name": "名前 (A-Z)",
+    "sort_name_desc": "名前 (Z-A)",
+    "sort_tracks": "トラック数",
+    "sort_recent": "最近追加",
+    "view_grid": "グリッド表示",
+    "view_list": "リスト表示",
+    "no_results": "一致するプレイリストがありません",
+    "tracks": "曲"
   },
   "config": {
     "title": "カードタイトル",

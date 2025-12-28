@@ -7,7 +7,20 @@
     "select_speaker": "Selecionar alto-falante",
     "no_speaker_selected": "Nenhum alto-falante selecionado",
     "nothing_playing": "Nada está tocando no momento",
-    "queue_empty": "A fila está vazia"
+    "queue_empty": "A fila está vazia",
+    "search": "Pesquisar",
+    "search_playlists": "Pesquisar playlists...",
+    "favorites": "Favoritos",
+    "all": "Todos",
+    "sort": "Ordenar",
+    "sort_name": "Nome (A-Z)",
+    "sort_name_desc": "Nome (Z-A)",
+    "sort_tracks": "Número de faixas",
+    "sort_recent": "Adicionados recentemente",
+    "view_grid": "Visualização em grade",
+    "view_list": "Visualização em lista",
+    "no_results": "Nenhuma playlist correspondente",
+    "tracks": "faixas"
   },
   "config": {
     "title": "Título do cartão",
