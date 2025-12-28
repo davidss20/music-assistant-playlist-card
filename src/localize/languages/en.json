@@ -1,0 +1,28 @@
+{
+  "common": {
+    "loading": "Loading playlists...",
+    "error": "An error occurred",
+    "no_playlists": "No playlists found",
+    "play": "Play",
+    "select_speaker": "Select Speaker",
+    "no_speaker_selected": "No speaker selected"
+  },
+  "config": {
+    "title": "Card Title",
+    "config_entry_id": "Music Assistant Instance",
+    "speakers": "Speakers",
+    "limit": "Number of Playlists",
+    "columns": "Columns",
+    "columns_auto": "Auto",
+    "favorites_only": "Favorites Only",
+    "language": "Language",
+    "language_auto": "Auto (from Home Assistant)"
+  },
+  "error": {
+    "missing_config": "Missing configuration. Please configure the card.",
+    "missing_speakers": "No speakers configured. Please add speakers in card settings.",
+    "load_failed": "Failed to load playlists. Please check your Music Assistant configuration.",
+    "play_failed": "Failed to play playlist"
+  }
+}
+

@@ -1,0 +1,28 @@
+{
+  "common": {
+    "loading": "Chargement des playlists...",
+    "error": "Une erreur s'est produite",
+    "no_playlists": "Aucune playlist trouvée",
+    "play": "Lecture",
+    "select_speaker": "Sélectionner un haut-parleur",
+    "no_speaker_selected": "Aucun haut-parleur sélectionné"
+  },
+  "config": {
+    "title": "Titre de la carte",
+    "config_entry_id": "Instance Music Assistant",
+    "speakers": "Haut-parleurs",
+    "limit": "Nombre de playlists",
+    "columns": "Colonnes",
+    "columns_auto": "Automatique",
+    "favorites_only": "Favoris uniquement",
+    "language": "Langue",
+    "language_auto": "Automatique (depuis Home Assistant)"
+  },
+  "error": {
+    "missing_config": "Configuration manquante. Veuillez configurer la carte.",
+    "missing_speakers": "Aucun haut-parleur configuré. Veuillez ajouter des haut-parleurs.",
+    "load_failed": "Échec du chargement des playlists. Vérifiez la configuration de Music Assistant.",
+    "play_failed": "Échec de la lecture de la playlist"
+  }
+}
+

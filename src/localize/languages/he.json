@@ -1,0 +1,28 @@
+{
+  "common": {
+    "loading": "טוען פלייליסטים...",
+    "error": "אירעה שגיאה",
+    "no_playlists": "לא נמצאו פלייליסטים",
+    "play": "הפעל",
+    "select_speaker": "בחר רמקול",
+    "no_speaker_selected": "לא נבחר רמקול"
+  },
+  "config": {
+    "title": "כותרת הכרטיס",
+    "config_entry_id": "מופע Music Assistant",
+    "speakers": "רמקולים",
+    "limit": "מספר פלייליסטים",
+    "columns": "עמודות",
+    "columns_auto": "אוטומטי",
+    "favorites_only": "מועדפים בלבד",
+    "language": "שפה",
+    "language_auto": "אוטומטי (מ-Home Assistant)"
+  },
+  "error": {
+    "missing_config": "חסרה הגדרה. אנא הגדר את הכרטיס.",
+    "missing_speakers": "לא הוגדרו רמקולים. אנא הוסף רמקולים בהגדרות הכרטיס.",
+    "load_failed": "נכשל בטעינת פלייליסטים. אנא בדוק את הגדרות Music Assistant.",
+    "play_failed": "נכשל בהפעלת הפלייליסט"
+  }
+}
+

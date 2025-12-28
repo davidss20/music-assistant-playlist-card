@@ -1,0 +1,28 @@
+{
+  "common": {
+    "loading": "Cargando listas de reproducción...",
+    "error": "Se produjo un error",
+    "no_playlists": "No se encontraron listas de reproducción",
+    "play": "Reproducir",
+    "select_speaker": "Seleccionar altavoz",
+    "no_speaker_selected": "Ningún altavoz seleccionado"
+  },
+  "config": {
+    "title": "Título de la tarjeta",
+    "config_entry_id": "Instancia de Music Assistant",
+    "speakers": "Altavoces",
+    "limit": "Número de listas de reproducción",
+    "columns": "Columnas",
+    "columns_auto": "Automático",
+    "favorites_only": "Solo favoritos",
+    "language": "Idioma",
+    "language_auto": "Automático (desde Home Assistant)"
+  },
+  "error": {
+    "missing_config": "Falta la configuración. Por favor, configure la tarjeta.",
+    "missing_speakers": "No hay altavoces configurados. Por favor, agregue altavoces.",
+    "load_failed": "Error al cargar las listas de reproducción. Verifique la configuración de Music Assistant.",
+    "play_failed": "Error al reproducir la lista de reproducción"
+  }
+}
+

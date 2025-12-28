@@ -1,0 +1,7 @@
+{
+  "name": "Music Assistant Playlist Card",
+  "render_readme": true,
+  "filename": "music-assistant-playlist-card.js",
+  "homeassistant": "2023.0.0"
+}
+

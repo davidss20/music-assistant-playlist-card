@@ -1,0 +1,28 @@
+{
+  "common": {
+    "loading": "Wiedergabelisten werden geladen...",
+    "error": "Ein Fehler ist aufgetreten",
+    "no_playlists": "Keine Wiedergabelisten gefunden",
+    "play": "Abspielen",
+    "select_speaker": "Lautsprecher auswählen",
+    "no_speaker_selected": "Kein Lautsprecher ausgewählt"
+  },
+  "config": {
+    "title": "Kartentitel",
+    "config_entry_id": "Music Assistant Instanz",
+    "speakers": "Lautsprecher",
+    "limit": "Anzahl der Wiedergabelisten",
+    "columns": "Spalten",
+    "columns_auto": "Automatisch",
+    "favorites_only": "Nur Favoriten",
+    "language": "Sprache",
+    "language_auto": "Automatisch (von Home Assistant)"
+  },
+  "error": {
+    "missing_config": "Konfiguration fehlt. Bitte konfigurieren Sie die Karte.",
+    "missing_speakers": "Keine Lautsprecher konfiguriert. Bitte fügen Sie Lautsprecher hinzu.",
+    "load_failed": "Wiedergabelisten konnten nicht geladen werden. Überprüfen Sie die Music Assistant Konfiguration.",
+    "play_failed": "Wiedergabeliste konnte nicht abgespielt werden"
+  }
+}
+

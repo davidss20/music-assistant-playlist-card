@@ -1,0 +1,661 @@
+function e(e,t,i,s){var r,o=arguments.length,a=o<3?t:null===s?s=Object.getOwnPropertyDescriptor(t,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)a=Reflect.decorate(e,t,i,s);else for(var n=e.length-1;n>=0;n--)(r=e[n])&&(a=(o<3?r(a):o>3?r(t,i,a):r(t,i))||a);return o>3&&a&&Object.defineProperty(t,i,a),a}"function"==typeof SuppressedError&&SuppressedError;const t=globalThis,i=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s=Symbol(),r=new WeakMap;let o=class{constructor(e,t,i){if(this._$cssResult$=!0,i!==s)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e,this.t=t}get styleSheet(){let e=this.o;const t=this.t;if(i&&void 0===e){const i=void 0!==t&&1===t.length;i&&(e=r.get(t)),void 0===e&&((this.o=e=new CSSStyleSheet).replaceSync(this.cssText),i&&r.set(t,e))}return e}toString(){return this.cssText}};const a=(e,...t)=>{const i=1===e.length?e[0]:t.reduce((t,i,s)=>t+(e=>{if(!0===e._$cssResult$)return e.cssText;if("number"==typeof e)return e;throw Error("Value passed to 'css' function must be a 'css' function result: "+e+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+e[s+1],e[0]);return new o(i,e,s)},n=i?e=>e:e=>e instanceof CSSStyleSheet?(e=>{let t="";for(const i of e.cssRules)t+=i.cssText;return(e=>new o("string"==typeof e?e:e+"",void 0,s))(t)})(e):e,{is:l,defineProperty:c,getOwnPropertyDescriptor:d,getOwnPropertyNames:p,getOwnPropertySymbols:h,getPrototypeOf:u}=Object,g=globalThis,f=g.trustedTypes,m=f?f.emptyScript:"",_=g.reactiveElementPolyfillSupport,y=(e,t)=>e,v={toAttribute(e,t){switch(t){case Boolean:e=e?m:null;break;case Object:case Array:e=null==e?e:JSON.stringify(e)}return e},fromAttribute(e,t){let i=e;switch(t){case Boolean:i=null!==e;break;case Number:i=null===e?null:Number(e);break;case Object:case Array:try{i=JSON.parse(e)}catch(e){i=null}}return i}},$=(e,t)=>!l(e,t),b={attribute:!0,type:String,converter:v,reflect:!1,useDefault:!1,hasChanged:$};Symbol.metadata??=Symbol("metadata"),g.litPropertyMetadata??=new WeakMap;let x=class extends HTMLElement{static addInitializer(e){this._$Ei(),(this.l??=[]).push(e)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(e,t=b){if(t.state&&(t.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(e)&&((t=Object.create(t)).wrapped=!0),this.elementProperties.set(e,t),!t.noAccessor){const i=Symbol(),s=this.getPropertyDescriptor(e,i,t);void 0!==s&&c(this.prototype,e,s)}}static getPropertyDescriptor(e,t,i){const{get:s,set:r}=d(this.prototype,e)??{get(){return this[t]},set(e){this[t]=e}};return{get:s,set(t){const o=s?.call(this);r?.call(this,t),this.requestUpdate(e,o,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)??b}static _$Ei(){if(this.hasOwnProperty(y("elementProperties")))return;const e=u(this);e.finalize(),void 0!==e.l&&(this.l=[...e.l]),this.elementProperties=new Map(e.elementProperties)}static finalize(){if(this.hasOwnProperty(y("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(y("properties"))){const e=this.properties,t=[...p(e),...h(e)];for(const i of t)this.createProperty(i,e[i])}const e=this[Symbol.metadata];if(null!==e){const t=litPropertyMetadata.get(e);if(void 0!==t)for(const[e,i]of t)this.elementProperties.set(e,i)}this._$Eh=new Map;for(const[e,t]of this.elementProperties){const i=this._$Eu(e,t);void 0!==i&&this._$Eh.set(i,e)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(e){const t=[];if(Array.isArray(e)){const i=new Set(e.flat(1/0).reverse());for(const e of i)t.unshift(n(e))}else void 0!==e&&t.push(n(e));return t}static _$Eu(e,t){const i=t.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof e?e.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(e=>this.enableUpdating=e),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(e=>e(this))}addController(e){(this._$EO??=new Set).add(e),void 0!==this.renderRoot&&this.isConnected&&e.hostConnected?.()}removeController(e){this._$EO?.delete(e)}_$E_(){const e=new Map,t=this.constructor.elementProperties;for(const i of t.keys())this.hasOwnProperty(i)&&(e.set(i,this[i]),delete this[i]);e.size>0&&(this._$Ep=e)}createRenderRoot(){const e=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return((e,s)=>{if(i)e.adoptedStyleSheets=s.map(e=>e instanceof CSSStyleSheet?e:e.styleSheet);else for(const i of s){const s=document.createElement("style"),r=t.litNonce;void 0!==r&&s.setAttribute("nonce",r),s.textContent=i.cssText,e.appendChild(s)}})(e,this.constructor.elementStyles),e}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(e=>e.hostConnected?.())}enableUpdating(e){}disconnectedCallback(){this._$EO?.forEach(e=>e.hostDisconnected?.())}attributeChangedCallback(e,t,i){this._$AK(e,i)}_$ET(e,t){const i=this.constructor.elementProperties.get(e),s=this.constructor._$Eu(e,i);if(void 0!==s&&!0===i.reflect){const r=(void 0!==i.converter?.toAttribute?i.converter:v).toAttribute(t,i.type);this._$Em=e,null==r?this.removeAttribute(s):this.setAttribute(s,r),this._$Em=null}}_$AK(e,t){const i=this.constructor,s=i._$Eh.get(e);if(void 0!==s&&this._$Em!==s){const e=i.getPropertyOptions(s),r="function"==typeof e.converter?{fromAttribute:e.converter}:void 0!==e.converter?.fromAttribute?e.converter:v;this._$Em=s;const o=r.fromAttribute(t,e.type);this[s]=o??this._$Ej?.get(s)??o,this._$Em=null}}requestUpdate(e,t,i,s=!1,r){if(void 0!==e){const o=this.constructor;if(!1===s&&(r=this[e]),i??=o.getPropertyOptions(e),!((i.hasChanged??$)(r,t)||i.useDefault&&i.reflect&&r===this._$Ej?.get(e)&&!this.hasAttribute(o._$Eu(e,i))))return;this.C(e,t,i)}!1===this.isUpdatePending&&(this._$ES=this._$EP())}C(e,t,{useDefault:i,reflect:s,wrapped:r},o){i&&!(this._$Ej??=new Map).has(e)&&(this._$Ej.set(e,o??t??this[e]),!0!==r||void 0!==o)||(this._$AL.has(e)||(this.hasUpdated||i||(t=void 0),this._$AL.set(e,t)),!0===s&&this._$Em!==e&&(this._$Eq??=new Set).add(e))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(e){Promise.reject(e)}const e=this.scheduleUpdate();return null!=e&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[e,t]of this._$Ep)this[e]=t;this._$Ep=void 0}const e=this.constructor.elementProperties;if(e.size>0)for(const[t,i]of e){const{wrapped:e}=i,s=this[t];!0!==e||this._$AL.has(t)||void 0===s||this.C(t,void 0,i,s)}}let e=!1;const t=this._$AL;try{e=this.shouldUpdate(t),e?(this.willUpdate(t),this._$EO?.forEach(e=>e.hostUpdate?.()),this.update(t)):this._$EM()}catch(t){throw e=!1,this._$EM(),t}e&&this._$AE(t)}willUpdate(e){}_$AE(e){this._$EO?.forEach(e=>e.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(e){return!0}update(e){this._$Eq&&=this._$Eq.forEach(e=>this._$ET(e,this[e])),this._$EM()}updated(e){}firstUpdated(e){}};x.elementStyles=[],x.shadowRootOptions={mode:"open"},x[y("elementProperties")]=new Map,x[y("finalized")]=new Map,_?.({ReactiveElement:x}),(g.reactiveElementVersions??=[]).push("2.1.2");const k=globalThis,A=e=>e,w=k.trustedTypes,S=w?w.createPolicy("lit-html",{createHTML:e=>e}):void 0,E="$lit$",C=`lit$${Math.random().toFixed(9).slice(2)}$`,P="?"+C,N=`<${P}>`,M=document,O=()=>M.createComment(""),z=e=>null===e||"object"!=typeof e&&"function"!=typeof e,U=Array.isArray,j="[ \t\n\f\r]",H=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,R=/-->/g,T=/>/g,L=RegExp(`>|${j}(?:([^\\s"'>=/]+)(${j}*=${j}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),I=/'/g,D=/"/g,B=/^(?:script|style|textarea|title)$/i,W=(e=>(t,...i)=>({_$litType$:e,strings:t,values:i}))(1),q=Symbol.for("lit-noChange"),K=Symbol.for("lit-nothing"),V=new WeakMap,F=M.createTreeWalker(M,129);function G(e,t){if(!U(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==S?S.createHTML(t):t}const Z=(e,t)=>{const i=e.length-1,s=[];let r,o=2===t?"<svg>":3===t?"<math>":"",a=H;for(let t=0;t<i;t++){const i=e[t];let n,l,c=-1,d=0;for(;d<i.length&&(a.lastIndex=d,l=a.exec(i),null!==l);)d=a.lastIndex,a===H?"!--"===l[1]?a=R:void 0!==l[1]?a=T:void 0!==l[2]?(B.test(l[2])&&(r=RegExp("</"+l[2],"g")),a=L):void 0!==l[3]&&(a=L):a===L?">"===l[0]?(a=r??H,c=-1):void 0===l[1]?c=-2:(c=a.lastIndex-l[2].length,n=l[1],a=void 0===l[3]?L:'"'===l[3]?D:I):a===D||a===I?a=L:a===R||a===T?a=H:(a=L,r=void 0);const p=a===L&&e[t+1].startsWith("/>")?" ":"";o+=a===H?i+N:c>=0?(s.push(n),i.slice(0,c)+E+i.slice(c)+C+p):i+C+(-2===c?t:p)}return[G(e,o+(e[i]||"<?>")+(2===t?"</svg>":3===t?"</math>":"")),s]};class J{constructor({strings:e,_$litType$:t},i){let s;this.parts=[];let r=0,o=0;const a=e.length-1,n=this.parts,[l,c]=Z(e,t);if(this.el=J.createElement(l,i),F.currentNode=this.el.content,2===t||3===t){const e=this.el.content.firstChild;e.replaceWith(...e.childNodes)}for(;null!==(s=F.nextNode())&&n.length<a;){if(1===s.nodeType){if(s.hasAttributes())for(const e of s.getAttributeNames())if(e.endsWith(E)){const t=c[o++],i=s.getAttribute(e).split(C),a=/([.?@])?(.*)/.exec(t);n.push({type:1,index:r,name:a[2],strings:i,ctor:"."===a[1]?te:"?"===a[1]?ie:"@"===a[1]?se:ee}),s.removeAttribute(e)}else e.startsWith(C)&&(n.push({type:6,index:r}),s.removeAttribute(e));if(B.test(s.tagName)){const e=s.textContent.split(C),t=e.length-1;if(t>0){s.textContent=w?w.emptyScript:"";for(let i=0;i<t;i++)s.append(e[i],O()),F.nextNode(),n.push({type:2,index:++r});s.append(e[t],O())}}}else if(8===s.nodeType)if(s.data===P)n.push({type:2,index:r});else{let e=-1;for(;-1!==(e=s.data.indexOf(C,e+1));)n.push({type:7,index:r}),e+=C.length-1}r++}}static createElement(e,t){const i=M.createElement("template");return i.innerHTML=e,i}}function Q(e,t,i=e,s){if(t===q)return t;let r=void 0!==s?i._$Co?.[s]:i._$Cl;const o=z(t)?void 0:t._$litDirective$;return r?.constructor!==o&&(r?._$AO?.(!1),void 0===o?r=void 0:(r=new o(e),r._$AT(e,i,s)),void 0!==s?(i._$Co??=[])[s]=r:i._$Cl=r),void 0!==r&&(t=Q(e,r._$AS(e,t.values),r,s)),t}class Y{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){const{el:{content:t},parts:i}=this._$AD,s=(e?.creationScope??M).importNode(t,!0);F.currentNode=s;let r=F.nextNode(),o=0,a=0,n=i[0];for(;void 0!==n;){if(o===n.index){let t;2===n.type?t=new X(r,r.nextSibling,this,e):1===n.type?t=new n.ctor(r,n.name,n.strings,this,e):6===n.type&&(t=new re(r,this,e)),this._$AV.push(t),n=i[++a]}o!==n?.index&&(r=F.nextNode(),o++)}return F.currentNode=M,s}p(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class X{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(e,t,i,s){this.type=2,this._$AH=K,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=s,this._$Cv=s?.isConnected??!0}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===e?.nodeType&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Q(this,e,t),z(e)?e===K||null==e||""===e?(this._$AH!==K&&this._$AR(),this._$AH=K):e!==this._$AH&&e!==q&&this._(e):void 0!==e._$litType$?this.$(e):void 0!==e.nodeType?this.T(e):(e=>U(e)||"function"==typeof e?.[Symbol.iterator])(e)?this.k(e):this._(e)}O(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}T(e){this._$AH!==e&&(this._$AR(),this._$AH=this.O(e))}_(e){this._$AH!==K&&z(this._$AH)?this._$AA.nextSibling.data=e:this.T(M.createTextNode(e)),this._$AH=e}$(e){const{values:t,_$litType$:i}=e,s="number"==typeof i?this._$AC(e):(void 0===i.el&&(i.el=J.createElement(G(i.h,i.h[0]),this.options)),i);if(this._$AH?._$AD===s)this._$AH.p(t);else{const e=new Y(s,this),i=e.u(this.options);e.p(t),this.T(i),this._$AH=e}}_$AC(e){let t=V.get(e.strings);return void 0===t&&V.set(e.strings,t=new J(e)),t}k(e){U(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,s=0;for(const r of e)s===t.length?t.push(i=new X(this.O(O()),this.O(O()),this,this.options)):i=t[s],i._$AI(r),s++;s<t.length&&(this._$AR(i&&i._$AB.nextSibling,s),t.length=s)}_$AR(e=this._$AA.nextSibling,t){for(this._$AP?.(!1,!0,t);e!==this._$AB;){const t=A(e).nextSibling;A(e).remove(),e=t}}setConnected(e){void 0===this._$AM&&(this._$Cv=e,this._$AP?.(e))}}class ee{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(e,t,i,s,r){this.type=1,this._$AH=K,this._$AN=void 0,this.element=e,this.name=t,this._$AM=s,this.options=r,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=K}_$AI(e,t=this,i,s){const r=this.strings;let o=!1;if(void 0===r)e=Q(this,e,t,0),o=!z(e)||e!==this._$AH&&e!==q,o&&(this._$AH=e);else{const s=e;let a,n;for(e=r[0],a=0;a<r.length-1;a++)n=Q(this,s[i+a],t,a),n===q&&(n=this._$AH[a]),o||=!z(n)||n!==this._$AH[a],n===K?e=K:e!==K&&(e+=(n??"")+r[a+1]),this._$AH[a]=n}o&&!s&&this.j(e)}j(e){e===K?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,e??"")}}class te extends ee{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===K?void 0:e}}class ie extends ee{constructor(){super(...arguments),this.type=4}j(e){this.element.toggleAttribute(this.name,!!e&&e!==K)}}class se extends ee{constructor(e,t,i,s,r){super(e,t,i,s,r),this.type=5}_$AI(e,t=this){if((e=Q(this,e,t,0)??K)===q)return;const i=this._$AH,s=e===K&&i!==K||e.capture!==i.capture||e.once!==i.once||e.passive!==i.passive,r=e!==K&&(i===K||s);s&&this.element.removeEventListener(this.name,this,i),r&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,e):this._$AH.handleEvent(e)}}class re{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){Q(this,e)}}const oe=k.litHtmlPolyfillSupport;oe?.(J,X),(k.litHtmlVersions??=[]).push("3.3.2");const ae=globalThis;class ne extends x{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{const s=i?.renderBefore??t;let r=s._$litPart$;if(void 0===r){const e=i?.renderBefore??null;s._$litPart$=r=new X(t.insertBefore(O(),e),e,void 0,i??{})}return r._$AI(e),r})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return q}}ne._$litElement$=!0,ne.finalized=!0,ae.litElementHydrateSupport?.({LitElement:ne});const le=ae.litElementPolyfillSupport;le?.({LitElement:ne}),(ae.litElementVersions??=[]).push("4.2.2");const ce=e=>(t,i)=>{void 0!==i?i.addInitializer(()=>{customElements.define(e,t)}):customElements.define(e,t)},de={attribute:!0,type:String,converter:v,reflect:!1,hasChanged:$},pe=(e=de,t,i)=>{const{kind:s,metadata:r}=i;let o=globalThis.litPropertyMetadata.get(r);if(void 0===o&&globalThis.litPropertyMetadata.set(r,o=new Map),"setter"===s&&((e=Object.create(e)).wrapped=!0),o.set(i.name,e),"accessor"===s){const{name:s}=i;return{set(i){const r=t.get.call(this);t.set.call(this,i),this.requestUpdate(s,r,e,!0,i)},init(t){return void 0!==t&&this.C(s,void 0,e,t),t}}}if("setter"===s){const{name:s}=i;return function(i){const r=this[s];t.call(this,i),this.requestUpdate(s,r,e,!0,i)}}throw Error("Unsupported decorator location: "+s)};function he(e){return(t,i)=>"object"==typeof i?pe(e,t,i):((e,t,i)=>{const s=t.hasOwnProperty(i);return t.constructor.createProperty(i,e),s?Object.getOwnPropertyDescriptor(t,i):void 0})(e,t,i)}function ue(e){return he({...e,state:!0,attribute:!1})}const ge=a`
+  :host {
+    --mdc-icon-size: 20px;
+    --playlist-card-spacing: 12px;
+    --playlist-card-border-radius: 12px;
+    --playlist-image-size: 100%;
+    --playlist-item-gap: 12px;
+  }
+
+  ha-card {
+    overflow: hidden;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--playlist-card-spacing);
+    padding-bottom: 0;
+  }
+
+  .card-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--primary-text-color);
+    margin: 0;
+  }
+
+  .card-content {
+    padding: var(--playlist-card-spacing);
+  }
+
+  /* Speaker Selector */
+  .speaker-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--card-background-color, var(--ha-card-background));
+    border-radius: var(--playlist-card-border-radius);
+    margin-bottom: var(--playlist-card-spacing);
+  }
+
+  .speaker-selector ha-icon {
+    color: var(--primary-text-color);
+    opacity: 0.7;
+  }
+
+  .speaker-select {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--primary-text-color);
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23888' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+  }
+
+  .speaker-select:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.15));
+  }
+
+  .speaker-select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary-color);
+  }
+
+  .speaker-select option {
+    background: var(--card-background-color, #fff);
+    color: var(--primary-text-color);
+  }
+
+  /* Playlist Grid */
+  .playlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--playlist-item-gap);
+  }
+
+  .playlist-grid.columns-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .playlist-grid.columns-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .playlist-grid.columns-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .playlist-grid.columns-5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .playlist-grid.columns-6 {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  /* Playlist Item */
+  .playlist-item {
+    position: relative;
+    cursor: pointer;
+    border-radius: var(--playlist-card-border-radius);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: var(--card-background-color, var(--ha-card-background));
+  }
+
+  .playlist-item:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .playlist-item:active {
+    transform: scale(0.98);
+  }
+
+  .playlist-image-container {
+    position: relative;
+    width: 100%;
+    padding-top: 100%; /* 1:1 Aspect Ratio */
+    overflow: hidden;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+  }
+
+  .playlist-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .playlist-item:hover .playlist-image {
+    transform: scale(1.05);
+  }
+
+  .playlist-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+  }
+
+  .playlist-placeholder ha-icon {
+    --mdc-icon-size: 48px;
+    color: var(--secondary-text-color);
+    opacity: 0.5;
+  }
+
+  /* Play Overlay */
+  .play-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .playlist-item:hover .play-overlay {
+    opacity: 1;
+  }
+
+  .play-button {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .play-button:hover {
+    transform: scale(1.1);
+    background: var(--primary-color);
+    filter: brightness(1.1);
+  }
+
+  .play-button ha-icon {
+    --mdc-icon-size: 24px;
+    color: var(--text-primary-color, #fff);
+  }
+
+  /* Playlist Info */
+  .playlist-info {
+    padding: 8px;
+  }
+
+  .playlist-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--primary-text-color);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.3;
+  }
+
+  .playlist-meta {
+    font-size: 11px;
+    color: var(--secondary-text-color);
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Loading State */
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    gap: 16px;
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--divider-color, rgba(0, 0, 0, 0.1));
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .loading-text {
+    font-size: 14px;
+    color: var(--secondary-text-color);
+  }
+
+  /* Error State */
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .error-container ha-icon {
+    --mdc-icon-size: 48px;
+    color: var(--error-color, #db4437);
+  }
+
+  .error-message {
+    font-size: 14px;
+    color: var(--secondary-text-color);
+  }
+
+  /* Empty State */
+  .empty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .empty-container ha-icon {
+    --mdc-icon-size: 48px;
+    color: var(--secondary-text-color);
+    opacity: 0.5;
+  }
+
+  .empty-message {
+    font-size: 14px;
+    color: var(--secondary-text-color);
+  }
+
+  /* Config Warning */
+  .config-warning {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .config-warning ha-icon {
+    --mdc-icon-size: 48px;
+    color: var(--warning-color, #ffa600);
+  }
+
+  .config-warning-message {
+    font-size: 14px;
+    color: var(--secondary-text-color);
+  }
+
+  /* Ripple Effect */
+  .ripple {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+
+  .ripple:active::after {
+    width: 200px;
+    height: 200px;
+    opacity: 1;
+    transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+  }
+`,fe=a`
+  :host {
+    display: block;
+  }
+
+  .editor-container {
+    padding: 16px;
+  }
+
+  .form-row {
+    margin-bottom: 16px;
+  }
+
+  .form-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--primary-text-color);
+    margin-bottom: 8px;
+  }
+
+  ha-textfield,
+  ha-select {
+    width: 100%;
+  }
+
+  ha-formfield {
+    display: block;
+    margin: 8px 0;
+  }
+
+  .speakers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .speaker-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  .speaker-chip ha-icon {
+    --mdc-icon-size: 18px;
+    color: var(--secondary-text-color);
+  }
+
+  .speaker-chip .remove-btn {
+    margin-left: auto;
+    padding: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--secondary-text-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .speaker-chip .remove-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: var(--error-color, #db4437);
+  }
+
+  .add-speaker {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .add-speaker ha-entity-picker {
+    flex: 1;
+  }
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: var(--secondary-text-color);
+    margin: 24px 0 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .section-title:first-child {
+    margin-top: 0;
+  }
+`;var me={loading:"Loading playlists...",error:"An error occurred",no_playlists:"No playlists found",play:"Play",select_speaker:"Select Speaker",no_speaker_selected:"No speaker selected"},_e={title:"Card Title",config_entry_id:"Music Assistant Instance",speakers:"Speakers",limit:"Number of Playlists",columns:"Columns",columns_auto:"Auto",favorites_only:"Favorites Only",language:"Language",language_auto:"Auto (from Home Assistant)"},ye={missing_config:"Missing configuration. Please configure the card.",missing_speakers:"No speakers configured. Please add speakers in card settings.",load_failed:"Failed to load playlists. Please check your Music Assistant configuration.",play_failed:"Failed to play playlist"},ve={common:me,config:_e,error:ye},$e={loading:"טוען פלייליסטים...",error:"אירעה שגיאה",no_playlists:"לא נמצאו פלייליסטים",play:"הפעל",select_speaker:"בחר רמקול",no_speaker_selected:"לא נבחר רמקול"},be={title:"כותרת הכרטיס",config_entry_id:"מופע Music Assistant",speakers:"רמקולים",limit:"מספר פלייליסטים",columns:"עמודות",columns_auto:"אוטומטי",favorites_only:"מועדפים בלבד",language:"שפה",language_auto:"אוטומטי (מ-Home Assistant)"},xe={missing_config:"חסרה הגדרה. אנא הגדר את הכרטיס.",missing_speakers:"לא הוגדרו רמקולים. אנא הוסף רמקולים בהגדרות הכרטיס.",load_failed:"נכשל בטעינת פלייליסטים. אנא בדוק את הגדרות Music Assistant.",play_failed:"נכשל בהפעלת הפלייליסט"},ke={common:$e,config:be,error:xe},Ae={loading:"Wiedergabelisten werden geladen...",error:"Ein Fehler ist aufgetreten",no_playlists:"Keine Wiedergabelisten gefunden",play:"Abspielen",select_speaker:"Lautsprecher auswählen",no_speaker_selected:"Kein Lautsprecher ausgewählt"},we={title:"Kartentitel",config_entry_id:"Music Assistant Instanz",speakers:"Lautsprecher",limit:"Anzahl der Wiedergabelisten",columns:"Spalten",columns_auto:"Automatisch",favorites_only:"Nur Favoriten",language:"Sprache",language_auto:"Automatisch (von Home Assistant)"},Se={missing_config:"Konfiguration fehlt. Bitte konfigurieren Sie die Karte.",missing_speakers:"Keine Lautsprecher konfiguriert. Bitte fügen Sie Lautsprecher hinzu.",load_failed:"Wiedergabelisten konnten nicht geladen werden. Überprüfen Sie die Music Assistant Konfiguration.",play_failed:"Wiedergabeliste konnte nicht abgespielt werden"},Ee={common:Ae,config:we,error:Se},Ce={loading:"Chargement des playlists...",error:"Une erreur s'est produite",no_playlists:"Aucune playlist trouvée",play:"Lecture",select_speaker:"Sélectionner un haut-parleur",no_speaker_selected:"Aucun haut-parleur sélectionné"},Pe={title:"Titre de la carte",config_entry_id:"Instance Music Assistant",speakers:"Haut-parleurs",limit:"Nombre de playlists",columns:"Colonnes",columns_auto:"Automatique",favorites_only:"Favoris uniquement",language:"Langue",language_auto:"Automatique (depuis Home Assistant)"},Ne={missing_config:"Configuration manquante. Veuillez configurer la carte.",missing_speakers:"Aucun haut-parleur configuré. Veuillez ajouter des haut-parleurs.",load_failed:"Échec du chargement des playlists. Vérifiez la configuration de Music Assistant.",play_failed:"Échec de la lecture de la playlist"},Me={common:Ce,config:Pe,error:Ne},Oe={loading:"Cargando listas de reproducción...",error:"Se produjo un error",no_playlists:"No se encontraron listas de reproducción",play:"Reproducir",select_speaker:"Seleccionar altavoz",no_speaker_selected:"Ningún altavoz seleccionado"},ze={title:"Título de la tarjeta",config_entry_id:"Instancia de Music Assistant",speakers:"Altavoces",limit:"Número de listas de reproducción",columns:"Columnas",columns_auto:"Automático",favorites_only:"Solo favoritos",language:"Idioma",language_auto:"Automático (desde Home Assistant)"},Ue={missing_config:"Falta la configuración. Por favor, configure la tarjeta.",missing_speakers:"No hay altavoces configurados. Por favor, agregue altavoces.",load_failed:"Error al cargar las listas de reproducción. Verifique la configuración de Music Assistant.",play_failed:"Error al reproducir la lista de reproducción"},je={common:Oe,config:ze,error:Ue};const He={en:Object.freeze({__proto__:null,common:me,config:_e,default:ve,error:ye}),he:Object.freeze({__proto__:null,common:$e,config:be,default:ke,error:xe}),de:Object.freeze({__proto__:null,common:Ae,config:we,default:Ee,error:Se}),fr:Object.freeze({__proto__:null,common:Ce,config:Pe,default:Me,error:Ne}),es:Object.freeze({__proto__:null,common:Oe,config:ze,default:je,error:Ue})},Re="en";let Te=Re;function Le(e){const t=e.split("-")[0].toLowerCase();Te=He[t]?t:Re}function Ie(e,t){const i=t.split(".");let s=e;for(const e of i){if(!s||"object"!=typeof s||!(e in s))return;s=s[e]}return"string"==typeof s?s:void 0}function De(e,t){let i=Ie(He[Te],e);return i||Te===Re||(i=Ie(He[Re],e)),i||(console.warn(`[music-assistant-playlist-card] Missing translation for key: ${e}`),e)}let Be=class extends ne{constructor(){super(...arguments),this._selectedNewSpeaker=""}setConfig(e){if(this._config=e,this.hass){const t=e.language;Le(t&&"auto"!==t?t:this.hass.language)}}_configChanged(e){((e,t,i)=>{const s=new CustomEvent(t,{bubbles:!0,cancelable:!1,composed:!0,detail:i});e.dispatchEvent(s)})(this,"config-changed",{config:e})}_valueChanged(e){const t=e.target,i=t.dataset.configKey;if(!i)return;let s=t.value;"number"===t.type&&(s=parseInt(t.value,10),isNaN(s))||("checkbox"===t.type&&(s=t.checked),this._config={...this._config,[i]:s},this._configChanged(this._config))}_columnsChanged(e){const t=e.target.value;this._config={...this._config,columns:"auto"===t?"auto":parseInt(t,10)},this._configChanged(this._config)}_addSpeaker(){this._selectedNewSpeaker&&(this._config.speakers?.includes(this._selectedNewSpeaker)?this._selectedNewSpeaker="":(this._config={...this._config,speakers:[...this._config.speakers||[],this._selectedNewSpeaker]},this._selectedNewSpeaker="",this._configChanged(this._config)))}_removeSpeaker(e){this._config={...this._config,speakers:(this._config.speakers||[]).filter(t=>t!==e)},this._configChanged(this._config)}_newSpeakerChanged(e){this._selectedNewSpeaker=e.detail.value||""}_getEntityName(e){if(!this.hass)return e;const t=this.hass.states[e];return t?.attributes?.friendly_name||e}render(){if(!this.hass||!this._config)return W``;const e=Object.keys(He);return W`
+      <div class="editor-container">
+        <!-- Basic Settings -->
+        <div class="section-title">Basic Settings</div>
+
+        <div class="form-row">
+          <label class="form-label">${De("config.title")}</label>
+          <ha-textfield
+            .value=${this._config.title||""}
+            .configKey=${"title"}
+            data-config-key="title"
+            @input=${this._valueChanged}
+            placeholder="My Playlists"
+          ></ha-textfield>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">${De("config.config_entry_id")}</label>
+          <ha-textfield
+            .value=${this._config.config_entry_id||""}
+            data-config-key="config_entry_id"
+            @input=${this._valueChanged}
+            placeholder="01KD2Q1R471MB35ZRQ82C6CN2S"
+            required
+          ></ha-textfield>
+        </div>
+
+        <!-- Speakers -->
+        <div class="section-title">${De("config.speakers")}</div>
+
+        <div class="form-row">
+          ${this._config.speakers&&this._config.speakers.length>0?W`
+                <div class="speakers-list">
+                  ${this._config.speakers.map(e=>W`
+                      <div class="speaker-chip">
+                        <ha-icon icon="mdi:speaker"></ha-icon>
+                        <span>${this._getEntityName(e)}</span>
+                        <button
+                          class="remove-btn"
+                          @click=${()=>this._removeSpeaker(e)}
+                          title="Remove"
+                        >
+                          <ha-icon icon="mdi:close"></ha-icon>
+                        </button>
+                      </div>
+                    `)}
+                </div>
+              `:K}
+
+          <div class="add-speaker">
+            <ha-entity-picker
+              .hass=${this.hass}
+              .value=${this._selectedNewSpeaker}
+              .includeDomains=${["media_player"]}
+              @value-changed=${this._newSpeakerChanged}
+              allow-custom-entity
+              label="Add Speaker"
+            ></ha-entity-picker>
+            <ha-button @click=${this._addSpeaker} ?disabled=${!this._selectedNewSpeaker}>
+              Add
+            </ha-button>
+          </div>
+        </div>
+
+        <!-- Display Settings -->
+        <div class="section-title">Display Settings</div>
+
+        <div class="form-row">
+          <label class="form-label">${De("config.limit")}</label>
+          <ha-textfield
+            type="number"
+            .value=${String(this._config.limit||25)}
+            data-config-key="limit"
+            @input=${this._valueChanged}
+            min="1"
+            max="100"
+          ></ha-textfield>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">${De("config.columns")}</label>
+          <ha-select
+            .value=${String(this._config.columns||"auto")}
+            @selected=${this._columnsChanged}
+            @closed=${e=>e.stopPropagation()}
+          >
+            <mwc-list-item value="auto">${De("config.columns_auto")}</mwc-list-item>
+            <mwc-list-item value="2">2</mwc-list-item>
+            <mwc-list-item value="3">3</mwc-list-item>
+            <mwc-list-item value="4">4</mwc-list-item>
+            <mwc-list-item value="5">5</mwc-list-item>
+            <mwc-list-item value="6">6</mwc-list-item>
+          </ha-select>
+        </div>
+
+        <div class="form-row">
+          <ha-formfield .label=${De("config.favorites_only")}>
+            <ha-checkbox
+              .checked=${this._config.favorites_only||!1}
+              data-config-key="favorites_only"
+              @change=${this._valueChanged}
+            ></ha-checkbox>
+          </ha-formfield>
+        </div>
+
+        <!-- Language Settings -->
+        <div class="section-title">${De("config.language")}</div>
+
+        <div class="form-row">
+          <ha-select
+            .value=${this._config.language||"auto"}
+            data-config-key="language"
+            @selected=${this._valueChanged}
+            @closed=${e=>e.stopPropagation()}
+          >
+            <mwc-list-item value="auto">${De("config.language_auto")}</mwc-list-item>
+            ${e.map(e=>W`
+                <mwc-list-item value=${e}>${e.toUpperCase()}</mwc-list-item>
+              `)}
+          </ha-select>
+        </div>
+      </div>
+    `}};Be.styles=fe,e([he({attribute:!1})],Be.prototype,"hass",void 0),e([ue()],Be.prototype,"_config",void 0),e([ue()],Be.prototype,"_selectedNewSpeaker",void 0),Be=e([ce("music-assistant-playlist-card-editor")],Be);console.info("%c MUSIC-ASSISTANT-PLAYLIST-CARD %c v1.0.0 ","color: white; background: #7c3aed; font-weight: bold; padding: 2px 6px; border-radius: 4px 0 0 4px;","color: #7c3aed; background: #e9d5ff; font-weight: bold; padding: 2px 6px; border-radius: 0 4px 4px 0;");let We=class extends ne{constructor(){super(...arguments),this._playlists=[],this._loading=!0,this._error=null,this._selectedSpeaker=""}setConfig(e){if(!e.config_entry_id)throw new Error(De("error.missing_config"));if(!e.speakers||0===e.speakers.length)throw new Error(De("error.missing_speakers"));this._config={limit:25,favorites_only:!1,columns:"auto",...e},!this._selectedSpeaker&&this._config.speakers.length>0&&(this._selectedSpeaker=this._config.speakers[0])}getCardConfig(){return this._config}getCardSize(){return 4}static getConfigElement(){return document.createElement("music-assistant-playlist-card-editor")}static getStubConfig(){return{config_entry_id:"",speakers:[],limit:25,favorites_only:!1}}updated(e){if(super.updated(e),e.has("hass")&&this.hass){const t=this._config?.language;Le(t&&"auto"!==t?t:this.hass.language),this._config&&void 0===e.get("hass")&&this._loadPlaylists()}}async _loadPlaylists(){if(this.hass&&this._config){this._loading=!0,this._error=null;try{const e=await this.hass.callWS({type:"music_assistant/get_library",config_entry_id:this._config.config_entry_id,media_type:"playlist",favorite:this._config.favorites_only??!1,limit:this._config.limit??25,offset:0});this._playlists=e.items||[]}catch(e){console.error("[music-assistant-playlist-card] Failed to load playlists:",e),this._error=De("error.load_failed")}finally{this._loading=!1}}}async _playPlaylist(e){if(this.hass&&this._selectedSpeaker)try{await this.hass.callService("music_assistant","play_media",{media_id:e.uri,media_type:"playlist",entity_id:this._selectedSpeaker})}catch(e){console.error("[music-assistant-playlist-card] Failed to play playlist:",e)}else console.warn("[music-assistant-playlist-card] No speaker selected")}_handleSpeakerChange(e){const t=e.target;this._selectedSpeaker=t.value}_getEntityName(e){if(!this.hass)return e;const t=this.hass.states[e];return t?.attributes?.friendly_name||e}_getPlaylistImage(e){return e.image?.path?(e.image.path.startsWith("/"),e.image.path):null}_renderLoading(){return W`
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <span class="loading-text">${De("common.loading")}</span>
+      </div>
+    `}_renderError(){return W`
+      <div class="error-container">
+        <ha-icon icon="mdi:alert-circle"></ha-icon>
+        <span class="error-message">${this._error}</span>
+      </div>
+    `}_renderEmpty(){return W`
+      <div class="empty-container">
+        <ha-icon icon="mdi:playlist-music"></ha-icon>
+        <span class="empty-message">${De("common.no_playlists")}</span>
+      </div>
+    `}_renderSpeakerSelector(){return W`
+      <div class="speaker-selector">
+        <ha-icon icon="mdi:speaker"></ha-icon>
+        <select
+          class="speaker-select"
+          .value=${this._selectedSpeaker}
+          @change=${this._handleSpeakerChange}
+        >
+          <option value="" disabled>
+            ${De("common.select_speaker")}
+          </option>
+          ${this._config.speakers.map(e=>W`
+              <option value=${e} ?selected=${e===this._selectedSpeaker}>
+                ${this._getEntityName(e)}
+              </option>
+            `)}
+        </select>
+      </div>
+    `}_renderPlaylistGrid(){const e=this._config.columns&&"auto"!==this._config.columns?`columns-${this._config.columns}`:"";return W`
+      <div class="playlist-grid ${e}">
+        ${this._playlists.map(e=>this._renderPlaylistItem(e))}
+      </div>
+    `}_renderPlaylistItem(e){const t=this._getPlaylistImage(e);return W`
+      <div
+        class="playlist-item ripple"
+        @click=${()=>this._playPlaylist(e)}
+        title="${e.name}"
+      >
+        <div class="playlist-image-container">
+          ${t?W`<img
+                class="playlist-image"
+                src=${t}
+                alt=${e.name}
+                loading="lazy"
+              />`:W`
+                <div class="playlist-placeholder">
+                  <ha-icon icon="mdi:playlist-music"></ha-icon>
+                </div>
+              `}
+          <div class="play-overlay">
+            <button class="play-button" aria-label="${De("common.play")}">
+              <ha-icon icon="mdi:play"></ha-icon>
+            </button>
+          </div>
+        </div>
+        <div class="playlist-info">
+          <p class="playlist-name">${e.name}</p>
+          ${e.track_count?W`<p class="playlist-meta">${e.track_count} tracks</p>`:K}
+        </div>
+      </div>
+    `}render(){return this._config?W`
+      <ha-card>
+        ${this._config.title?W`
+              <div class="card-header">
+                <h2 class="card-title">${this._config.title}</h2>
+              </div>
+            `:K}
+        <div class="card-content">
+          ${this._renderSpeakerSelector()}
+          ${this._loading?this._renderLoading():this._error?this._renderError():0===this._playlists.length?this._renderEmpty():this._renderPlaylistGrid()}
+        </div>
+      </ha-card>
+    `:W`
+        <ha-card>
+          <div class="config-warning">
+            <ha-icon icon="mdi:alert"></ha-icon>
+            <span class="config-warning-message">${De("error.missing_config")}</span>
+          </div>
+        </ha-card>
+      `}};We.styles=ge,e([he({attribute:!1})],We.prototype,"hass",void 0),e([ue()],We.prototype,"_config",void 0),e([ue()],We.prototype,"_playlists",void 0),e([ue()],We.prototype,"_loading",void 0),e([ue()],We.prototype,"_error",void 0),e([ue()],We.prototype,"_selectedSpeaker",void 0),We=e([ce("music-assistant-playlist-card")],We),window.customCards=window.customCards||[],window.customCards.push({type:"music-assistant-playlist-card",name:"Music Assistant Playlist Card",description:"Display Music Assistant playlists with speaker selection",preview:!0,documentationURL:"https://github.com/yourusername/music-assistant-playlist-card"});export{We as MusicAssistantPlaylistCard};

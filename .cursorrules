@@ -1,0 +1,50 @@
+# Music Assistant Playlist Card - Project Rules
+
+## Project Overview
+This is a custom Home Assistant Lovelace card for displaying Music Assistant playlists with speaker selection functionality. The card is designed to be HACS compatible.
+
+## Code Style
+- Use TypeScript with strict mode enabled
+- Follow LitElement patterns for all components
+- Use Home Assistant CSS variables for theming (e.g., `var(--ha-card-background)`)
+- All user-facing strings MUST use the localization system (`localize()` function)
+- Use camelCase for variables and functions, PascalCase for classes
+- Prefer `const` over `let`, avoid `var`
+
+## Architecture
+- Single bundled JS file for distribution (`dist/music-assistant-playlist-card.js`)
+- No external runtime dependencies except Home Assistant frontend and Lit
+- HACS compatible structure with `hacs.json` at root
+- All source files in `src/` directory
+- Translations in `src/localize/languages/` as JSON files
+
+## Component Structure
+- Main card: `MusicAssistantPlaylistCard` (extends LitElement)
+- Config editor: `MusicAssistantPlaylistCardEditor` (extends LitElement)
+- Both registered as custom elements
+
+## Home Assistant Integration
+- Use `hass.callService()` for Music Assistant actions
+- Use `hass.callWS()` for WebSocket calls when needed
+- Access translations via `hass.language`
+- Use `fireEvent()` helper for config changes
+
+## Styling Guidelines
+- Follow Mushroom Cards visual style
+- Use 12px border-radius for cards and images
+- Use HA CSS variables for colors and shadows
+- Implement hover effects with subtle scale transforms
+- Ensure responsive grid layout
+
+## Documentation
+- README.md must be in English
+- All code comments in English
+- Use JSDoc comments for public APIs and complex functions
+- Include installation instructions for HACS and manual methods
+
+## Testing
+- Test in Home Assistant development environment
+- Verify HACS installation works correctly
+- Test with multiple Music Assistant instances
+- Test localization with different HA languages
+
