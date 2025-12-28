@@ -394,6 +394,6 @@ window.customCards.push({
   name: 'Music Assistant Playlist Card',
   description: 'Display Music Assistant playlists with speaker selection',
   preview: true,
-  documentationURL: 'https://github.com/yourusername/music-assistant-playlist-card',
+  documentationURL: 'https://github.com/davidss20/music-assistant-playlist-card',
 });
 

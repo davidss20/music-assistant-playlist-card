@@ -1,7 +1,7 @@
 # Music Assistant Playlist Card
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
-[![GitHub Release](https://img.shields.io/github/release/yourusername/music-assistant-playlist-card.svg)](https://github.com/yourusername/music-assistant-playlist-card/releases)
+[![GitHub Release](https://img.shields.io/github/release/yourusername/music-assistant-playlist-card.svg)](https://github.com/davidss20/music-assistant-playlist-card/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A custom Home Assistant Lovelace card for displaying Music Assistant playlists with speaker selection and one-click playback.
@@ -26,7 +26,7 @@ A custom Home Assistant Lovelace card for displaying Music Assistant playlists w
 2. Click on "Frontend" section
 3. Click the three dots menu (⋮) in the top right corner
 4. Select "Custom repositories"
-5. Add this repository URL: `https://github.com/yourusername/music-assistant-playlist-card`
+5. Add this repository URL: `https://github.com/davidss20/music-assistant-playlist-card`
 6. Select "Lovelace" as the category
 7. Click "Add"
 8. Find "Music Assistant Playlist Card" in the list and click "Download"
@@ -34,7 +34,7 @@ A custom Home Assistant Lovelace card for displaying Music Assistant playlists w
 
 ### Manual Installation
 
-1. Download `music-assistant-playlist-card.js` from the [latest release](https://github.com/yourusername/music-assistant-playlist-card/releases)
+1. Download `music-assistant-playlist-card.js` from the [latest release](https://github.com/davidss20/music-assistant-playlist-card/releases)
 2. Copy the file to your `config/www` folder
 3. Add the resource in Home Assistant:
    - Go to **Settings** → **Dashboards** → **Resources**
@@ -111,7 +111,7 @@ Language is automatically detected from your Home Assistant settings, or you can
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/music-assistant-playlist-card.git
+git clone https://github.com/davidss20/music-assistant-playlist-card.git
 cd music-assistant-playlist-card
 
 # Install dependencies
@@ -169,6 +169,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 If you find this card useful, consider:
 
 - ⭐ Starring the repository
-- 🐛 Reporting bugs or requesting features via [Issues](https://github.com/yourusername/music-assistant-playlist-card/issues)
+- 🐛 Reporting bugs or requesting features via [Issues](https://github.com/davidss20/music-assistant-playlist-card/issues)
 - 🔧 Contributing code or translations
 
