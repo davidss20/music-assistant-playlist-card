@@ -787,7 +787,6 @@ export const cardStyles = css`
     align-items: center;
     gap: 16px;
     padding: 16px;
-    height: 100%;
   }
 
   .now-playing-artwork {

@@ -779,7 +779,6 @@ function e(e,t,i,s){var a,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPro
     align-items: center;
     gap: 16px;
     padding: 16px;
-    height: 100%;
   }
 
   .now-playing-artwork {
