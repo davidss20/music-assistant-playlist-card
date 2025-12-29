@@ -67,6 +67,8 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    max-width: 500px;
+    margin: 0 auto;
   }
 
   .card-header {
@@ -749,12 +751,13 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
     align-items: center;
     gap: 16px;
     padding: 16px;
+    max-width: 500px;
+    margin: 0 auto;
   }
 
   .now-playing-artwork {
-    width: auto;
-    max-width: min(100%, 400px);
-    max-height: 400px;
+    width: 100%;
+    max-width: 350px;
     aspect-ratio: 1;
     border-radius: 16px;
     overflow: hidden;
