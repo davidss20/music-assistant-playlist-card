@@ -13,12 +13,10 @@ export const cardStyles = css`
     --playlist-card-border-radius: 12px;
     --playlist-image-size: 100%;
     --playlist-item-gap: 12px;
-  }
-
-  :host {
-    display: block;
+    display: flex;
+    flex-direction: column;
     height: 100%;
-    min-height: 100%;
+    min-height: inherit;
   }
 
   /* RTL Support */
@@ -77,7 +75,8 @@ export const cardStyles = css`
   ha-card {
     overflow: hidden;
     height: 100%;
-    min-height: 100%;
+    min-height: inherit;
+    flex: 1;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;

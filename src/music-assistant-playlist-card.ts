@@ -21,7 +21,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.0.0';
+const CARD_VERSION = '1.1.0';
 
 // Log card info on load
 console.info(
@@ -99,10 +99,22 @@ export class MusicAssistantPlaylistCard extends LitElement {
   }
 
   /**
-   * Card size for grid
+   * Card size for grid - returns a larger default size
    */
   public getCardSize(): number {
-    return 4;
+    return 8;
+  }
+
+  /**
+   * Get layout options - allows the card to be resized
+   */
+  public getLayoutOptions() {
+    return {
+      grid_rows: 8,
+      grid_min_rows: 3,
+      grid_columns: 4,
+      grid_min_columns: 2,
+    };
   }
 
   /**
@@ -464,15 +476,6 @@ export class MusicAssistantPlaylistCard extends LitElement {
    */
   private _getFilteredPlaylists(): MusicAssistantPlaylist[] {
     let playlists = [...this._playlists];
-
-    // Debug: log favorites status
-    if (this._showFavoritesOnly) {
-      console.log('[music-assistant-playlist-card] Filtering favorites:', {
-        total: this._playlists.length,
-        favorites: this._playlists.filter(p => p.favorite).length,
-        playlists: this._playlists.map(p => ({ name: p.name, favorite: p.favorite }))
-      });
-    }
 
     // Filter by favorites
     if (this._showFavoritesOnly) {
