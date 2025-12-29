@@ -84,7 +84,7 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     width: 100%;
-    min-height: 500px;
+    height: 500px;
   }
 
   .card-header {
@@ -777,7 +777,7 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     flex: 1;
-    min-height: 400px;
+    min-height: 0;
     overflow: hidden;
   }
 

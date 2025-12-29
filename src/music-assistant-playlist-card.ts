@@ -22,7 +22,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.4.6';
+const CARD_VERSION = '1.4.7';
 
 // Log card info on load
 console.info(
