@@ -24,7 +24,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.1.4';
+const CARD_VERSION = '1.1.5';
 
 // Log card info on load
 console.info(
@@ -204,8 +204,11 @@ export class MusicAssistantPlaylistCard extends LitElement {
         service_data: {
           config_entry_id: this._config.config_entry_id,
           media_type: 'playlist',
-          favorite: false, // Always load all playlists, filter in UI
-          limit: 1000, // Load all playlists
+          // Don't pass favorite parameter - it filters results!
+          // favorite: false means "only non-favorites"
+          // favorite: true means "only favorites"  
+          // No parameter = all playlists
+          limit: 1000,
           offset: 0,
           order_by: 'name',
         },
