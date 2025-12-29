@@ -22,7 +22,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.2.2';
+const CARD_VERSION = '1.3.0';
 
 // Log card info on load
 console.info(
@@ -366,6 +366,13 @@ export class MusicAssistantPlaylistCard extends LitElement {
     await this.hass.callService('media_player', 'volume_set', {
       volume_level: volume,
     }, { entity_id: this._selectedSpeaker });
+  }
+
+  private _updateVolumeSliderFill(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = parseFloat(input.value);
+    const percentage = value * 100;
+    input.style.background = `linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) ${percentage}%, var(--divider-color, rgba(0,0,0,0.1)) ${percentage}%, var(--divider-color, rgba(0,0,0,0.1)) 100%)`;
   }
 
   // ==========================================================================
@@ -755,7 +762,9 @@ export class MusicAssistantPlaylistCard extends LitElement {
             max="1"
             step="0.01"
             .value=${String(state.volume_level || 0)}
+            @input=${this._updateVolumeSliderFill}
             @change=${this._setVolume}
+            style="background: linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) ${(state.volume_level || 0) * 100}%, var(--divider-color, rgba(0,0,0,0.1)) ${(state.volume_level || 0) * 100}%, var(--divider-color, rgba(0,0,0,0.1)) 100%)"
           />
           <ha-icon icon="mdi:volume-high"></ha-icon>
         </div>

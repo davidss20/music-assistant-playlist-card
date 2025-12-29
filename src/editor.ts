@@ -3,7 +3,7 @@
  * Visual editor for card configuration in Home Assistant
  */
 
-import { LitElement, html, TemplateResult, nothing } from 'lit';
+import { LitElement, html, TemplateResult, nothing, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { editorStyles } from './styles';
 import { localize, setLanguage, getSupportedLanguages } from './localize/localize';
@@ -25,6 +25,11 @@ const fireEvent = (
   node.dispatchEvent(event);
 };
 
+interface MusicAssistantInstance {
+  entry_id: string;
+  title: string;
+}
+
 @customElement('music-assistant-playlist-card-editor')
 export class MusicAssistantPlaylistCardEditor extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
@@ -32,6 +37,10 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
   @state() private _config!: MusicAssistantPlaylistCardConfig;
 
   @state() private _selectedNewSpeaker: string = '';
+
+  @state() private _massInstances: MusicAssistantInstance[] = [];
+
+  @state() private _loadingInstances = false;
 
   static styles = editorStyles;
 
@@ -49,6 +58,53 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
       } else {
         setLanguage(this.hass.language);
       }
+    }
+  }
+
+  /**
+   * Called when properties change
+   */
+  protected updated(changedProps: PropertyValues): void {
+    super.updated(changedProps);
+
+    if (changedProps.has('hass') && this.hass && this._massInstances.length === 0) {
+      this._loadMusicAssistantInstances();
+    }
+  }
+
+  /**
+   * Load Music Assistant instances from Home Assistant
+   */
+  private async _loadMusicAssistantInstances(): Promise<void> {
+    if (!this.hass || this._loadingInstances) return;
+
+    this._loadingInstances = true;
+
+    try {
+      // Get all config entries
+      const configEntries = await this.hass.callWS<Array<{
+        entry_id: string;
+        domain: string;
+        title: string;
+        state: string;
+      }>>({
+        type: 'config_entries/get',
+      });
+
+      // Filter for Music Assistant entries
+      this._massInstances = configEntries
+        .filter(entry => entry.domain === 'music_assistant' && entry.state === 'loaded')
+        .map(entry => ({
+          entry_id: entry.entry_id,
+          title: entry.title || 'Music Assistant',
+        }));
+
+      console.info('[music-assistant-playlist-card] Found MA instances:', this._massInstances);
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Failed to load MA instances:', error);
+      this._massInstances = [];
+    } finally {
+      this._loadingInstances = false;
     }
   }
 
@@ -84,6 +140,20 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
     this._config = {
       ...this._config,
       [configKey]: value,
+    };
+
+    this._configChanged(this._config);
+  }
+
+  /**
+   * Handle Music Assistant instance selection
+   */
+  private _instanceChanged(ev: Event): void {
+    const target = ev.target as HTMLSelectElement;
+    
+    this._config = {
+      ...this._config,
+      config_entry_id: target.value,
     };
 
     this._configChanged(this._config);
@@ -138,10 +208,29 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
   }
 
   /**
-   * Handle new speaker selection
+   * Handle new speaker selection from entity picker
    */
   private _newSpeakerChanged(ev: CustomEvent): void {
-    this._selectedNewSpeaker = ev.detail.value || '';
+    const value = ev.detail?.value;
+    if (value) {
+      this._selectedNewSpeaker = value;
+    }
+  }
+
+  /**
+   * Handle speaker selection and add immediately
+   */
+  private _speakerSelected(ev: CustomEvent): void {
+    const value = ev.detail?.value;
+    if (value && !this._config.speakers?.includes(value)) {
+      this._config = {
+        ...this._config,
+        speakers: [...(this._config.speakers || []), value],
+      };
+      this._configChanged(this._config);
+    }
+    // Reset picker
+    this._selectedNewSpeaker = '';
   }
 
   /**
@@ -181,13 +270,32 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
 
         <div class="form-row">
           <label class="form-label">${localize('config.config_entry_id')}</label>
-          <ha-textfield
-            .value=${this._config.config_entry_id || ''}
-            data-config-key="config_entry_id"
-            @input=${this._valueChanged}
-            placeholder="01KD2Q1R471MB35ZRQ82C6CN2S"
-            required
-          ></ha-textfield>
+          ${this._massInstances.length > 0
+            ? html`
+                <ha-select
+                  .value=${this._config.config_entry_id || ''}
+                  @selected=${this._instanceChanged}
+                  @closed=${(e: Event) => e.stopPropagation()}
+                >
+                  <mwc-list-item value="">Select instance...</mwc-list-item>
+                  ${this._massInstances.map(
+                    (instance) => html`
+                      <mwc-list-item value=${instance.entry_id}>
+                        ${instance.title}
+                      </mwc-list-item>
+                    `
+                  )}
+                </ha-select>
+              `
+            : html`
+                <ha-textfield
+                  .value=${this._config.config_entry_id || ''}
+                  data-config-key="config_entry_id"
+                  @input=${this._valueChanged}
+                  placeholder="01KD2Q1R471MB35ZRQ82C6CN2S"
+                  required
+                ></ha-textfield>
+              `}
         </div>
 
         <!-- Speakers -->
@@ -221,13 +329,10 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
               .hass=${this.hass}
               .value=${this._selectedNewSpeaker}
               .includeDomains=${['media_player']}
-              @value-changed=${this._newSpeakerChanged}
+              @value-changed=${this._speakerSelected}
               allow-custom-entity
-              label="Add Speaker"
+              label="Select speaker to add"
             ></ha-entity-picker>
-            <ha-button @click=${this._addSpeaker} ?disabled=${!this._selectedNewSpeaker}>
-              Add
-            </ha-button>
           </div>
         </div>
 
@@ -242,7 +347,7 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
             data-config-key="limit"
             @input=${this._valueChanged}
             min="1"
-            max="100"
+            max="1000"
           ></ha-textfield>
         </div>
 
@@ -290,4 +395,3 @@ declare global {
     'music-assistant-playlist-card-editor': MusicAssistantPlaylistCardEditor;
   }
 }
-

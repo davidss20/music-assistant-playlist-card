@@ -791,13 +791,15 @@ export const cardStyles = css`
   }
 
   .now-playing-artwork {
-    width: 100%;
-    max-width: 100%;
+    width: auto;
+    max-width: min(100%, 400px);
+    max-height: 400px;
     aspect-ratio: 1;
     border-radius: 16px;
     overflow: hidden;
     background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
   }
 
   .now-playing-artwork img {
@@ -1020,33 +1022,52 @@ export const cardStyles = css`
 
   .volume-slider-full {
     flex: 1;
-    height: 6px;
+    height: 8px;
     -webkit-appearance: none;
     appearance: none;
     background: var(--divider-color, rgba(0, 0, 0, 0.1));
-    border-radius: 3px;
+    border-radius: 4px;
     cursor: pointer;
+  }
+
+  .volume-slider-full::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--divider-color, rgba(0, 0, 0, 0.1));
   }
 
   .volume-slider-full::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background: var(--primary-color);
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    margin-top: -6px;
+  }
+
+  .volume-slider-full::-moz-range-track {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--divider-color, rgba(0, 0, 0, 0.1));
+  }
+
+  .volume-slider-full::-moz-range-progress {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--primary-color);
   }
 
   .volume-slider-full::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background: var(--primary-color);
     cursor: pointer;
     border: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 
   /* ==========================================================================
