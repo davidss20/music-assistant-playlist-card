@@ -792,7 +792,7 @@ export const cardStyles = css`
 
   .now-playing-artwork {
     width: 100%;
-    max-width: 540px;
+    max-width: 100%;
     aspect-ratio: 1;
     border-radius: 16px;
     overflow: hidden;
@@ -866,7 +866,7 @@ export const cardStyles = css`
   /* Progress Bar */
   .progress-container {
     width: 100%;
-    max-width: 480px;
+    max-width: 100%;
   }
 
   .progress-bar {
@@ -955,7 +955,7 @@ export const cardStyles = css`
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: 480px;
+    max-width: 100%;
     padding: 0 8px;
   }
 
@@ -1008,7 +1008,7 @@ export const cardStyles = css`
     align-items: center;
     gap: 12px;
     width: 100%;
-    max-width: 540px;
+    max-width: 100%;
     padding: 0 8px;
   }
 

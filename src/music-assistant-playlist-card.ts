@@ -22,7 +22,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.2.1';
+const CARD_VERSION = '1.2.2';
 
 // Log card info on load
 console.info(
@@ -849,8 +849,9 @@ export class MusicAssistantPlaylistCard extends LitElement {
         service: 'search',
         service_data: {
           config_entry_id: this._config.config_entry_id,
-          search_query: this._globalSearchQuery,
+          name: this._globalSearchQuery,
           media_type: [this._searchMediaType],
+          library_only: false,
           limit: 25,
         },
         return_response: true,
