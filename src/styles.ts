@@ -753,37 +753,34 @@ export const cardStyles = css`
      ========================================================================== */
 
   .now-playing {
-    display: grid;
-    grid-template-columns: auto 1fr;
+    display: flex !important;
+    flex-direction: row !important;
     gap: 24px;
     padding: 16px;
-    align-items: start;
+    align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .now-playing-left {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
+    flex-shrink: 0;
   }
 
   .now-playing-right {
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    justify-content: center;
-    min-height: 100%;
+    min-width: 0;
   }
 
   .now-playing-artwork {
     width: 200px;
     height: 200px;
-    aspect-ratio: 1;
     border-radius: 16px;
     overflow: hidden;
     background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    flex-shrink: 0;
   }
 
   .now-playing-artwork img {
