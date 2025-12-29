@@ -63,7 +63,7 @@ export const cardStyles = css`
   }
 
   :host([dir="rtl"]) .volume-slider-full {
-    transform: scaleX(-1);
+    transform: rotateY(180deg);
   }
 
   :host([dir="rtl"]) .progress-time {
@@ -1006,7 +1006,7 @@ export const cardStyles = css`
     height: 8px;
     -webkit-appearance: none;
     appearance: none;
-    background: var(--divider-color, rgba(0, 0, 0, 0.1));
+    background: linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) var(--volume-percent, 0%), var(--divider-color, rgba(0,0,0,0.1)) var(--volume-percent, 0%), var(--divider-color, rgba(0,0,0,0.1)) 100%);
     border-radius: 4px;
     cursor: pointer;
   }

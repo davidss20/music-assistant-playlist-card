@@ -55,7 +55,7 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
   }
 
   :host([dir="rtl"]) .volume-slider-full {
-    transform: scaleX(-1);
+    transform: rotateY(180deg);
   }
 
   :host([dir="rtl"]) .progress-time {
@@ -998,7 +998,7 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
     height: 8px;
     -webkit-appearance: none;
     appearance: none;
-    background: var(--divider-color, rgba(0, 0, 0, 0.1));
+    background: linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) var(--volume-percent, 0%), var(--divider-color, rgba(0,0,0,0.1)) var(--volume-percent, 0%), var(--divider-color, rgba(0,0,0,0.1)) 100%);
     border-radius: 4px;
     cursor: pointer;
   }
@@ -1796,7 +1796,7 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
             .value=${String(e.volume_level||0)}
             @input=${this._updateVolumeSliderFill}
             @change=${this._setVolume}
-            style="background: linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) ${100*(e.volume_level||0)}%, var(--divider-color, rgba(0,0,0,0.1)) ${100*(e.volume_level||0)}%, var(--divider-color, rgba(0,0,0,0.1)) 100%)"
+            style="--volume-percent: ${100*(e.volume_level||0)}%"
           />
           <ha-icon icon="mdi:volume-high"></ha-icon>
         </div>

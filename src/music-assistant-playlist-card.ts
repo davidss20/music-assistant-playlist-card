@@ -764,7 +764,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
             .value=${String(state.volume_level || 0)}
             @input=${this._updateVolumeSliderFill}
             @change=${this._setVolume}
-            style="background: linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) ${(state.volume_level || 0) * 100}%, var(--divider-color, rgba(0,0,0,0.1)) ${(state.volume_level || 0) * 100}%, var(--divider-color, rgba(0,0,0,0.1)) 100%)"
+            style="--volume-percent: ${(state.volume_level || 0) * 100}%"
           />
           <ha-icon icon="mdi:volume-high"></ha-icon>
         </div>
