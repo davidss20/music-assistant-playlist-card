@@ -21,7 +21,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.1.0';
+const CARD_VERSION = '1.1.1';
 
 // Log card info on load
 console.info(
@@ -202,19 +202,23 @@ export class MusicAssistantPlaylistCard extends LitElement {
           config_entry_id: this._config.config_entry_id,
           media_type: 'playlist',
           favorite: false, // Always load all playlists, filter in UI
-          limit: this._config.limit ?? 50,
+          limit: 1000, // Load all playlists
           offset: 0,
+          order_by: 'name',
         },
         return_response: true,
       });
 
       console.info('[music-assistant-playlist-card] Raw response:', response);
+      console.info('[music-assistant-playlist-card] Response keys:', response?.response ? Object.keys(response.response) : 'no response');
 
       // Extract playlists from response - check both 'playlists' and 'items' keys
       if (response?.response?.playlists) {
         this._playlists = response.response.playlists;
+        console.info('[music-assistant-playlist-card] Found in playlists key:', this._playlists.length);
       } else if (response?.response?.items) {
         this._playlists = response.response.items;
+        console.info('[music-assistant-playlist-card] Found in items key:', this._playlists.length);
       } else if (response?.response && typeof response.response === 'object') {
         // Try to find any array in the response
         const keys = Object.keys(response.response);
