@@ -132,6 +132,20 @@ export interface QueueItem {
   duration?: number;
 }
 
+/**
+ * Queue item format returned by mass_queue integration
+ * https://github.com/droans/mass_queue
+ */
+export interface MassQueueItem {
+  queue_item_id: string;
+  media_title: string;
+  media_album_name?: string;
+  media_artist?: string;
+  media_content_id: string;
+  media_image?: string;
+  favorite?: boolean;
+}
+
 // ============================================================================
 // Card Configuration Types
 // ============================================================================

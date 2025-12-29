@@ -15,13 +15,14 @@ import type {
   TabId,
   MediaPlayerState,
   QueueItem,
+  MassQueueItem,
   SortOption,
   ViewMode,
 } from './types';
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.1.2';
+const CARD_VERSION = '1.1.3';
 
 // Log card info on load
 console.info(
@@ -293,6 +294,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
 
   /**
    * Load queue from Music Assistant
+   * Requires mass_queue integration: https://github.com/droans/mass_queue
    */
   private async _loadQueue(): Promise<void> {
     if (!this.hass || !this._selectedSpeaker) {
@@ -303,7 +305,6 @@ export class MusicAssistantPlaylistCard extends LitElement {
     this._queueLoading = true;
 
     try {
-      // Get the entity to find the queue_id
       const entity = this.hass.states[this._selectedSpeaker];
       if (!entity) {
         console.warn('[music-assistant-playlist-card] Entity not found:', this._selectedSpeaker);
@@ -312,91 +313,96 @@ export class MusicAssistantPlaylistCard extends LitElement {
       }
 
       console.info('[music-assistant-playlist-card] Entity attributes:', entity.attributes);
-
-      // Get queue_id from entity attributes (Music Assistant stores this)
-      const queueId = entity.attributes.mass_player_id || 
-                      entity.attributes.queue_id || 
-                      this._selectedSpeaker.replace('media_player.', '');
       
-      console.info('[music-assistant-playlist-card] Trying to get queue for:', queueId);
+      // Get queue_id from entity (Music Assistant stores this)
+      const queueId = entity.attributes.queue_id as string | undefined;
+      console.info('[music-assistant-playlist-card] Queue ID:', queueId);
 
-      // Try Music Assistant specific websocket call
-      try {
-        const response = await this.hass.callWS<{
-          items?: QueueItem[];
-          queue_items?: QueueItem[];
-          current_index?: number;
-          current_item?: { queue_item_id?: string };
-        }>({
-          type: 'music_assistant/queue/items',
-          queue_id: queueId,
-        });
-
-        console.info('[music-assistant-playlist-card] Queue response:', response);
-
-        if (response?.items) {
-          this._queueItems = response.items;
-        } else if (response?.queue_items) {
-          this._queueItems = response.queue_items;
-        } else if (Array.isArray(response)) {
-          this._queueItems = response;
-        } else {
-          this._queueItems = [];
-        }
-        
-        // Find current playing index
-        if (response?.current_item?.queue_item_id) {
-          const currentId = response.current_item.queue_item_id;
-          this._currentQueueIndex = this._queueItems.findIndex(
-            (item) => item.queue_item_id === currentId || item.item_id === currentId
-          );
-        } else {
-          this._currentQueueIndex = response?.current_index ?? -1;
-        }
-
-        console.info('[music-assistant-playlist-card] Queue items loaded:', this._queueItems.length);
-      } catch (wsError) {
-        console.warn('[music-assistant-playlist-card] WebSocket queue failed, trying service:', wsError);
-        
-        // Fallback: try call_service approach
+      // Method 1: Try mass_queue integration service (recommended)
+      // Install from: https://github.com/droans/mass_queue
+      if (this.hass.services.mass_queue?.get_queue_items) {
         try {
+          console.info('[music-assistant-playlist-card] Trying mass_queue.get_queue_items...');
           const response = await this.hass.callWS<{
-            response: {
-              items?: QueueItem[];
-              queue_items?: QueueItem[];
-            };
+            response: Record<string, MassQueueItem[]>;
           }>({
             type: 'call_service',
-            domain: 'music_assistant',
-            service: 'get_queue',
+            domain: 'mass_queue',
+            service: 'get_queue_items',
             service_data: {
-              entity_id: this._selectedSpeaker,
+              entity: this._selectedSpeaker,
+              limit_before: 5,
+              limit_after: 50,
             },
             return_response: true,
           });
 
-          console.info('[music-assistant-playlist-card] Service queue response:', response);
+          console.info('[music-assistant-playlist-card] mass_queue response:', response);
 
-          if (response?.response?.items) {
-            this._queueItems = response.response.items;
-          } else if (response?.response?.queue_items) {
-            this._queueItems = response.response.queue_items;
-          } else {
-            this._queueItems = [];
+          // Response format: { "media_player.xxx": [...items...] }
+          const items = response?.response?.[this._selectedSpeaker];
+          if (items && Array.isArray(items)) {
+            this._queueItems = items.map(item => ({
+              queue_item_id: item.queue_item_id,
+              name: item.media_title,
+              media_type: 'track',
+              uri: item.media_content_id,
+              image: item.media_image,
+              artist: item.media_artist,
+              album: item.media_album_name,
+            }));
+            
+            // Find currently playing (first item after limit_before)
+            this._currentQueueIndex = 5; // limit_before value
+            console.info('[music-assistant-playlist-card] Queue loaded via mass_queue:', this._queueItems.length);
+            return;
           }
-        } catch (serviceError) {
-          console.warn('[music-assistant-playlist-card] Service queue also failed:', serviceError);
-          
-          // Last fallback: check entity attributes
-          const queueItems = entity.attributes.queue_items as QueueItem[] | undefined;
-          if (queueItems && Array.isArray(queueItems)) {
-            this._queueItems = queueItems;
-            this._currentQueueIndex = (entity.attributes.queue_position as number) ?? -1;
-          } else {
-            this._queueItems = [];
+        } catch (massQueueError) {
+          console.warn('[music-assistant-playlist-card] mass_queue service failed:', massQueueError);
+        }
+      } else {
+        console.info('[music-assistant-playlist-card] mass_queue integration not found. Install from: https://github.com/droans/mass_queue');
+      }
+
+      // Method 2: Try Music Assistant WebSocket API directly
+      if (queueId) {
+        try {
+          console.info('[music-assistant-playlist-card] Trying Music Assistant WebSocket API...');
+          const response = await this.hass.callWS<{
+            items?: QueueItem[];
+          }>({
+            type: 'music_assistant/player_queues/items',
+            queue_id: queueId,
+            limit: 50,
+            offset: 0,
+          });
+
+          console.info('[music-assistant-playlist-card] MA WebSocket response:', response);
+
+          if (response?.items && Array.isArray(response.items)) {
+            this._queueItems = response.items;
+            this._currentQueueIndex = entity.attributes.queue_position as number ?? 0;
+            console.info('[music-assistant-playlist-card] Queue loaded via WebSocket:', this._queueItems.length);
+            return;
           }
+        } catch (wsError) {
+          console.warn('[music-assistant-playlist-card] WebSocket API failed:', wsError);
         }
       }
+
+      // Method 3: Check entity attributes (some setups store queue there)
+      const attrQueueItems = entity.attributes.queue_items as QueueItem[] | undefined;
+      if (attrQueueItems && Array.isArray(attrQueueItems)) {
+        console.info('[music-assistant-playlist-card] Found queue in entity attributes');
+        this._queueItems = attrQueueItems;
+        this._currentQueueIndex = entity.attributes.queue_position as number ?? -1;
+        return;
+      }
+
+      // No queue found
+      console.warn('[music-assistant-playlist-card] Could not load queue. Install mass_queue integration for queue support.');
+      this._queueItems = [];
+
     } catch (error) {
       console.error('[music-assistant-playlist-card] Failed to load queue:', error);
       this._queueItems = [];
@@ -932,10 +938,30 @@ export class MusicAssistantPlaylistCard extends LitElement {
   private async _playQueueItem(index: number): Promise<void> {
     if (!this.hass || !this._selectedSpeaker) return;
     
+    const item = this._queueItems[index];
+    if (!item) return;
+
     try {
-      await this.hass.callService('music_assistant', 'play_index', {
-        index: index,
-      }, { entity_id: this._selectedSpeaker });
+      // Method 1: Try mass_queue service if available
+      if (this.hass.services.mass_queue?.play_queue_item) {
+        await this.hass.callService('mass_queue', 'play_queue_item', {
+          entity: this._selectedSpeaker,
+          queue_item_id: item.queue_item_id,
+        });
+        return;
+      }
+
+      // Method 2: Try Music Assistant play_index
+      const entity = this.hass.states[this._selectedSpeaker];
+      const queueId = entity?.attributes?.queue_id as string | undefined;
+      
+      if (queueId) {
+        await this.hass.callWS({
+          type: 'music_assistant/player_queues/play_index',
+          queue_id: queueId,
+          index: item.queue_item_id,
+        });
+      }
     } catch (error) {
       console.error('[music-assistant-playlist-card] Failed to play queue item:', error);
     }
