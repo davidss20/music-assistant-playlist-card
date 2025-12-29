@@ -349,6 +349,31 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
     flex: 1;
   }
 
+  /* Playlist Container with Scroll */
+  .playlists-scroll-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 350px;
+  }
+
+  .playlists-scroll-container::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .playlists-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .playlists-scroll-container::-webkit-scrollbar-thumb {
+    background: var(--divider-color, rgba(0, 0, 0, 0.2));
+    border-radius: 3px;
+  }
+
+  .playlists-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-text-color);
+  }
+
   /* Playlist Grid */
   .playlist-grid {
     display: grid;
@@ -1928,12 +1953,16 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
       ${this._renderPlaylistToolbar()}
       ${0===e.length&&(this._searchQuery||this._showFavoritesOnly)?this._renderNoResults():0===e.length?this._renderEmpty():"grid"===this._viewMode?this._renderPlaylistGrid(e):this._renderPlaylistList(e)}
     `}_renderPlaylistGrid(e){const t=this._config.columns&&"auto"!==this._config.columns?`columns-${this._config.columns}`:"";return B`
-      <div class="playlist-grid ${t}">
-        ${e.map(e=>this._renderPlaylistItem(e))}
+      <div class="playlists-scroll-container">
+        <div class="playlist-grid ${t}">
+          ${e.map(e=>this._renderPlaylistItem(e))}
+        </div>
       </div>
     `}_renderPlaylistList(e){return B`
-      <div class="playlist-list">
-        ${e.map(e=>this._renderPlaylistItem(e))}
+      <div class="playlists-scroll-container">
+        <div class="playlist-list">
+          ${e.map(e=>this._renderPlaylistItem(e))}
+        </div>
       </div>
     `}_renderPlaylistItem(e){const t=this._getPlaylistImage(e);return B`
       <div

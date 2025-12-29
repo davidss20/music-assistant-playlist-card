@@ -357,6 +357,31 @@ export const cardStyles = css`
     flex: 1;
   }
 
+  /* Playlist Container with Scroll */
+  .playlists-scroll-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 350px;
+  }
+
+  .playlists-scroll-container::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .playlists-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .playlists-scroll-container::-webkit-scrollbar-thumb {
+    background: var(--divider-color, rgba(0, 0, 0, 0.2));
+    border-radius: 3px;
+  }
+
+  .playlists-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-text-color);
+  }
+
   /* Playlist Grid */
   .playlist-grid {
     display: grid;

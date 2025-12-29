@@ -1091,8 +1091,10 @@ export class MusicAssistantPlaylistCard extends LitElement {
         : '';
 
     return html`
-      <div class="playlist-grid ${columnsClass}">
-        ${playlists.map((playlist) => this._renderPlaylistItem(playlist))}
+      <div class="playlists-scroll-container">
+        <div class="playlist-grid ${columnsClass}">
+          ${playlists.map((playlist) => this._renderPlaylistItem(playlist))}
+        </div>
       </div>
     `;
   }
@@ -1102,8 +1104,10 @@ export class MusicAssistantPlaylistCard extends LitElement {
    */
   private _renderPlaylistList(playlists: MusicAssistantPlaylist[]): TemplateResult {
     return html`
-      <div class="playlist-list">
-        ${playlists.map((playlist) => this._renderPlaylistItem(playlist))}
+      <div class="playlists-scroll-container">
+        <div class="playlist-list">
+          ${playlists.map((playlist) => this._renderPlaylistItem(playlist))}
+        </div>
       </div>
     `;
   }
