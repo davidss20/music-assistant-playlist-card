@@ -691,86 +691,82 @@ export class MusicAssistantPlaylistCard extends LitElement {
 
     return html`
       <div class="now-playing">
-        <div class="now-playing-left">
-          <div class="now-playing-artwork">
-            ${state.entity_picture
-              ? html`<img src="${state.entity_picture}" alt="Album art" />`
-              : html`
-                  <div class="now-playing-artwork-placeholder">
-                    <ha-icon icon="mdi:music"></ha-icon>
-                  </div>
-                `}
+        <div class="now-playing-artwork">
+          ${state.entity_picture
+            ? html`<img src="${state.entity_picture}" alt="Album art" />`
+            : html`
+                <div class="now-playing-artwork-placeholder">
+                  <ha-icon icon="mdi:music"></ha-icon>
+                </div>
+              `}
+        </div>
+
+        <div class="now-playing-info">
+          <h3 class="now-playing-title">${state.media_title || 'Unknown'}</h3>
+          <p class="now-playing-artist">${state.media_artist || 'Unknown artist'}</p>
+        </div>
+
+        ${state.media_duration
+          ? html`
+              <div class="progress-container">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill" style="width: ${progress}%"></div>
+                </div>
+                <div class="progress-time">
+                  <span>${this._formatTime(state.media_position || 0)}</span>
+                  <span>${this._formatTime(state.media_duration)}</span>
+                </div>
+              </div>
+            `
+          : nothing}
+
+        <div class="player-controls">
+          <button class="control-button" @click=${this._mediaPrevious} title="Previous">
+            <ha-icon icon="mdi:skip-previous"></ha-icon>
+          </button>
+          <button class="control-button play-pause" @click=${this._mediaPlayPause} title="${isPlaying ? 'Pause' : 'Play'}">
+            <ha-icon icon="${isPlaying ? 'mdi:pause' : 'mdi:play'}"></ha-icon>
+          </button>
+          <button class="control-button" @click=${this._mediaNext} title="Next">
+            <ha-icon icon="mdi:skip-next"></ha-icon>
+          </button>
+        </div>
+
+        <div class="secondary-controls">
+          <div class="secondary-controls-left">
+            <button 
+              class="control-button small ${state.shuffle ? 'active' : ''}" 
+              @click=${this._toggleShuffle}
+              title="Shuffle"
+            >
+              <ha-icon icon="mdi:shuffle"></ha-icon>
+            </button>
+          </div>
+          <div class="secondary-controls-right">
+            <button 
+              class="control-button small ${state.repeat !== 'off' ? 'active' : ''}" 
+              @click=${this._toggleRepeat}
+              title="Repeat: ${state.repeat || 'off'}"
+            >
+              <ha-icon icon="${state.repeat === 'one' ? 'mdi:repeat-once' : 'mdi:repeat'}"></ha-icon>
+            </button>
           </div>
         </div>
 
-        <div class="now-playing-right">
-          <div class="now-playing-info">
-            <h3 class="now-playing-title">${state.media_title || 'Unknown'}</h3>
-            <p class="now-playing-artist">${state.media_artist || 'Unknown artist'}</p>
-          </div>
-
-          ${state.media_duration
-            ? html`
-                <div class="progress-container">
-                  <div class="progress-bar">
-                    <div class="progress-bar-fill" style="width: ${progress}%"></div>
-                  </div>
-                  <div class="progress-time">
-                    <span>${this._formatTime(state.media_position || 0)}</span>
-                    <span>${this._formatTime(state.media_duration)}</span>
-                  </div>
-                </div>
-              `
-            : nothing}
-
-          <div class="player-controls">
-            <button class="control-button" @click=${this._mediaPrevious} title="Previous">
-              <ha-icon icon="mdi:skip-previous"></ha-icon>
-            </button>
-            <button class="control-button play-pause" @click=${this._mediaPlayPause} title="${isPlaying ? 'Pause' : 'Play'}">
-              <ha-icon icon="${isPlaying ? 'mdi:pause' : 'mdi:play'}"></ha-icon>
-            </button>
-            <button class="control-button" @click=${this._mediaNext} title="Next">
-              <ha-icon icon="mdi:skip-next"></ha-icon>
-            </button>
-          </div>
-
-          <div class="secondary-controls">
-            <div class="secondary-controls-left">
-              <button 
-                class="control-button small ${state.shuffle ? 'active' : ''}" 
-                @click=${this._toggleShuffle}
-                title="Shuffle"
-              >
-                <ha-icon icon="mdi:shuffle"></ha-icon>
-              </button>
-            </div>
-            <div class="secondary-controls-right">
-              <button 
-                class="control-button small ${state.repeat !== 'off' ? 'active' : ''}" 
-                @click=${this._toggleRepeat}
-                title="Repeat: ${state.repeat || 'off'}"
-              >
-                <ha-icon icon="${state.repeat === 'one' ? 'mdi:repeat-once' : 'mdi:repeat'}"></ha-icon>
-              </button>
-            </div>
-          </div>
-
-          <div class="volume-full-width">
-            <ha-icon icon="mdi:volume-low"></ha-icon>
-            <input
-              type="range"
-              class="volume-slider-full"
-              min="0"
-              max="1"
-              step="0.01"
-              .value=${String(state.volume_level || 0)}
-              @input=${this._updateVolumeSliderFill}
-              @change=${this._setVolume}
-              style="background: linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) ${(state.volume_level || 0) * 100}%, var(--divider-color, rgba(0,0,0,0.1)) ${(state.volume_level || 0) * 100}%, var(--divider-color, rgba(0,0,0,0.1)) 100%)"
-            />
-            <ha-icon icon="mdi:volume-high"></ha-icon>
-          </div>
+        <div class="volume-full-width">
+          <ha-icon icon="mdi:volume-low"></ha-icon>
+          <input
+            type="range"
+            class="volume-slider-full"
+            min="0"
+            max="1"
+            step="0.01"
+            .value=${String(state.volume_level || 0)}
+            @input=${this._updateVolumeSliderFill}
+            @change=${this._setVolume}
+            style="background: linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) ${(state.volume_level || 0) * 100}%, var(--divider-color, rgba(0,0,0,0.1)) ${(state.volume_level || 0) * 100}%, var(--divider-color, rgba(0,0,0,0.1)) 100%)"
+          />
+          <ha-icon icon="mdi:volume-high"></ha-icon>
         </div>
       </div>
     `;

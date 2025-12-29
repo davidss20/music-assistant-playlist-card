@@ -71,11 +71,12 @@ export const cardStyles = css`
   }
 
   ha-card {
-    overflow: visible;
+    overflow: hidden;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     width: 100%;
+    min-height: 500px;
   }
 
   .card-header {
@@ -742,10 +743,13 @@ export const cardStyles = css`
   .tab-content {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-height: 400px;
   }
 
   .tab-view {
     padding: var(--playlist-card-spacing);
+    flex: 1;
   }
 
   /* ==========================================================================
@@ -762,22 +766,9 @@ export const cardStyles = css`
     box-sizing: border-box;
   }
 
-  .now-playing-left {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  }
-
-  .now-playing-right {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-  }
-
   .now-playing-artwork {
-    width: 250px;
-    height: 250px;
+    width: 200px;
+    height: 200px;
     border-radius: 16px;
     overflow: hidden;
     background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
