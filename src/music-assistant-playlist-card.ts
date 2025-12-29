@@ -754,7 +754,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
         </div>
 
         <div class="volume-full-width">
-          <ha-icon icon="mdi:volume-low"></ha-icon>
+          <ha-icon icon="${isRTL() ? 'mdi:volume-high' : 'mdi:volume-low'}"></ha-icon>
           <input
             type="range"
             class="volume-slider-full"
@@ -764,9 +764,9 @@ export class MusicAssistantPlaylistCard extends LitElement {
             .value=${String(state.volume_level || 0)}
             @input=${this._updateVolumeSliderFill}
             @change=${this._setVolume}
-            style="background: linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) ${(state.volume_level || 0) * 100}%, var(--divider-color, rgba(0,0,0,0.1)) ${(state.volume_level || 0) * 100}%, var(--divider-color, rgba(0,0,0,0.1)) 100%)"
+            style="background: linear-gradient(${isRTL() ? 'to left' : 'to right'}, var(--primary-color) 0%, var(--primary-color) ${(state.volume_level || 0) * 100}%, var(--divider-color, rgba(0,0,0,0.1)) ${(state.volume_level || 0) * 100}%, var(--divider-color, rgba(0,0,0,0.1)) 100%)"
           />
-          <ha-icon icon="mdi:volume-high"></ha-icon>
+          <ha-icon icon="${isRTL() ? 'mdi:volume-low' : 'mdi:volume-high'}"></ha-icon>
         </div>
       </div>
     `;

@@ -58,6 +58,14 @@ export const cardStyles = css`
     flex-direction: row-reverse;
   }
 
+  :host([dir="rtl"]) .volume-full-width {
+    flex-direction: row-reverse;
+  }
+
+  :host([dir="rtl"]) .volume-slider-full {
+    direction: rtl;
+  }
+
   :host([dir="rtl"]) .progress-time {
     flex-direction: row-reverse;
   }
