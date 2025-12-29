@@ -745,30 +745,31 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
      ========================================================================== */
 
   .now-playing {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
     padding: 16px;
-    align-items: flex-start;
     width: 100%;
     box-sizing: border-box;
   }
 
   .now-playing-left {
-    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
   }
 
   .now-playing-right {
-    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    min-width: 0;
+    width: 100%;
   }
 
   .now-playing-artwork {
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
     border-radius: 16px;
     overflow: hidden;
     background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
@@ -796,7 +797,7 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
   }
 
   .now-playing-info {
-    text-align: start;
+    text-align: center;
     width: 100%;
   }
 
@@ -872,7 +873,7 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
   .player-controls {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 16px;
   }
 
