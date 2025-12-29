@@ -1185,6 +1185,52 @@ export class MusicAssistantPlaylistCard extends LitElement {
   }
 
   /**
+   * Check if we're in preview/picker mode (no hass or stub config)
+   */
+  private _isPreviewMode(): boolean {
+    return !this.hass || !this._config?.config_entry_id || this._config.config_entry_id === '';
+  }
+
+  /**
+   * Render preview card for card picker
+   */
+  private _renderPreview(): TemplateResult {
+    return html`
+      <div class="now-playing">
+        <div class="now-playing-artwork preview-artwork">
+          <div class="preview-gradient">
+            <ha-icon icon="mdi:music"></ha-icon>
+          </div>
+        </div>
+        <div class="now-playing-info">
+          <h3 class="now-playing-title">Music Assistant</h3>
+          <p class="now-playing-artist">Player Card</p>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-bar-fill" style="width: 35%"></div>
+          </div>
+          <div class="progress-time">
+            <span>1:24</span>
+            <span>4:02</span>
+          </div>
+        </div>
+        <div class="player-controls">
+          <button class="control-button">
+            <ha-icon icon="mdi:skip-previous"></ha-icon>
+          </button>
+          <button class="control-button play-pause">
+            <ha-icon icon="mdi:play"></ha-icon>
+          </button>
+          <button class="control-button">
+            <ha-icon icon="mdi:skip-next"></ha-icon>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
    * Render the card
    */
   protected render(): TemplateResult {
@@ -1200,6 +1246,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
     }
 
     const isValid = this._isConfigValid();
+    const isPreview = this._isPreviewMode() && !isValid;
 
     return html`
       <ha-card>
@@ -1211,9 +1258,11 @@ export class MusicAssistantPlaylistCard extends LitElement {
             `
           : nothing}
         <div class="tab-content">
-          ${!isValid
-            ? html`<div class="tab-view">${this._renderConfigWarning()}</div>`
-            : html`<div class="tab-view">${this._renderTabContent()}</div>`}
+          ${isPreview
+            ? html`<div class="tab-view">${this._renderPreview()}</div>`
+            : !isValid
+              ? html`<div class="tab-view">${this._renderConfigWarning()}</div>`
+              : html`<div class="tab-view">${this._renderTabContent()}</div>`}
         </div>
         ${this._renderTabBar()}
       </ha-card>

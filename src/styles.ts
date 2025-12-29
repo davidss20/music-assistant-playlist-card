@@ -1473,5 +1473,26 @@ export const editorStyles = css`
   .section-title:first-child {
     margin-top: 0;
   }
+
+  /* Preview Mode Styles */
+  .preview-artwork {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #667eea 50%, #764ba2 100%) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .preview-gradient {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .preview-gradient ha-icon {
+    --mdc-icon-size: 80px;
+    color: rgba(255, 255, 255, 0.9);
+  }
 `;
 
