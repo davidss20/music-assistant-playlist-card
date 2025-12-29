@@ -1,4 +1,10 @@
 {
+  "tabs": {
+    "now_playing": "En cours",
+    "playlists": "Playlists",
+    "search": "Recherche",
+    "speakers": "Enceintes"
+  },
   "common": {
     "loading": "Chargement...",
     "error": "Une erreur s'est produite",

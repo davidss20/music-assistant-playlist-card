@@ -1,4 +1,10 @@
 {
+  "tabs": {
+    "now_playing": "Reproduciendo",
+    "playlists": "Listas",
+    "search": "Buscar",
+    "speakers": "Altavoces"
+  },
   "common": {
     "loading": "Cargando...",
     "error": "Se produjo un error",

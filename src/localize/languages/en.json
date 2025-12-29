@@ -1,4 +1,10 @@
 {
+  "tabs": {
+    "now_playing": "Now Playing",
+    "playlists": "Playlists",
+    "search": "Search",
+    "speakers": "Speakers"
+  },
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",

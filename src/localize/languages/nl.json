@@ -1,4 +1,10 @@
 {
+  "tabs": {
+    "now_playing": "Nu speelt",
+    "playlists": "Afspeellijsten",
+    "search": "Zoeken",
+    "speakers": "Luidsprekers"
+  },
   "common": {
     "loading": "Laden...",
     "error": "Er is een fout opgetreden",

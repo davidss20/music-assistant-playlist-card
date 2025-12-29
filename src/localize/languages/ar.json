@@ -1,4 +1,10 @@
 {
+  "tabs": {
+    "now_playing": "قيد التشغيل",
+    "playlists": "قوائم التشغيل",
+    "search": "بحث",
+    "speakers": "مكبرات الصوت"
+  },
   "common": {
     "loading": "جاري التحميل...",
     "error": "حدث خطأ",

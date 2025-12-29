@@ -1,4 +1,10 @@
 {
+  "tabs": {
+    "now_playing": "In riproduzione",
+    "playlists": "Playlist",
+    "search": "Cerca",
+    "speakers": "Altoparlanti"
+  },
   "common": {
     "loading": "Caricamento...",
     "error": "Si è verificato un errore",

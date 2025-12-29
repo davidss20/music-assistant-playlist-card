@@ -92,14 +92,14 @@ export type SearchMediaType = 'track' | 'album' | 'artist';
 export interface Tab {
   id: TabId;
   icon: string;
-  label: string;
+  labelKey: string;  // Localization key
 }
 
 export const TABS: Tab[] = [
-  { id: 'now-playing', icon: 'mdi:music-note', label: 'Now Playing' },
-  { id: 'playlists', icon: 'mdi:playlist-music', label: 'Playlists' },
-  { id: 'search', icon: 'mdi:magnify', label: 'Search' },
-  { id: 'speakers', icon: 'mdi:speaker', label: 'Speakers' },
+  { id: 'now-playing', icon: 'mdi:music-note', labelKey: 'tabs.now_playing' },
+  { id: 'playlists', icon: 'mdi:playlist-music', labelKey: 'tabs.playlists' },
+  { id: 'search', icon: 'mdi:magnify', labelKey: 'tabs.search' },
+  { id: 'speakers', icon: 'mdi:speaker', labelKey: 'tabs.speakers' },
 ];
 
 // ============================================================================

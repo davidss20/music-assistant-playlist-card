@@ -1,4 +1,10 @@
 {
+  "tabs": {
+    "now_playing": "Teraz gra",
+    "playlists": "Playlisty",
+    "search": "Szukaj",
+    "speakers": "Głośniki"
+  },
   "common": {
     "loading": "Ładowanie...",
     "error": "Wystąpił błąd",

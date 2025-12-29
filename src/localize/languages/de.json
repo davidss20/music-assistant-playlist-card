@@ -1,4 +1,10 @@
 {
+  "tabs": {
+    "now_playing": "Läuft gerade",
+    "playlists": "Wiedergabelisten",
+    "search": "Suche",
+    "speakers": "Lautsprecher"
+  },
   "common": {
     "loading": "Laden...",
     "error": "Ein Fehler ist aufgetreten",

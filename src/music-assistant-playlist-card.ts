@@ -634,10 +634,10 @@ export class MusicAssistantPlaylistCard extends LitElement {
             <button
               class="tab-button ${this._activeTab === tab.id ? 'active' : ''}"
               @click=${() => this._handleTabChange(tab.id)}
-              title="${tab.label}"
+              title="${localize(tab.labelKey)}"
             >
               <ha-icon icon="${tab.icon}"></ha-icon>
-              <span class="tab-label">${tab.label}</span>
+              <span class="tab-label">${localize(tab.labelKey)}</span>
             </button>
           `
         )}

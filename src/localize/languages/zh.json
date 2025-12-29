@@ -1,4 +1,10 @@
 {
+  "tabs": {
+    "now_playing": "正在播放",
+    "playlists": "播放列表",
+    "search": "搜索",
+    "speakers": "扬声器"
+  },
   "common": {
     "loading": "正在加载...",
     "error": "发生错误",

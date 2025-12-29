@@ -1,4 +1,10 @@
 {
+  "tabs": {
+    "now_playing": "מתנגן עכשיו",
+    "playlists": "פלייליסטים",
+    "search": "חיפוש",
+    "speakers": "רמקולים"
+  },
   "common": {
     "loading": "טוען...",
     "error": "אירעה שגיאה",

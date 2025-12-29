@@ -1,4 +1,10 @@
 {
+  "tabs": {
+    "now_playing": "Tocando agora",
+    "playlists": "Playlists",
+    "search": "Pesquisar",
+    "speakers": "Alto-falantes"
+  },
   "common": {
     "loading": "Carregando...",
     "error": "Ocorreu um erro",

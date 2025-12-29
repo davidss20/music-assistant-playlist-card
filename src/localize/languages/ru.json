@@ -1,4 +1,10 @@
 {
+  "tabs": {
+    "now_playing": "Сейчас играет",
+    "playlists": "Плейлисты",
+    "search": "Поиск",
+    "speakers": "Колонки"
+  },
   "common": {
     "loading": "Загрузка...",
     "error": "Произошла ошибка",
