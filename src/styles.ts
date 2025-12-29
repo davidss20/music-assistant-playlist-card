@@ -1124,55 +1124,184 @@ export const cardStyles = css`
   }
 
   /* ==========================================================================
-     Queue View
+     Search View
      ========================================================================== */
 
-  .queue-list {
+  .search-view {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+  }
+
+  .global-search-form {
+    flex-shrink: 0;
+  }
+
+  .global-search-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .global-search-input {
+    width: 100%;
+    padding: 12px 44px 12px 44px;
+    border: none;
+    border-radius: 12px;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    color: var(--primary-text-color);
+    font-size: 16px;
+    font-family: inherit;
+    outline: none;
+    transition: box-shadow 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  :host([dir="rtl"]) .global-search-input {
+    padding: 12px 44px 12px 44px;
+  }
+
+  .global-search-input::placeholder {
+    color: var(--secondary-text-color);
+  }
+
+  .global-search-input:focus {
+    box-shadow: 0 0 0 2px var(--primary-color);
+  }
+
+  .global-search-container .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    --mdc-icon-size: 22px;
+    color: var(--secondary-text-color);
+    pointer-events: none;
+  }
+
+  :host([dir="rtl"]) .global-search-container .search-icon {
+    left: auto;
+    right: 14px;
+  }
+
+  .search-clear-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    color: var(--secondary-text-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  :host([dir="rtl"]) .search-clear-button {
+    right: auto;
+    left: 8px;
+  }
+
+  .search-clear-button:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+  }
+
+  .search-clear-button ha-icon {
+    --mdc-icon-size: 18px;
+  }
+
+  .search-type-filters {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .search-type-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex: 1;
+    padding: 10px 12px;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    border: none;
+    border-radius: 10px;
+    color: var(--secondary-text-color);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .search-type-button:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.15));
+  }
+
+  .search-type-button.active {
+    background: var(--primary-color);
+    color: var(--text-primary-color, #fff);
+  }
+
+  .search-type-button ha-icon {
+    --mdc-icon-size: 18px;
+  }
+
+  .search-results {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    flex: 1;
+    overflow-y: auto;
   }
 
-  .queue-item {
+  .search-result-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 8px 12px;
+    padding: 10px 12px;
     background: transparent;
-    border-radius: 8px;
+    border-radius: 10px;
     transition: background 0.2s ease;
     cursor: pointer;
   }
 
-  .queue-item:hover {
+  .search-result-item:hover {
     background: var(--secondary-background-color, rgba(0, 0, 0, 0.05));
   }
 
-  .queue-item.playing {
-    background: color-mix(in srgb, var(--primary-color) 10%, transparent);
-  }
-
-  .queue-item-image {
-    width: 48px;
-    height: 48px;
-    border-radius: 6px;
+  .search-result-image {
+    width: 52px;
+    height: 52px;
+    border-radius: 8px;
     overflow: hidden;
     background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .queue-item-image img {
+  .search-result-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  .queue-item-info {
+  .search-result-image ha-icon {
+    --mdc-icon-size: 24px;
+    color: var(--secondary-text-color);
+    opacity: 0.5;
+  }
+
+  .search-result-info {
     flex: 1;
     min-width: 0;
   }
 
-  .queue-item-title {
+  .search-result-title {
     font-size: 14px;
     font-weight: 500;
     color: var(--primary-text-color);
@@ -1181,7 +1310,7 @@ export const cardStyles = css`
     white-space: nowrap;
   }
 
-  .queue-item-artist {
+  .search-result-artist {
     font-size: 12px;
     color: var(--secondary-text-color);
     overflow: hidden;
@@ -1189,32 +1318,44 @@ export const cardStyles = css`
     white-space: nowrap;
   }
 
-  .queue-item-playing-icon {
-    --mdc-icon-size: 20px;
-    color: var(--primary-color);
+  .search-result-album {
+    font-size: 11px;
+    color: var(--secondary-text-color);
+    opacity: 0.7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .queue-notice {
+  .search-result-play {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px;
-    margin-bottom: 12px;
-    background: var(--info-color, #2196f3);
-    background-opacity: 0.1;
-    border-radius: var(--playlist-card-border-radius);
-    color: var(--primary-text-color);
-    font-size: 0.85rem;
-    opacity: 0.8;
-  }
-
-  .queue-notice ha-icon {
-    --mdc-icon-size: 20px;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    border: none;
+    cursor: pointer;
+    color: var(--text-primary-color, #fff);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
     flex-shrink: 0;
-    color: var(--info-color, #2196f3);
   }
 
-  .queue-empty {
+  .search-result-item:hover .search-result-play {
+    opacity: 1;
+  }
+
+  .search-result-play:hover {
+    transform: scale(1.1);
+  }
+
+  .search-result-play ha-icon {
+    --mdc-icon-size: 20px;
+  }
+
+  .search-empty {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1222,9 +1363,10 @@ export const cardStyles = css`
     gap: 12px;
     padding: 48px 24px;
     color: var(--secondary-text-color);
+    flex: 1;
   }
 
-  .queue-empty ha-icon {
+  .search-empty ha-icon {
     --mdc-icon-size: 48px;
     opacity: 0.3;
   }

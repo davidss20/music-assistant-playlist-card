@@ -1,15 +1,19 @@
 {
   "common": {
-    "loading": "正在加载播放列表...",
+    "loading": "正在加载...",
     "error": "发生错误",
     "no_playlists": "未找到播放列表",
     "play": "播放",
     "select_speaker": "选择扬声器",
     "no_speaker_selected": "未选择扬声器",
     "nothing_playing": "当前没有播放内容",
-    "queue_empty": "队列为空",
     "search": "搜索",
     "search_playlists": "搜索播放列表...",
+    "search_placeholder": "搜索歌曲、专辑、艺术家...",
+    "search_hint": "搜索要播放的音乐",
+    "tracks": "歌曲",
+    "albums": "专辑",
+    "artists": "艺术家",
     "favorites": "收藏",
     "all": "全部",
     "sort": "排序",
@@ -19,8 +23,7 @@
     "sort_recent": "最近添加",
     "view_grid": "网格视图",
     "view_list": "列表视图",
-    "no_results": "没有匹配的播放列表",
-    "tracks": "首曲目"
+    "no_results": "未找到结果"
   },
   "config": {
     "title": "卡片标题",

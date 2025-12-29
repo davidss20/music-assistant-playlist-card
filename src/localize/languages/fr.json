@@ -1,15 +1,19 @@
 {
   "common": {
-    "loading": "Chargement des playlists...",
+    "loading": "Chargement...",
     "error": "Une erreur s'est produite",
     "no_playlists": "Aucune playlist trouvée",
     "play": "Lecture",
     "select_speaker": "Sélectionner un haut-parleur",
     "no_speaker_selected": "Aucun haut-parleur sélectionné",
     "nothing_playing": "Rien n'est en cours de lecture",
-    "queue_empty": "La file d'attente est vide",
     "search": "Rechercher",
     "search_playlists": "Rechercher des playlists...",
+    "search_placeholder": "Rechercher chansons, albums, artistes...",
+    "search_hint": "Rechercher de la musique à jouer",
+    "tracks": "Pistes",
+    "albums": "Albums",
+    "artists": "Artistes",
     "favorites": "Favoris",
     "all": "Tout",
     "sort": "Trier",
@@ -19,8 +23,7 @@
     "sort_recent": "Ajoutés récemment",
     "view_grid": "Vue grille",
     "view_list": "Vue liste",
-    "no_results": "Aucune playlist correspondante",
-    "tracks": "pistes"
+    "no_results": "Aucun résultat trouvé"
   },
   "config": {
     "title": "Titre de la carte",

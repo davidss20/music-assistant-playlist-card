@@ -1,15 +1,19 @@
 {
   "common": {
-    "loading": "جاري تحميل قوائم التشغيل...",
+    "loading": "جاري التحميل...",
     "error": "حدث خطأ",
     "no_playlists": "لم يتم العثور على قوائم تشغيل",
     "play": "تشغيل",
     "select_speaker": "اختر مكبر الصوت",
     "no_speaker_selected": "لم يتم اختيار مكبر صوت",
     "nothing_playing": "لا يوجد شيء قيد التشغيل حالياً",
-    "queue_empty": "قائمة الانتظار فارغة",
     "search": "بحث",
     "search_playlists": "البحث في قوائم التشغيل...",
+    "search_placeholder": "البحث عن أغاني، ألبومات، فنانين...",
+    "search_hint": "ابحث عن موسيقى لتشغيلها",
+    "tracks": "أغاني",
+    "albums": "ألبومات",
+    "artists": "فنانين",
     "favorites": "المفضلة",
     "all": "الكل",
     "sort": "ترتيب",
@@ -19,8 +23,7 @@
     "sort_recent": "المضافة حديثاً",
     "view_grid": "عرض شبكي",
     "view_list": "عرض قائمة",
-    "no_results": "لا توجد قوائم تشغيل مطابقة",
-    "tracks": "مقاطع"
+    "no_results": "لا توجد نتائج"
   },
   "config": {
     "title": "عنوان البطاقة",

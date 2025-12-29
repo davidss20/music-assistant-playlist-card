@@ -1,15 +1,19 @@
 {
   "common": {
-    "loading": "Afspeellijsten laden...",
+    "loading": "Laden...",
     "error": "Er is een fout opgetreden",
     "no_playlists": "Geen afspeellijsten gevonden",
     "play": "Afspelen",
     "select_speaker": "Speaker selecteren",
     "no_speaker_selected": "Geen speaker geselecteerd",
     "nothing_playing": "Er wordt momenteel niets afgespeeld",
-    "queue_empty": "Wachtrij is leeg",
     "search": "Zoeken",
     "search_playlists": "Afspeellijsten zoeken...",
+    "search_placeholder": "Zoek nummers, albums, artiesten...",
+    "search_hint": "Zoek muziek om af te spelen",
+    "tracks": "Nummers",
+    "albums": "Albums",
+    "artists": "Artiesten",
     "favorites": "Favorieten",
     "all": "Alles",
     "sort": "Sorteren",
@@ -19,8 +23,7 @@
     "sort_recent": "Recent toegevoegd",
     "view_grid": "Rasterweergave",
     "view_list": "Lijstweergave",
-    "no_results": "Geen overeenkomende afspeellijsten",
-    "tracks": "nummers"
+    "no_results": "Geen resultaten gevonden"
   },
   "config": {
     "title": "Kaarttitel",

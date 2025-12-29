@@ -1,15 +1,19 @@
 {
   "common": {
-    "loading": "プレイリストを読み込み中...",
+    "loading": "読み込み中...",
     "error": "エラーが発生しました",
     "no_playlists": "プレイリストが見つかりません",
     "play": "再生",
     "select_speaker": "スピーカーを選択",
     "no_speaker_selected": "スピーカーが選択されていません",
     "nothing_playing": "現在再生中のものはありません",
-    "queue_empty": "キューは空です",
     "search": "検索",
     "search_playlists": "プレイリストを検索...",
+    "search_placeholder": "曲、アルバム、アーティストを検索...",
+    "search_hint": "再生する音楽を検索",
+    "tracks": "曲",
+    "albums": "アルバム",
+    "artists": "アーティスト",
     "favorites": "お気に入り",
     "all": "すべて",
     "sort": "並び替え",
@@ -19,8 +23,7 @@
     "sort_recent": "最近追加",
     "view_grid": "グリッド表示",
     "view_list": "リスト表示",
-    "no_results": "一致するプレイリストがありません",
-    "tracks": "曲"
+    "no_results": "結果が見つかりません"
   },
   "config": {
     "title": "カードタイトル",

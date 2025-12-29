@@ -83,10 +83,11 @@ export interface HassWebSocketMessage {
 // Tab Navigation Types
 // ============================================================================
 
-export type TabId = 'now-playing' | 'playlists' | 'queue' | 'speakers';
+export type TabId = 'now-playing' | 'playlists' | 'search' | 'speakers';
 
 export type SortOption = 'name' | 'name_desc' | 'tracks' | 'recent';
 export type ViewMode = 'grid' | 'list';
+export type SearchMediaType = 'track' | 'album' | 'artist';
 
 export interface Tab {
   id: TabId;
@@ -97,7 +98,7 @@ export interface Tab {
 export const TABS: Tab[] = [
   { id: 'now-playing', icon: 'mdi:music-note', label: 'Now Playing' },
   { id: 'playlists', icon: 'mdi:playlist-music', label: 'Playlists' },
-  { id: 'queue', icon: 'mdi:playlist-play', label: 'Queue' },
+  { id: 'search', icon: 'mdi:magnify', label: 'Search' },
   { id: 'speakers', icon: 'mdi:speaker', label: 'Speakers' },
 ];
 
@@ -279,6 +280,29 @@ export interface MusicAssistantPlayMediaParams {
   entity_id: string;
   /** Enqueue mode */
   enqueue?: 'play' | 'next' | 'add' | 'replace' | 'replace_next';
+}
+
+export interface MusicAssistantSearchResult {
+  /** Item ID */
+  item_id: string;
+  /** URI */
+  uri: string;
+  /** Name */
+  name: string;
+  /** Image */
+  image?: string | MusicAssistantImage;
+  /** Media type */
+  media_type: 'track' | 'album' | 'artist';
+  /** Artist name (for tracks) */
+  artist?: string;
+  /** Artists array */
+  artists?: Array<{ name: string }>;
+  /** Album info (for tracks) */
+  album?: { name: string };
+  /** Duration in seconds (for tracks) */
+  duration?: number;
+  /** Provider */
+  provider?: string;
 }
 
 // ============================================================================

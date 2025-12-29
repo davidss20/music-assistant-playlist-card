@@ -1,15 +1,19 @@
 {
   "common": {
-    "loading": "Ładowanie playlist...",
+    "loading": "Ładowanie...",
     "error": "Wystąpił błąd",
     "no_playlists": "Nie znaleziono playlist",
     "play": "Odtwórz",
     "select_speaker": "Wybierz głośnik",
     "no_speaker_selected": "Nie wybrano głośnika",
     "nothing_playing": "Nic nie jest obecnie odtwarzane",
-    "queue_empty": "Kolejka jest pusta",
     "search": "Szukaj",
     "search_playlists": "Szukaj playlist...",
+    "search_placeholder": "Szukaj utworów, albumów, artystów...",
+    "search_hint": "Wyszukaj muzykę do odtworzenia",
+    "tracks": "Utwory",
+    "albums": "Albumy",
+    "artists": "Artyści",
     "favorites": "Ulubione",
     "all": "Wszystkie",
     "sort": "Sortuj",
@@ -19,8 +23,7 @@
     "sort_recent": "Ostatnio dodane",
     "view_grid": "Widok siatki",
     "view_list": "Widok listy",
-    "no_results": "Brak pasujących playlist",
-    "tracks": "utworów"
+    "no_results": "Brak wyników"
   },
   "config": {
     "title": "Tytuł karty",

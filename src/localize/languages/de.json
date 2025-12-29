@@ -1,15 +1,19 @@
 {
   "common": {
-    "loading": "Wiedergabelisten werden geladen...",
+    "loading": "Laden...",
     "error": "Ein Fehler ist aufgetreten",
     "no_playlists": "Keine Wiedergabelisten gefunden",
     "play": "Abspielen",
     "select_speaker": "Lautsprecher auswählen",
     "no_speaker_selected": "Kein Lautsprecher ausgewählt",
     "nothing_playing": "Es wird derzeit nichts abgespielt",
-    "queue_empty": "Warteschlange ist leer",
     "search": "Suchen",
     "search_playlists": "Wiedergabelisten suchen...",
+    "search_placeholder": "Lieder, Alben, Künstler suchen...",
+    "search_hint": "Nach Musik zum Abspielen suchen",
+    "tracks": "Titel",
+    "albums": "Alben",
+    "artists": "Künstler",
     "favorites": "Favoriten",
     "all": "Alle",
     "sort": "Sortieren",
@@ -19,8 +23,7 @@
     "sort_recent": "Kürzlich hinzugefügt",
     "view_grid": "Rasteransicht",
     "view_list": "Listenansicht",
-    "no_results": "Keine passenden Wiedergabelisten",
-    "tracks": "Titel"
+    "no_results": "Keine Ergebnisse gefunden"
   },
   "config": {
     "title": "Kartentitel",

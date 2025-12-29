@@ -14,17 +14,15 @@ import type {
   MusicAssistantPlaylist,
   TabId,
   MediaPlayerState,
-  QueueItem,
-  MassQueueItem,
-  MusicAssistantQueueResponse,
-  MusicAssistantQueueItem,
   SortOption,
   ViewMode,
+  SearchMediaType,
+  MusicAssistantSearchResult,
 } from './types';
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.1.7';
+const CARD_VERSION = '1.2.0';
 
 // Log card info on load
 console.info(
@@ -56,15 +54,6 @@ export class MusicAssistantPlaylistCard extends LitElement {
   // Active tab - default to now-playing
   @state() private _activeTab: TabId = 'now-playing';
 
-  // Queue items
-  @state() private _queueItems: QueueItem[] = [];
-
-  // Queue loading state
-  @state() private _queueLoading = false;
-
-  // Current queue item index
-  @state() private _currentQueueIndex = -1;
-
   // Current language (for triggering re-render)
   @state() private _currentLanguage = 'en';
 
@@ -74,6 +63,12 @@ export class MusicAssistantPlaylistCard extends LitElement {
   @state() private _sortOption: SortOption = 'name';
   @state() private _viewMode: ViewMode = 'grid';
   @state() private _showSortMenu = false;
+
+  // Global search state
+  @state() private _globalSearchQuery = '';
+  @state() private _searchResults: MusicAssistantSearchResult[] = [];
+  @state() private _searchLoading = false;
+  @state() private _searchMediaType: SearchMediaType = 'track';
 
   // Apply styles
   static styles = cardStyles;
@@ -290,198 +285,6 @@ export class MusicAssistantPlaylistCard extends LitElement {
    */
   private _handleTabChange(tabId: TabId): void {
     this._activeTab = tabId;
-    
-    // Load queue when switching to queue tab
-    if (tabId === 'queue') {
-      this._loadQueue();
-    }
-  }
-
-  /**
-   * Load queue from Music Assistant using music_assistant.get_queue service
-   */
-  private async _loadQueue(): Promise<void> {
-    if (!this.hass || !this._selectedSpeaker) {
-      this._queueItems = [];
-      return;
-    }
-
-    this._queueLoading = true;
-
-    try {
-      const entity = this.hass.states[this._selectedSpeaker];
-      if (!entity) {
-        console.warn('[music-assistant-playlist-card] Entity not found:', this._selectedSpeaker);
-        this._queueItems = [];
-        return;
-      }
-
-      console.info('[music-assistant-playlist-card] Loading queue for:', this._selectedSpeaker);
-
-      // Method 1: Use music_assistant.get_queue service (works!)
-      try {
-        const response = await this.hass.callWS<{
-          response: Record<string, MusicAssistantQueueResponse>;
-        }>({
-          type: 'call_service',
-          domain: 'music_assistant',
-          service: 'get_queue',
-          target: {
-            entity_id: this._selectedSpeaker,
-          },
-          return_response: true,
-        });
-
-        console.info('[music-assistant-playlist-card] get_queue response:', response);
-
-        // Response format: { "media_player.xxx": { queue_id, items, current_item, ... } }
-        const queueData = response?.response?.[this._selectedSpeaker];
-        
-        if (queueData) {
-          console.info('[music-assistant-playlist-card] Queue data found:', {
-            queue_id: queueData.queue_id,
-            items_count: queueData.items,
-            current_index: queueData.current_index,
-          });
-
-          // Store total count for display
-          this._totalQueueItems = queueData.items || 0;
-
-          // The service returns item count, not the actual items
-          // We need to get the actual queue items via WebSocket
-          const queueId = queueData.queue_id;
-          this._currentQueueIndex = queueData.current_index ?? 0;
-
-          if (queueId && queueData.items > 0) {
-            // Now get the actual queue items
-            try {
-              const itemsResponse = await this.hass.callWS<QueueItem[]>({
-                type: 'music_assistant/player_queues/items',
-                queue_id: queueId,
-                limit: 100,
-                offset: 0,
-              });
-
-              console.info('[music-assistant-playlist-card] Queue items response:', itemsResponse);
-
-              if (Array.isArray(itemsResponse)) {
-                this._queueItems = itemsResponse.map(item => this._formatQueueItem(item));
-                console.info('[music-assistant-playlist-card] Queue loaded:', this._queueItems.length, 'items');
-                return;
-              }
-            } catch (itemsError) {
-              console.warn('[music-assistant-playlist-card] Failed to get queue items via WebSocket:', itemsError);
-            }
-          }
-
-          // If we have current_item and next_item, show at least those
-          if (queueData.current_item || queueData.next_item) {
-            this._queueItems = [];
-            if (queueData.current_item) {
-              this._queueItems.push(this._formatQueueItem(queueData.current_item));
-            }
-            if (queueData.next_item) {
-              this._queueItems.push(this._formatQueueItem(queueData.next_item));
-            }
-            this._currentQueueIndex = 0;
-            console.info('[music-assistant-playlist-card] Queue loaded from current/next items:', this._queueItems.length);
-            return;
-          }
-        }
-      } catch (serviceError) {
-        console.warn('[music-assistant-playlist-card] get_queue service failed:', serviceError);
-      }
-
-      // Method 2: Try mass_queue integration if available
-      if (this.hass.services.mass_queue?.get_queue_items) {
-        try {
-          console.info('[music-assistant-playlist-card] Trying mass_queue.get_queue_items...');
-          const response = await this.hass.callWS<{
-            response: Record<string, MassQueueItem[]>;
-          }>({
-            type: 'call_service',
-            domain: 'mass_queue',
-            service: 'get_queue_items',
-            service_data: {
-              entity: this._selectedSpeaker,
-              limit_before: 5,
-              limit_after: 50,
-            },
-            return_response: true,
-          });
-
-          const items = response?.response?.[this._selectedSpeaker];
-          if (items && Array.isArray(items)) {
-            this._queueItems = items.map(item => ({
-              queue_item_id: item.queue_item_id,
-              name: item.media_title,
-              media_type: 'track',
-              uri: item.media_content_id,
-              image: item.media_image,
-              artist: item.media_artist,
-              album: item.media_album_name,
-            }));
-            this._currentQueueIndex = 5;
-            console.info('[music-assistant-playlist-card] Queue loaded via mass_queue:', this._queueItems.length);
-            return;
-          }
-        } catch (massQueueError) {
-          console.warn('[music-assistant-playlist-card] mass_queue failed:', massQueueError);
-        }
-      }
-
-      // No queue found
-      console.warn('[music-assistant-playlist-card] Could not load queue items');
-      this._queueItems = [];
-
-    } catch (error) {
-      console.error('[music-assistant-playlist-card] Failed to load queue:', error);
-      this._queueItems = [];
-    } finally {
-      this._queueLoading = false;
-    }
-  }
-
-  /**
-   * Format a queue item from Music Assistant response
-   */
-  private _formatQueueItem(item: MusicAssistantQueueItem): QueueItem {
-    const mediaItem = item.media_item;
-    return {
-      queue_item_id: item.queue_item_id || '',
-      name: item.name || mediaItem?.name || 'Unknown',
-      media_type: mediaItem?.media_type || 'track',
-      uri: mediaItem?.uri || '',
-      image: this._extractImage(item),
-      artist: this._extractArtist(mediaItem),
-      album: mediaItem?.album?.name,
-      duration: item.duration,
-    };
-  }
-
-  /**
-   * Extract image URL from queue item
-   */
-  private _extractImage(item: MusicAssistantQueueItem): string | undefined {
-    if (item.media_item?.image) {
-      return typeof item.media_item.image === 'string' 
-        ? item.media_item.image 
-        : item.media_item.image.path;
-    }
-    if (item.image) {
-      return typeof item.image === 'string' ? item.image : item.image.path;
-    }
-    return undefined;
-  }
-
-  /**
-   * Extract artist name from media item
-   */
-  private _extractArtist(mediaItem?: { artists?: Array<{ name: string }> }): string | undefined {
-    if (mediaItem?.artists && mediaItem.artists.length > 0) {
-      return mediaItem.artists.map(a => a.name).join(', ');
-    }
-    return undefined;
   }
 
   /**
@@ -990,135 +793,240 @@ export class MusicAssistantPlaylistCard extends LitElement {
     `;
   }
 
+  // ==========================================================================
+  // Search Functions
+  // ==========================================================================
+
   /**
-   * Get image URL for a queue item
+   * Handle global search input
    */
-  private _getQueueItemImage(item: QueueItem): string | null {
-    if (!item.image) return null;
+  private _handleGlobalSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this._globalSearchQuery = input.value;
+  }
+
+  /**
+   * Handle search form submit
+   */
+  private _handleSearchSubmit(event: Event): void {
+    event.preventDefault();
+    if (this._globalSearchQuery.trim()) {
+      this._performSearch();
+    }
+  }
+
+  /**
+   * Set search media type filter
+   */
+  private _setSearchMediaType(type: SearchMediaType): void {
+    this._searchMediaType = type;
+    if (this._globalSearchQuery.trim()) {
+      this._performSearch();
+    }
+  }
+
+  /**
+   * Perform search using Music Assistant API
+   */
+  private async _performSearch(): Promise<void> {
+    if (!this.hass || !this._config?.config_entry_id || !this._globalSearchQuery.trim()) {
+      return;
+    }
+
+    this._searchLoading = true;
+    this._searchResults = [];
+
+    try {
+      const response = await this.hass.callWS<{
+        response: {
+          tracks?: MusicAssistantSearchResult[];
+          albums?: MusicAssistantSearchResult[];
+          artists?: MusicAssistantSearchResult[];
+        };
+      }>({
+        type: 'call_service',
+        domain: 'music_assistant',
+        service: 'search',
+        service_data: {
+          config_entry_id: this._config.config_entry_id,
+          search_query: this._globalSearchQuery,
+          media_type: [this._searchMediaType],
+          limit: 25,
+        },
+        return_response: true,
+      });
+
+      console.info('[music-assistant-playlist-card] Search response:', response);
+
+      // Extract results based on media type
+      const results = response?.response;
+      if (results) {
+        if (this._searchMediaType === 'track' && results.tracks) {
+          this._searchResults = results.tracks;
+        } else if (this._searchMediaType === 'album' && results.albums) {
+          this._searchResults = results.albums;
+        } else if (this._searchMediaType === 'artist' && results.artists) {
+          this._searchResults = results.artists;
+        }
+      }
+
+      console.info('[music-assistant-playlist-card] Search results:', this._searchResults.length);
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Search failed:', error);
+      this._searchResults = [];
+    } finally {
+      this._searchLoading = false;
+    }
+  }
+
+  /**
+   * Play a search result
+   */
+  private async _playSearchResult(result: MusicAssistantSearchResult): Promise<void> {
+    if (!this.hass || !this._selectedSpeaker) {
+      console.warn('[music-assistant-playlist-card] No speaker selected');
+      return;
+    }
+
+    try {
+      const mediaId = result.uri || result.item_id;
+      
+      await this.hass.callService('music_assistant', 'play_media', {
+        media_id: mediaId,
+        media_type: result.media_type,
+        enqueue: 'replace',
+      }, { entity_id: this._selectedSpeaker });
+      
+      console.info('[music-assistant-playlist-card] Playing:', result.name);
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Failed to play:', error);
+    }
+  }
+
+  /**
+   * Get image URL for a search result
+   */
+  private _getSearchResultImage(result: MusicAssistantSearchResult): string | null {
+    if (!result.image) return null;
     
-    if (typeof item.image === 'string') {
-      return item.image;
+    if (typeof result.image === 'string') {
+      return result.image;
     }
     
-    if (typeof item.image === 'object' && item.image.path) {
-      return item.image.path;
+    if (typeof result.image === 'object' && result.image.path) {
+      return result.image.path;
     }
     
     return null;
   }
 
   /**
-   * Play a specific queue item
+   * Get artist name from search result
    */
-  private async _playQueueItem(index: number): Promise<void> {
-    if (!this.hass || !this._selectedSpeaker) return;
-    
-    const item = this._queueItems[index];
-    if (!item) return;
-
-    try {
-      // First get the queue_id
-      const queueResponse = await this.hass.callWS<{
-        response: Record<string, { queue_id: string }>;
-      }>({
-        type: 'call_service',
-        domain: 'music_assistant',
-        service: 'get_queue',
-        target: {
-          entity_id: this._selectedSpeaker,
-        },
-        return_response: true,
-      });
-
-      const queueId = queueResponse?.response?.[this._selectedSpeaker]?.queue_id;
-      
-      if (queueId) {
-        // Use play_index with queue_item_id
-        await this.hass.callWS({
-          type: 'music_assistant/player_queues/play_index',
-          queue_id: queueId,
-          index: item.queue_item_id,
-        });
-        console.info('[music-assistant-playlist-card] Playing queue item:', item.name);
-      } else {
-        console.warn('[music-assistant-playlist-card] Could not get queue_id for playback');
-      }
-    } catch (error) {
-      console.error('[music-assistant-playlist-card] Failed to play queue item:', error);
+  private _getSearchResultArtist(result: MusicAssistantSearchResult): string | null {
+    if (result.artist) return result.artist;
+    if (result.artists && result.artists.length > 0) {
+      return result.artists.map(a => a.name).join(', ');
     }
+    return null;
   }
 
-  // Store total queue count for display
-  @state() private _totalQueueItems = 0;
-
   /**
-   * Render Queue view
+   * Render Search view
    */
-  private _renderQueue(): TemplateResult {
-    if (!this._selectedSpeaker) {
-      return html`
-        <div class="queue-empty">
-          <ha-icon icon="mdi:speaker-off"></ha-icon>
-          <span>${localize('common.no_speaker_selected')}</span>
-        </div>
-      `;
-    }
-
-    if (this._queueLoading) {
-      return html`
-        <div class="loading-container">
-          <div class="loading-spinner"></div>
-          <span class="loading-text">${localize('common.loading')}</span>
-        </div>
-      `;
-    }
-
-    if (this._queueItems.length === 0) {
-      return html`
-        <div class="queue-empty">
-          <ha-icon icon="mdi:playlist-play"></ha-icon>
-          <span>${localize('common.queue_empty')}</span>
-        </div>
-      `;
-    }
-
-    // Check if we're showing limited items (fallback mode)
-    const isLimitedView = this._queueItems.length < this._totalQueueItems;
-
+  private _renderSearch(): TemplateResult {
     return html`
-      ${isLimitedView ? html`
-        <div class="queue-notice">
-          <ha-icon icon="mdi:information-outline"></ha-icon>
-          <span>${localize('common.queue_limited', { total: String(this._totalQueueItems) })}</span>
+      <div class="search-view">
+        <form class="global-search-form" @submit=${this._handleSearchSubmit}>
+          <div class="global-search-container">
+            <ha-icon class="search-icon" icon="mdi:magnify"></ha-icon>
+            <input
+              type="text"
+              class="global-search-input"
+              placeholder="${localize('common.search_placeholder')}"
+              .value=${this._globalSearchQuery}
+              @input=${this._handleGlobalSearchInput}
+            />
+            ${this._globalSearchQuery ? html`
+              <button 
+                type="button" 
+                class="search-clear-button"
+                @click=${() => { this._globalSearchQuery = ''; this._searchResults = []; }}
+              >
+                <ha-icon icon="mdi:close"></ha-icon>
+              </button>
+            ` : nothing}
+          </div>
+        </form>
+
+        <div class="search-type-filters">
+          <button
+            class="search-type-button ${this._searchMediaType === 'track' ? 'active' : ''}"
+            @click=${() => this._setSearchMediaType('track')}
+          >
+            <ha-icon icon="mdi:music-note"></ha-icon>
+            <span>${localize('common.tracks')}</span>
+          </button>
+          <button
+            class="search-type-button ${this._searchMediaType === 'album' ? 'active' : ''}"
+            @click=${() => this._setSearchMediaType('album')}
+          >
+            <ha-icon icon="mdi:album"></ha-icon>
+            <span>${localize('common.albums')}</span>
+          </button>
+          <button
+            class="search-type-button ${this._searchMediaType === 'artist' ? 'active' : ''}"
+            @click=${() => this._setSearchMediaType('artist')}
+          >
+            <ha-icon icon="mdi:account-music"></ha-icon>
+            <span>${localize('common.artists')}</span>
+          </button>
         </div>
-      ` : nothing}
-      <div class="queue-list">
-        ${this._queueItems.map((item, index) => {
-          const imageUrl = this._getQueueItemImage(item);
-          const isPlaying = index === this._currentQueueIndex;
-          
-          return html`
-            <div 
-              class="queue-item ${isPlaying ? 'playing' : ''}"
-              @click=${() => this._playQueueItem(index)}
-            >
-              <div class="queue-item-image">
-                ${imageUrl
-                  ? html`<img src="${imageUrl}" alt="${item.name}" />`
-                  : html`<ha-icon icon="mdi:music-note"></ha-icon>`}
-              </div>
-              <div class="queue-item-info">
-                <div class="queue-item-title">${item.name}</div>
-                ${item.artist
-                  ? html`<div class="queue-item-artist">${item.artist}</div>`
-                  : nothing}
-              </div>
-              ${isPlaying
-                ? html`<ha-icon class="queue-item-playing-icon" icon="mdi:volume-high"></ha-icon>`
-                : nothing}
-            </div>
-          `;
-        })}
+
+        ${this._searchLoading ? html`
+          <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <span class="loading-text">${localize('common.loading')}</span>
+          </div>
+        ` : this._searchResults.length > 0 ? html`
+          <div class="search-results">
+            ${this._searchResults.map(result => {
+              const imageUrl = this._getSearchResultImage(result);
+              const artist = this._getSearchResultArtist(result);
+              
+              return html`
+                <div 
+                  class="search-result-item"
+                  @click=${() => this._playSearchResult(result)}
+                >
+                  <div class="search-result-image">
+                    ${imageUrl
+                      ? html`<img src="${imageUrl}" alt="${result.name}" />`
+                      : html`<ha-icon icon="${this._searchMediaType === 'artist' ? 'mdi:account-music' : this._searchMediaType === 'album' ? 'mdi:album' : 'mdi:music-note'}"></ha-icon>`}
+                  </div>
+                  <div class="search-result-info">
+                    <div class="search-result-title">${result.name}</div>
+                    ${artist ? html`<div class="search-result-artist">${artist}</div>` : nothing}
+                    ${result.album?.name ? html`<div class="search-result-album">${result.album.name}</div>` : nothing}
+                  </div>
+                  <button class="search-result-play" title="${localize('common.play')}">
+                    <ha-icon icon="mdi:play"></ha-icon>
+                  </button>
+                </div>
+              `;
+            })}
+          </div>
+        ` : this._globalSearchQuery && !this._searchLoading ? html`
+          <div class="search-empty">
+            <ha-icon icon="mdi:magnify"></ha-icon>
+            <span>${localize('common.no_results')}</span>
+          </div>
+        ` : html`
+          <div class="search-empty">
+            <ha-icon icon="mdi:music-box-multiple"></ha-icon>
+            <span>${localize('common.search_hint')}</span>
+          </div>
+        `}
       </div>
     `;
   }
@@ -1136,8 +1044,8 @@ export class MusicAssistantPlaylistCard extends LitElement {
           : this._error
             ? this._renderError()
             : this._renderPlaylistsView();
-      case 'queue':
-        return this._renderQueue();
+      case 'search':
+        return this._renderSearch();
       case 'speakers':
         return this._renderSpeakers();
       default:

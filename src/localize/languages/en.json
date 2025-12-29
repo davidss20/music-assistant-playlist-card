@@ -1,16 +1,19 @@
 {
   "common": {
-    "loading": "Loading playlists...",
+    "loading": "Loading...",
     "error": "An error occurred",
     "no_playlists": "No playlists found",
     "play": "Play",
     "select_speaker": "Select Speaker",
     "no_speaker_selected": "No speaker selected",
     "nothing_playing": "Nothing is currently playing",
-    "queue_empty": "Queue is empty",
-    "queue_limited": "Showing current & next track ({total} in queue). Install mass_queue for full list.",
     "search": "Search",
     "search_playlists": "Search playlists...",
+    "search_placeholder": "Search for songs, albums, artists...",
+    "search_hint": "Search for music to play",
+    "tracks": "Tracks",
+    "albums": "Albums",
+    "artists": "Artists",
     "favorites": "Favorites",
     "all": "All",
     "sort": "Sort",
@@ -20,8 +23,7 @@
     "sort_recent": "Recently added",
     "view_grid": "Grid view",
     "view_list": "List view",
-    "no_results": "No playlists match your search",
-    "tracks": "tracks"
+    "no_results": "No results found"
   },
   "config": {
     "title": "Card Title",

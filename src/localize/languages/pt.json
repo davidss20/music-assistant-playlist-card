@@ -1,15 +1,19 @@
 {
   "common": {
-    "loading": "Carregando playlists...",
+    "loading": "Carregando...",
     "error": "Ocorreu um erro",
     "no_playlists": "Nenhuma playlist encontrada",
     "play": "Reproduzir",
     "select_speaker": "Selecionar alto-falante",
     "no_speaker_selected": "Nenhum alto-falante selecionado",
     "nothing_playing": "Nada está tocando no momento",
-    "queue_empty": "A fila está vazia",
     "search": "Pesquisar",
     "search_playlists": "Pesquisar playlists...",
+    "search_placeholder": "Pesquisar músicas, álbuns, artistas...",
+    "search_hint": "Pesquisar música para tocar",
+    "tracks": "Faixas",
+    "albums": "Álbuns",
+    "artists": "Artistas",
     "favorites": "Favoritos",
     "all": "Todos",
     "sort": "Ordenar",
@@ -19,8 +23,7 @@
     "sort_recent": "Adicionados recentemente",
     "view_grid": "Visualização em grade",
     "view_list": "Visualização em lista",
-    "no_results": "Nenhuma playlist correspondente",
-    "tracks": "faixas"
+    "no_results": "Nenhum resultado encontrado"
   },
   "config": {
     "title": "Título do cartão",

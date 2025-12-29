@@ -1,15 +1,19 @@
 {
   "common": {
-    "loading": "Caricamento playlist...",
+    "loading": "Caricamento...",
     "error": "Si è verificato un errore",
     "no_playlists": "Nessuna playlist trovata",
     "play": "Riproduci",
     "select_speaker": "Seleziona altoparlante",
     "no_speaker_selected": "Nessun altoparlante selezionato",
     "nothing_playing": "Nessuna riproduzione in corso",
-    "queue_empty": "La coda è vuota",
     "search": "Cerca",
     "search_playlists": "Cerca playlist...",
+    "search_placeholder": "Cerca brani, album, artisti...",
+    "search_hint": "Cerca musica da riprodurre",
+    "tracks": "Brani",
+    "albums": "Album",
+    "artists": "Artisti",
     "favorites": "Preferiti",
     "all": "Tutti",
     "sort": "Ordina",
@@ -19,8 +23,7 @@
     "sort_recent": "Aggiunti di recente",
     "view_grid": "Vista griglia",
     "view_list": "Vista elenco",
-    "no_results": "Nessuna playlist corrispondente",
-    "tracks": "tracce"
+    "no_results": "Nessun risultato trovato"
   },
   "config": {
     "title": "Titolo scheda",

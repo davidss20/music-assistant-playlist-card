@@ -1,15 +1,19 @@
 {
   "common": {
-    "loading": "Cargando listas de reproducción...",
+    "loading": "Cargando...",
     "error": "Se produjo un error",
     "no_playlists": "No se encontraron listas de reproducción",
     "play": "Reproducir",
     "select_speaker": "Seleccionar altavoz",
     "no_speaker_selected": "Ningún altavoz seleccionado",
     "nothing_playing": "No se está reproduciendo nada",
-    "queue_empty": "La cola está vacía",
     "search": "Buscar",
     "search_playlists": "Buscar listas...",
+    "search_placeholder": "Buscar canciones, álbumes, artistas...",
+    "search_hint": "Buscar música para reproducir",
+    "tracks": "Pistas",
+    "albums": "Álbumes",
+    "artists": "Artistas",
     "favorites": "Favoritos",
     "all": "Todo",
     "sort": "Ordenar",
@@ -19,8 +23,7 @@
     "sort_recent": "Añadidos recientemente",
     "view_grid": "Vista cuadrícula",
     "view_list": "Vista lista",
-    "no_results": "No hay listas coincidentes",
-    "tracks": "pistas"
+    "no_results": "No se encontraron resultados"
   },
   "config": {
     "title": "Título de la tarjeta",
