@@ -7,8 +7,6 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
     --playlist-item-gap: 12px;
     display: flex;
     flex-direction: column;
-    height: 100%;
-    min-height: inherit;
   }
 
   /* RTL Support */
@@ -65,10 +63,7 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
   }
 
   ha-card {
-    overflow: hidden;
-    height: 100%;
-    min-height: inherit;
-    flex: 1;
+    overflow: visible;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -91,9 +86,6 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
 
   .card-content {
     padding: var(--playlist-card-spacing);
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
   }
 
   .card-content::-webkit-scrollbar {
@@ -739,34 +731,12 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
 
   /* Tab Content */
   .tab-content {
-    flex: 1;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
   }
 
   .tab-view {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
     padding: var(--playlist-card-spacing);
-  }
-
-  .tab-view::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .tab-view::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .tab-view::-webkit-scrollbar-thumb {
-    background: var(--divider-color, rgba(0, 0, 0, 0.2));
-    border-radius: 3px;
-  }
-
-  .tab-view::-webkit-scrollbar-thumb:hover {
-    background: var(--secondary-text-color);
   }
 
   /* ==========================================================================
@@ -1143,7 +1113,6 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
     display: flex;
     flex-direction: column;
     gap: 16px;
-    height: 100%;
   }
 
   .global-search-form {
@@ -1265,8 +1234,6 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
     display: flex;
     flex-direction: column;
     gap: 4px;
-    flex: 1;
-    overflow-y: auto;
   }
 
   .search-result-item {

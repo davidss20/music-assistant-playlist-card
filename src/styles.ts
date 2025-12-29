@@ -15,8 +15,6 @@ export const cardStyles = css`
     --playlist-item-gap: 12px;
     display: flex;
     flex-direction: column;
-    height: 100%;
-    min-height: inherit;
   }
 
   /* RTL Support */
@@ -73,10 +71,7 @@ export const cardStyles = css`
   }
 
   ha-card {
-    overflow: hidden;
-    height: 100%;
-    min-height: inherit;
-    flex: 1;
+    overflow: visible;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -99,9 +94,6 @@ export const cardStyles = css`
 
   .card-content {
     padding: var(--playlist-card-spacing);
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
   }
 
   .card-content::-webkit-scrollbar {
@@ -747,34 +739,12 @@ export const cardStyles = css`
 
   /* Tab Content */
   .tab-content {
-    flex: 1;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
   }
 
   .tab-view {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
     padding: var(--playlist-card-spacing);
-  }
-
-  .tab-view::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .tab-view::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .tab-view::-webkit-scrollbar-thumb {
-    background: var(--divider-color, rgba(0, 0, 0, 0.2));
-    border-radius: 3px;
-  }
-
-  .tab-view::-webkit-scrollbar-thumb:hover {
-    background: var(--secondary-text-color);
   }
 
   /* ==========================================================================
@@ -1151,7 +1121,6 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     gap: 16px;
-    height: 100%;
   }
 
   .global-search-form {
@@ -1273,8 +1242,6 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     gap: 4px;
-    flex: 1;
-    overflow-y: auto;
   }
 
   .search-result-item {
