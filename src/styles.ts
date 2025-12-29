@@ -63,7 +63,7 @@ export const cardStyles = css`
   }
 
   :host([dir="rtl"]) .volume-slider-full {
-    direction: rtl;
+    transform: scaleX(-1);
   }
 
   :host([dir="rtl"]) .progress-time {
