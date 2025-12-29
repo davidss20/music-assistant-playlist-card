@@ -175,27 +175,6 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
   }
 
   /**
-   * Add a speaker to the list
-   */
-  private _addSpeaker(): void {
-    if (!this._selectedNewSpeaker) return;
-
-    // Check if already exists
-    if (this._config.speakers?.includes(this._selectedNewSpeaker)) {
-      this._selectedNewSpeaker = '';
-      return;
-    }
-
-    this._config = {
-      ...this._config,
-      speakers: [...(this._config.speakers || []), this._selectedNewSpeaker],
-    };
-
-    this._selectedNewSpeaker = '';
-    this._configChanged(this._config);
-  }
-
-  /**
    * Remove a speaker from the list
    */
   private _removeSpeaker(speaker: string): void {
@@ -208,29 +187,27 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
   }
 
   /**
-   * Handle new speaker selection from entity picker
+   * Handle speaker selection from entity picker
    */
-  private _newSpeakerChanged(ev: CustomEvent): void {
+  private _speakerPickerChanged(ev: CustomEvent): void {
+    ev.stopPropagation();
     const value = ev.detail?.value;
-    if (value) {
-      this._selectedNewSpeaker = value;
-    }
-  }
-
-  /**
-   * Handle speaker selection and add immediately
-   */
-  private _speakerSelected(ev: CustomEvent): void {
-    const value = ev.detail?.value;
+    console.log('[editor] Speaker picker changed:', value);
+    
     if (value && !this._config.speakers?.includes(value)) {
+      // Add speaker immediately
+      const newSpeakers = [...(this._config.speakers || []), value];
       this._config = {
         ...this._config,
-        speakers: [...(this._config.speakers || []), value],
+        speakers: newSpeakers,
       };
       this._configChanged(this._config);
+      console.log('[editor] Added speaker:', value, 'Total:', newSpeakers.length);
     }
-    // Reset picker
+    
+    // Force reset the picker by updating state
     this._selectedNewSpeaker = '';
+    this.requestUpdate();
   }
 
   /**
@@ -329,7 +306,7 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
               .hass=${this.hass}
               .value=${this._selectedNewSpeaker}
               .includeDomains=${['media_player']}
-              @value-changed=${this._speakerSelected}
+              @value-changed=${this._speakerPickerChanged}
               allow-custom-entity
               label="Select speaker to add"
             ></ha-entity-picker>
