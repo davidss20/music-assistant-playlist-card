@@ -171,4 +171,7 @@ If you find this card useful, consider:
 - ⭐ Starring the repository
 - 🐛 Reporting bugs or requesting features via [Issues](https://github.com/davidss20/music-assistant-playlist-card/issues)
 - 🔧 Contributing code or translations
+- ☕ [Buy me a coffee](https://buymeacoffee.com/davidss20)
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow?style=for-the-badge&logo=buy-me-a-coffee)](https://buymeacoffee.com/davidss20)
 

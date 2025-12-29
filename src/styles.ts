@@ -792,7 +792,7 @@ export const cardStyles = css`
 
   .now-playing-artwork {
     width: 100%;
-    max-width: 280px;
+    max-width: 360px;
     aspect-ratio: 1;
     border-radius: 16px;
     overflow: hidden;
@@ -1000,6 +1000,53 @@ export const cardStyles = css`
     background: var(--primary-color);
     cursor: pointer;
     border: none;
+  }
+
+  /* Full Width Volume Slider */
+  .volume-full-width {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 360px;
+    padding: 0 8px;
+  }
+
+  .volume-full-width ha-icon {
+    --mdc-icon-size: 20px;
+    color: var(--secondary-text-color);
+    flex-shrink: 0;
+  }
+
+  .volume-slider-full {
+    flex: 1;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--divider-color, rgba(0, 0, 0, 0.1));
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .volume-slider-full::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .volume-slider-full::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   /* ==========================================================================

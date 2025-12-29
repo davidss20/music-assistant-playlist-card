@@ -24,7 +24,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.1.6';
+const CARD_VERSION = '1.1.7';
 
 // Log card info on load
 console.info(
@@ -931,6 +931,8 @@ export class MusicAssistantPlaylistCard extends LitElement {
             >
               <ha-icon icon="mdi:shuffle"></ha-icon>
             </button>
+          </div>
+          <div class="secondary-controls-right">
             <button 
               class="control-button small ${state.repeat !== 'off' ? 'active' : ''}" 
               @click=${this._toggleRepeat}
@@ -939,20 +941,20 @@ export class MusicAssistantPlaylistCard extends LitElement {
               <ha-icon icon="${state.repeat === 'one' ? 'mdi:repeat-once' : 'mdi:repeat'}"></ha-icon>
             </button>
           </div>
-          <div class="secondary-controls-right">
-            <div class="volume-container">
-              <ha-icon icon="mdi:volume-high"></ha-icon>
-              <input
-                type="range"
-                class="volume-slider"
-                min="0"
-                max="1"
-                step="0.01"
-                .value=${String(state.volume_level || 0)}
-                @change=${this._setVolume}
-              />
-            </div>
-          </div>
+        </div>
+
+        <div class="volume-full-width">
+          <ha-icon icon="mdi:volume-low"></ha-icon>
+          <input
+            type="range"
+            class="volume-slider-full"
+            min="0"
+            max="1"
+            step="0.01"
+            .value=${String(state.volume_level || 0)}
+            @change=${this._setVolume}
+          />
+          <ha-icon icon="mdi:volume-high"></ha-icon>
         </div>
       </div>
     `;
