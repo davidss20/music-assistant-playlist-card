@@ -122,6 +122,7 @@ export interface MediaPlayerState {
 
 export interface QueueItem {
   queue_item_id: string;
+  item_id?: string;
   name: string;
   media_type: string;
   uri: string;
