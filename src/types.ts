@@ -146,6 +146,42 @@ export interface MassQueueItem {
   favorite?: boolean;
 }
 
+/**
+ * Response from music_assistant.get_queue service
+ */
+export interface MusicAssistantQueueResponse {
+  queue_id: string;
+  active: boolean;
+  name: string;
+  items: number;
+  shuffle_enabled: boolean;
+  repeat_mode: string;
+  current_index: number;
+  elapsed_time: number;
+  current_item?: MusicAssistantQueueItem;
+  next_item?: MusicAssistantQueueItem;
+}
+
+/**
+ * Queue item from Music Assistant
+ */
+export interface MusicAssistantQueueItem {
+  queue_item_id: string;
+  name: string;
+  duration?: number;
+  image?: string | MusicAssistantImage;
+  media_item?: {
+    media_type: string;
+    uri: string;
+    name: string;
+    image?: string | MusicAssistantImage;
+    favorite?: boolean;
+    artists?: Array<{ name: string }>;
+    album?: { name: string };
+  };
+  stream_title?: string;
+}
+
 // ============================================================================
 // Card Configuration Types
 // ============================================================================
