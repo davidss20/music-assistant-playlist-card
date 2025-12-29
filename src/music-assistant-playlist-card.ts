@@ -24,7 +24,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.1.5';
+const CARD_VERSION = '1.1.6';
 
 // Log card info on load
 console.info(
@@ -343,6 +343,9 @@ export class MusicAssistantPlaylistCard extends LitElement {
             items_count: queueData.items,
             current_index: queueData.current_index,
           });
+
+          // Store total count for display
+          this._totalQueueItems = queueData.items || 0;
 
           // The service returns item count, not the actual items
           // We need to get the actual queue items via WebSocket
@@ -1043,6 +1046,9 @@ export class MusicAssistantPlaylistCard extends LitElement {
     }
   }
 
+  // Store total queue count for display
+  @state() private _totalQueueItems = 0;
+
   /**
    * Render Queue view
    */
@@ -1074,7 +1080,16 @@ export class MusicAssistantPlaylistCard extends LitElement {
       `;
     }
 
+    // Check if we're showing limited items (fallback mode)
+    const isLimitedView = this._queueItems.length < this._totalQueueItems;
+
     return html`
+      ${isLimitedView ? html`
+        <div class="queue-notice">
+          <ha-icon icon="mdi:information-outline"></ha-icon>
+          <span>${localize('common.queue_limited', { total: String(this._totalQueueItems) })}</span>
+        </div>
+      ` : nothing}
       <div class="queue-list">
         ${this._queueItems.map((item, index) => {
           const imageUrl = this._getQueueItemImage(item);

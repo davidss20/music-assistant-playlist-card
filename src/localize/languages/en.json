@@ -8,6 +8,7 @@
     "no_speaker_selected": "No speaker selected",
     "nothing_playing": "Nothing is currently playing",
     "queue_empty": "Queue is empty",
+    "queue_limited": "Showing current & next track ({total} in queue). Install mass_queue for full list.",
     "search": "Search",
     "search_playlists": "Search playlists...",
     "favorites": "Favorites",

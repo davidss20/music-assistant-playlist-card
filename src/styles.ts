@@ -1147,6 +1147,26 @@ export const cardStyles = css`
     color: var(--primary-color);
   }
 
+  .queue-notice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: var(--info-color, #2196f3);
+    background-opacity: 0.1;
+    border-radius: var(--playlist-card-border-radius);
+    color: var(--primary-text-color);
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+
+  .queue-notice ha-icon {
+    --mdc-icon-size: 20px;
+    flex-shrink: 0;
+    color: var(--info-color, #2196f3);
+  }
+
   .queue-empty {
     display: flex;
     flex-direction: column;

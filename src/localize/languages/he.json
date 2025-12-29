@@ -8,6 +8,7 @@
     "no_speaker_selected": "לא נבחר רמקול",
     "nothing_playing": "אין כרגע מוזיקה מתנגנת",
     "queue_empty": "התור ריק",
+    "queue_limited": "מציג שיר נוכחי והבא ({total} בתור). התקן mass_queue לרשימה מלאה.",
     "search": "חיפוש",
     "search_playlists": "חפש פלייליסטים...",
     "favorites": "מועדפים",
