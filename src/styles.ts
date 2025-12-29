@@ -1468,14 +1468,19 @@ export const editorStyles = css`
     color: var(--error-color, #db4437);
   }
 
-  .add-speaker {
+  .add-speaker-row {
     display: flex;
     gap: 8px;
     margin-top: 8px;
+    align-items: flex-end;
   }
 
-  .add-speaker ha-entity-picker {
+  .add-speaker-row ha-selector {
     flex: 1;
+  }
+  
+  .add-speaker-row mwc-button {
+    margin-bottom: 4px;
   }
 
   .section-title {

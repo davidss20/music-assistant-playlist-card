@@ -193,21 +193,32 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
     ev.stopPropagation();
     const value = ev.detail?.value;
     console.log('[editor] Speaker picker changed:', value);
+    this._selectedNewSpeaker = value || '';
+  }
+
+  /**
+   * Add the selected speaker to the list
+   */
+  private _addSelectedSpeaker(): void {
+    if (!this._selectedNewSpeaker) return;
     
-    if (value && !this._config.speakers?.includes(value)) {
-      // Add speaker immediately
-      const newSpeakers = [...(this._config.speakers || []), value];
-      this._config = {
-        ...this._config,
-        speakers: newSpeakers,
-      };
-      this._configChanged(this._config);
-      console.log('[editor] Added speaker:', value, 'Total:', newSpeakers.length);
+    // Check if already exists
+    if (this._config.speakers?.includes(this._selectedNewSpeaker)) {
+      console.log('[editor] Speaker already exists:', this._selectedNewSpeaker);
+      this._selectedNewSpeaker = '';
+      return;
     }
     
-    // Force reset the picker by updating state
+    const newSpeakers = [...(this._config.speakers || []), this._selectedNewSpeaker];
+    this._config = {
+      ...this._config,
+      speakers: newSpeakers,
+    };
+    this._configChanged(this._config);
+    console.log('[editor] Added speaker:', this._selectedNewSpeaker, 'Total:', newSpeakers.length);
+    
+    // Reset picker
     this._selectedNewSpeaker = '';
-    this.requestUpdate();
   }
 
   /**
@@ -301,15 +312,21 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
               `
             : nothing}
 
-          <div class="add-speaker">
-            <ha-entity-picker
+          <div class="add-speaker-row">
+            <ha-selector
               .hass=${this.hass}
+              .selector=${{ entity: { domain: 'media_player' } }}
               .value=${this._selectedNewSpeaker}
-              .includeDomains=${['media_player']}
               @value-changed=${this._speakerPickerChanged}
-              allow-custom-entity
-              label="Select speaker to add"
-            ></ha-entity-picker>
+              .label=${'Select speaker'}
+            ></ha-selector>
+            <mwc-button
+              raised
+              @click=${this._addSelectedSpeaker}
+              .disabled=${!this._selectedNewSpeaker}
+            >
+              Add
+            </mwc-button>
           </div>
         </div>
 
