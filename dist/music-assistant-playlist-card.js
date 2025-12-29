@@ -67,8 +67,7 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    max-width: 500px;
-    margin: 0 auto;
+    width: 100%;
   }
 
   .card-header {
@@ -746,18 +745,31 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
      ========================================================================== */
 
   .now-playing {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    padding: 16px;
+    align-items: start;
+  }
+
+  .now-playing-left {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 12px;
+  }
+
+  .now-playing-right {
+    display: flex;
+    flex-direction: column;
     gap: 16px;
-    padding: 16px;
-    max-width: 500px;
-    margin: 0 auto;
+    justify-content: center;
+    min-height: 100%;
   }
 
   .now-playing-artwork {
-    width: 100%;
-    max-width: 350px;
+    width: 200px;
+    height: 200px;
     aspect-ratio: 1;
     border-radius: 16px;
     overflow: hidden;
@@ -787,7 +799,7 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
   }
 
   .now-playing-info {
-    text-align: center;
+    text-align: start;
     width: 100%;
   }
 
@@ -863,7 +875,7 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
   .player-controls {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 16px;
   }
 
@@ -1718,78 +1730,82 @@ function e(e,t,s,i){var a,r=arguments.length,o=r<3?t:null===i?i=Object.getOwnPro
         </div>
       `;const s=e.media_duration&&e.media_position?e.media_position/e.media_duration*100:0;return B`
       <div class="now-playing">
-        <div class="now-playing-artwork">
-          ${e.entity_picture?B`<img src="${e.entity_picture}" alt="Album art" />`:B`
-                <div class="now-playing-artwork-placeholder">
-                  <ha-icon icon="mdi:music"></ha-icon>
-                </div>
-              `}
-        </div>
-
-        <div class="now-playing-info">
-          <h3 class="now-playing-title">${e.media_title||"Unknown"}</h3>
-          <p class="now-playing-artist">${e.media_artist||"Unknown artist"}</p>
-        </div>
-
-        ${e.media_duration?B`
-              <div class="progress-container">
-                <div class="progress-bar">
-                  <div class="progress-bar-fill" style="width: ${s}%"></div>
-                </div>
-                <div class="progress-time">
-                  <span>${this._formatTime(e.media_position||0)}</span>
-                  <span>${this._formatTime(e.media_duration)}</span>
-                </div>
-              </div>
-            `:D}
-
-        <div class="player-controls">
-          <button class="control-button" @click=${this._mediaPrevious} title="Previous">
-            <ha-icon icon="mdi:skip-previous"></ha-icon>
-          </button>
-          <button class="control-button play-pause" @click=${this._mediaPlayPause} title="${t?"Pause":"Play"}">
-            <ha-icon icon="${t?"mdi:pause":"mdi:play"}"></ha-icon>
-          </button>
-          <button class="control-button" @click=${this._mediaNext} title="Next">
-            <ha-icon icon="mdi:skip-next"></ha-icon>
-          </button>
-        </div>
-
-        <div class="secondary-controls">
-          <div class="secondary-controls-left">
-            <button 
-              class="control-button small ${e.shuffle?"active":""}" 
-              @click=${this._toggleShuffle}
-              title="Shuffle"
-            >
-              <ha-icon icon="mdi:shuffle"></ha-icon>
-            </button>
-          </div>
-          <div class="secondary-controls-right">
-            <button 
-              class="control-button small ${"off"!==e.repeat?"active":""}" 
-              @click=${this._toggleRepeat}
-              title="Repeat: ${e.repeat||"off"}"
-            >
-              <ha-icon icon="${"one"===e.repeat?"mdi:repeat-once":"mdi:repeat"}"></ha-icon>
-            </button>
+        <div class="now-playing-left">
+          <div class="now-playing-artwork">
+            ${e.entity_picture?B`<img src="${e.entity_picture}" alt="Album art" />`:B`
+                  <div class="now-playing-artwork-placeholder">
+                    <ha-icon icon="mdi:music"></ha-icon>
+                  </div>
+                `}
           </div>
         </div>
 
-        <div class="volume-full-width">
-          <ha-icon icon="mdi:volume-low"></ha-icon>
-          <input
-            type="range"
-            class="volume-slider-full"
-            min="0"
-            max="1"
-            step="0.01"
-            .value=${String(e.volume_level||0)}
-            @input=${this._updateVolumeSliderFill}
-            @change=${this._setVolume}
-            style="background: linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) ${100*(e.volume_level||0)}%, var(--divider-color, rgba(0,0,0,0.1)) ${100*(e.volume_level||0)}%, var(--divider-color, rgba(0,0,0,0.1)) 100%)"
-          />
-          <ha-icon icon="mdi:volume-high"></ha-icon>
+        <div class="now-playing-right">
+          <div class="now-playing-info">
+            <h3 class="now-playing-title">${e.media_title||"Unknown"}</h3>
+            <p class="now-playing-artist">${e.media_artist||"Unknown artist"}</p>
+          </div>
+
+          ${e.media_duration?B`
+                <div class="progress-container">
+                  <div class="progress-bar">
+                    <div class="progress-bar-fill" style="width: ${s}%"></div>
+                  </div>
+                  <div class="progress-time">
+                    <span>${this._formatTime(e.media_position||0)}</span>
+                    <span>${this._formatTime(e.media_duration)}</span>
+                  </div>
+                </div>
+              `:D}
+
+          <div class="player-controls">
+            <button class="control-button" @click=${this._mediaPrevious} title="Previous">
+              <ha-icon icon="mdi:skip-previous"></ha-icon>
+            </button>
+            <button class="control-button play-pause" @click=${this._mediaPlayPause} title="${t?"Pause":"Play"}">
+              <ha-icon icon="${t?"mdi:pause":"mdi:play"}"></ha-icon>
+            </button>
+            <button class="control-button" @click=${this._mediaNext} title="Next">
+              <ha-icon icon="mdi:skip-next"></ha-icon>
+            </button>
+          </div>
+
+          <div class="secondary-controls">
+            <div class="secondary-controls-left">
+              <button 
+                class="control-button small ${e.shuffle?"active":""}" 
+                @click=${this._toggleShuffle}
+                title="Shuffle"
+              >
+                <ha-icon icon="mdi:shuffle"></ha-icon>
+              </button>
+            </div>
+            <div class="secondary-controls-right">
+              <button 
+                class="control-button small ${"off"!==e.repeat?"active":""}" 
+                @click=${this._toggleRepeat}
+                title="Repeat: ${e.repeat||"off"}"
+              >
+                <ha-icon icon="${"one"===e.repeat?"mdi:repeat-once":"mdi:repeat"}"></ha-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="volume-full-width">
+            <ha-icon icon="mdi:volume-low"></ha-icon>
+            <input
+              type="range"
+              class="volume-slider-full"
+              min="0"
+              max="1"
+              step="0.01"
+              .value=${String(e.volume_level||0)}
+              @input=${this._updateVolumeSliderFill}
+              @change=${this._setVolume}
+              style="background: linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) ${100*(e.volume_level||0)}%, var(--divider-color, rgba(0,0,0,0.1)) ${100*(e.volume_level||0)}%, var(--divider-color, rgba(0,0,0,0.1)) 100%)"
+            />
+            <ha-icon icon="mdi:volume-high"></ha-icon>
+          </div>
         </div>
       </div>
     `}_renderSpeakers(){return B`

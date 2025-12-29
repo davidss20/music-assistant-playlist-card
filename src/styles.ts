@@ -75,8 +75,7 @@ export const cardStyles = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    max-width: 500px;
-    margin: 0 auto;
+    width: 100%;
   }
 
   .card-header {
@@ -754,18 +753,31 @@ export const cardStyles = css`
      ========================================================================== */
 
   .now-playing {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    padding: 16px;
+    align-items: start;
+  }
+
+  .now-playing-left {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 12px;
+  }
+
+  .now-playing-right {
+    display: flex;
+    flex-direction: column;
     gap: 16px;
-    padding: 16px;
-    max-width: 500px;
-    margin: 0 auto;
+    justify-content: center;
+    min-height: 100%;
   }
 
   .now-playing-artwork {
-    width: 100%;
-    max-width: 350px;
+    width: 200px;
+    height: 200px;
     aspect-ratio: 1;
     border-radius: 16px;
     overflow: hidden;
@@ -795,7 +807,7 @@ export const cardStyles = css`
   }
 
   .now-playing-info {
-    text-align: center;
+    text-align: start;
     width: 100%;
   }
 
@@ -871,7 +883,7 @@ export const cardStyles = css`
   .player-controls {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 16px;
   }
 
