@@ -31,7 +31,8 @@
     "view_list": "Listenansicht",
     "no_results": "Keine Ergebnisse gefunden",
     "queue": "Warteschlange",
-    "queue_empty": "Warteschlange ist leer"
+    "queue_empty": "Warteschlange ist leer",
+    "queue_hint": "MA Server URL in Karteneinstellungen konfigurieren"
   },
   "config": {
     "title": "Kartentitel",

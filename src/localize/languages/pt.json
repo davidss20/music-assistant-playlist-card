@@ -31,7 +31,8 @@
     "view_list": "Visualização em lista",
     "no_results": "Nenhum resultado encontrado",
     "queue": "Fila",
-    "queue_empty": "A fila está vazia"
+    "queue_empty": "A fila está vazia",
+    "queue_hint": "Configure a URL do servidor MA nas configurações"
   },
   "config": {
     "title": "Título do cartão",

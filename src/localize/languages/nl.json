@@ -31,7 +31,8 @@
     "view_list": "Lijstweergave",
     "no_results": "Geen resultaten gevonden",
     "queue": "Wachtrij",
-    "queue_empty": "Wachtrij is leeg"
+    "queue_empty": "Wachtrij is leeg",
+    "queue_hint": "Configureer MA Server URL in kaartinstellingen"
   },
   "config": {
     "title": "Kaarttitel",

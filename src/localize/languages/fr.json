@@ -31,7 +31,8 @@
     "view_list": "Vue liste",
     "no_results": "Aucun résultat trouvé",
     "queue": "File d'attente",
-    "queue_empty": "La file d'attente est vide"
+    "queue_empty": "La file d'attente est vide",
+    "queue_hint": "Configurez l'URL du serveur MA dans les paramètres"
   },
   "config": {
     "title": "Titre de la carte",

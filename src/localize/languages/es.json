@@ -31,7 +31,8 @@
     "view_list": "Vista lista",
     "no_results": "No se encontraron resultados",
     "queue": "Cola",
-    "queue_empty": "La cola está vacía"
+    "queue_empty": "La cola está vacía",
+    "queue_hint": "Configure la URL del servidor MA en la configuración"
   },
   "config": {
     "title": "Título de la tarjeta",

@@ -31,7 +31,8 @@
     "view_list": "Vista elenco",
     "no_results": "Nessun risultato trovato",
     "queue": "Coda",
-    "queue_empty": "La coda è vuota"
+    "queue_empty": "La coda è vuota",
+    "queue_hint": "Configura l'URL del server MA nelle impostazioni"
   },
   "config": {
     "title": "Titolo scheda",

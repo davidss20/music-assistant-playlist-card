@@ -23,7 +23,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.5.0';
+const CARD_VERSION = '1.5.1';
 
 // Log card info on load
 console.info(
@@ -544,9 +544,16 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Render the queue section in Now Playing view
    */
   private _renderQueueSection(): TemplateResult {
-    // Only show if MA server URL is configured
+    // Show hint if MA server URL is not configured
     if (!this._config?.ma_server_url) {
-      return html``;
+      return html`
+        <div class="queue-section">
+          <div class="queue-config-hint">
+            <ha-icon icon="mdi:playlist-music"></ha-icon>
+            <span>${localize('common.queue_hint')}</span>
+          </div>
+        </div>
+      `;
     }
 
     return html`

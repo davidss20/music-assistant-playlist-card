@@ -31,7 +31,8 @@
     "view_list": "Widok listy",
     "no_results": "Brak wyników",
     "queue": "Kolejka",
-    "queue_empty": "Kolejka jest pusta"
+    "queue_empty": "Kolejka jest pusta",
+    "queue_hint": "Skonfiguruj URL serwera MA w ustawieniach karty"
   },
   "config": {
     "title": "Tytuł karty",

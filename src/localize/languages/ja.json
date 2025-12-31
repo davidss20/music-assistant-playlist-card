@@ -31,7 +31,8 @@
     "view_list": "リスト表示",
     "no_results": "結果が見つかりません",
     "queue": "キュー",
-    "queue_empty": "キューは空です"
+    "queue_empty": "キューは空です",
+    "queue_hint": "カード設定でMAサーバーURLを設定してください"
   },
   "config": {
     "title": "カードタイトル",

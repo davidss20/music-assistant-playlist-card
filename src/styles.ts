@@ -826,12 +826,13 @@ export const cardStyles = css`
   }
 
   .now-playing-artwork {
-    width: 200px;
-    height: 200px;
+    width: min(280px, 80vw);
+    height: min(280px, 80vw);
     border-radius: 16px;
     overflow: hidden;
     background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
   }
 
   .now-playing-artwork img {
@@ -1529,6 +1530,23 @@ export const cardStyles = css`
     padding: 24px;
     color: var(--secondary-text-color);
     font-size: 13px;
+  }
+
+  .queue-config-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px;
+    color: var(--secondary-text-color);
+    font-size: 12px;
+    text-align: center;
+    opacity: 0.7;
+  }
+
+  .queue-config-hint ha-icon {
+    --mdc-icon-size: 24px;
+    opacity: 0.5;
   }
 
   .queue-list {

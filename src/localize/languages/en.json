@@ -31,7 +31,8 @@
     "view_list": "List view",
     "no_results": "No results found",
     "queue": "Queue",
-    "queue_empty": "Queue is empty"
+    "queue_empty": "Queue is empty",
+    "queue_hint": "Configure MA Server URL in card settings to display queue"
   },
   "config": {
     "title": "Card Title",

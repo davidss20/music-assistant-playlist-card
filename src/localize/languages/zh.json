@@ -31,7 +31,8 @@
     "view_list": "列表视图",
     "no_results": "未找到结果",
     "queue": "队列",
-    "queue_empty": "队列为空"
+    "queue_empty": "队列为空",
+    "queue_hint": "在卡片设置中配置MA服务器URL以显示队列"
   },
   "config": {
     "title": "卡片标题",
