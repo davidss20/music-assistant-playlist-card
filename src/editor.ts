@@ -286,6 +286,17 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
               `}
         </div>
 
+        <div class="form-row">
+          <label class="form-label">${localize('config.ma_server_url')}</label>
+          <ha-textfield
+            .value=${this._config.ma_server_url || ''}
+            data-config-key="ma_server_url"
+            @input=${this._valueChanged}
+            placeholder="http://192.168.1.100:8095"
+          ></ha-textfield>
+          <div class="helper-text">${localize('config.ma_server_url_helper')}</div>
+        </div>
+
         <!-- Speakers -->
         <div class="section-title">${localize('config.speakers')}</div>
 

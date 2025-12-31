@@ -1465,6 +1465,202 @@ export const cardStyles = css`
     --mdc-icon-size: 48px;
     opacity: 0.3;
   }
+
+  /* ==========================================================================
+     Queue Section (in Now Playing)
+     ========================================================================== */
+
+  .queue-section {
+    width: 100%;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--divider-color, rgba(0, 0, 0, 0.1));
+  }
+
+  .queue-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 0 4px;
+  }
+
+  .queue-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-text-color);
+    margin: 0;
+  }
+
+  .queue-count {
+    font-size: 12px;
+    color: var(--secondary-text-color);
+  }
+
+  .queue-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .loading-spinner.small {
+    width: 24px;
+    height: 24px;
+    border-width: 2px;
+  }
+
+  .queue-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px;
+    color: var(--error-color, #db4437);
+    font-size: 13px;
+  }
+
+  .queue-error ha-icon {
+    --mdc-icon-size: 18px;
+  }
+
+  .queue-empty {
+    text-align: center;
+    padding: 24px;
+    color: var(--secondary-text-color);
+    font-size: 13px;
+  }
+
+  .queue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .queue-list::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .queue-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .queue-list::-webkit-scrollbar-thumb {
+    background: var(--divider-color, rgba(0, 0, 0, 0.2));
+    border-radius: 2px;
+  }
+
+  .queue-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .queue-item:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.05));
+  }
+
+  .queue-item.current {
+    background: color-mix(in srgb, var(--primary-color) 15%, transparent);
+  }
+
+  .queue-item.current .queue-item-name {
+    color: var(--primary-color);
+    font-weight: 500;
+  }
+
+  .queue-item-index {
+    width: 24px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--secondary-text-color);
+    flex-shrink: 0;
+  }
+
+  .queue-item.current .queue-item-index {
+    color: var(--primary-color);
+  }
+
+  .queue-item-index .playing-icon {
+    --mdc-icon-size: 16px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .queue-item-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .queue-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .queue-item-image ha-icon {
+    --mdc-icon-size: 20px;
+    color: var(--secondary-text-color);
+    opacity: 0.5;
+  }
+
+  .queue-item-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .queue-item-name {
+    font-size: 13px;
+    color: var(--primary-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .queue-item-artist {
+    font-size: 11px;
+    color: var(--secondary-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 1px;
+  }
+
+  .queue-item-duration {
+    font-size: 11px;
+    color: var(--secondary-text-color);
+    flex-shrink: 0;
+  }
+
+  /* RTL support for queue */
+  :host([dir="rtl"]) .queue-item {
+    flex-direction: row-reverse;
+  }
+
+  :host([dir="rtl"]) .queue-item-info {
+    text-align: right;
+  }
+
+  :host([dir="rtl"]) .queue-header {
+    flex-direction: row-reverse;
+  }
 `;
 
 export const editorStyles = css`
@@ -1568,6 +1764,13 @@ export const editorStyles = css`
 
   .section-title:first-child {
     margin-top: 0;
+  }
+
+  .helper-text {
+    font-size: 12px;
+    color: var(--secondary-text-color);
+    margin-top: 4px;
+    opacity: 0.8;
   }
 
   /* Preview Mode Styles */

@@ -29,7 +29,9 @@
     "sort_recent": "נוספו לאחרונה",
     "view_grid": "תצוגת רשת",
     "view_list": "תצוגת רשימה",
-    "no_results": "לא נמצאו תוצאות"
+    "no_results": "לא נמצאו תוצאות",
+    "queue": "תור",
+    "queue_empty": "התור ריק"
   },
   "config": {
     "title": "כותרת הכרטיס",
@@ -40,13 +42,16 @@
     "columns_auto": "אוטומטי",
     "favorites_only": "מועדפים בלבד",
     "language": "שפה",
-    "language_auto": "אוטומטי (מ-Home Assistant)"
+    "language_auto": "אוטומטי (מ-Home Assistant)",
+    "ma_server_url": "כתובת שרת Music Assistant",
+    "ma_server_url_helper": "אופציונלי. נדרש לתצוגת התור (לדוגמה: http://192.168.1.100:8095)"
   },
   "error": {
     "missing_config": "חסרה הגדרה. אנא הגדר את הכרטיס.",
     "missing_speakers": "לא הוגדרו רמקולים. אנא הוסף רמקולים בהגדרות הכרטיס.",
     "load_failed": "נכשל בטעינת פלייליסטים. אנא בדוק את הגדרות Music Assistant.",
-    "play_failed": "נכשל בהפעלת הפלייליסט"
+    "play_failed": "נכשל בהפעלת הפלייליסט",
+    "queue_load_failed": "נכשל בטעינת התור"
   }
 }
 

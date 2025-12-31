@@ -29,7 +29,9 @@
     "sort_recent": "Añadidos recientemente",
     "view_grid": "Vista cuadrícula",
     "view_list": "Vista lista",
-    "no_results": "No se encontraron resultados"
+    "no_results": "No se encontraron resultados",
+    "queue": "Cola",
+    "queue_empty": "La cola está vacía"
   },
   "config": {
     "title": "Título de la tarjeta",
@@ -40,13 +42,16 @@
     "columns_auto": "Automático",
     "favorites_only": "Solo favoritos",
     "language": "Idioma",
-    "language_auto": "Automático (desde Home Assistant)"
+    "language_auto": "Automático (desde Home Assistant)",
+    "ma_server_url": "URL del servidor Music Assistant",
+    "ma_server_url_helper": "Opcional. Necesario para mostrar la cola (ej: http://192.168.1.100:8095)"
   },
   "error": {
     "missing_config": "Falta la configuración. Por favor, configure la tarjeta.",
     "missing_speakers": "No hay altavoces configurados. Por favor, agregue altavoces.",
     "load_failed": "Error al cargar las listas de reproducción. Verifique la configuración de Music Assistant.",
-    "play_failed": "Error al reproducir la lista de reproducción"
+    "play_failed": "Error al reproducir la lista de reproducción",
+    "queue_load_failed": "Error al cargar la cola"
   }
 }
 

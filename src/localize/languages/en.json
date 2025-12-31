@@ -29,7 +29,9 @@
     "sort_recent": "Recently added",
     "view_grid": "Grid view",
     "view_list": "List view",
-    "no_results": "No results found"
+    "no_results": "No results found",
+    "queue": "Queue",
+    "queue_empty": "Queue is empty"
   },
   "config": {
     "title": "Card Title",
@@ -40,13 +42,16 @@
     "columns_auto": "Auto",
     "favorites_only": "Favorites Only",
     "language": "Language",
-    "language_auto": "Auto (from Home Assistant)"
+    "language_auto": "Auto (from Home Assistant)",
+    "ma_server_url": "Music Assistant Server URL",
+    "ma_server_url_helper": "Optional. Required for queue display (e.g., http://192.168.1.100:8095)"
   },
   "error": {
     "missing_config": "Missing configuration. Please configure the card.",
     "missing_speakers": "No speakers configured. Please add speakers in card settings.",
     "load_failed": "Failed to load playlists. Please check your Music Assistant configuration.",
-    "play_failed": "Failed to play playlist"
+    "play_failed": "Failed to play playlist",
+    "queue_load_failed": "Failed to load queue"
   }
 }
 

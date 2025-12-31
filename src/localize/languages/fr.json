@@ -29,7 +29,9 @@
     "sort_recent": "Ajoutés récemment",
     "view_grid": "Vue grille",
     "view_list": "Vue liste",
-    "no_results": "Aucun résultat trouvé"
+    "no_results": "Aucun résultat trouvé",
+    "queue": "File d'attente",
+    "queue_empty": "La file d'attente est vide"
   },
   "config": {
     "title": "Titre de la carte",
@@ -40,13 +42,16 @@
     "columns_auto": "Automatique",
     "favorites_only": "Favoris uniquement",
     "language": "Langue",
-    "language_auto": "Automatique (depuis Home Assistant)"
+    "language_auto": "Automatique (depuis Home Assistant)",
+    "ma_server_url": "URL du serveur Music Assistant",
+    "ma_server_url_helper": "Optionnel. Requis pour l'affichage de la file d'attente (ex: http://192.168.1.100:8095)"
   },
   "error": {
     "missing_config": "Configuration manquante. Veuillez configurer la carte.",
     "missing_speakers": "Aucun haut-parleur configuré. Veuillez ajouter des haut-parleurs.",
     "load_failed": "Échec du chargement des playlists. Vérifiez la configuration de Music Assistant.",
-    "play_failed": "Échec de la lecture de la playlist"
+    "play_failed": "Échec de la lecture de la playlist",
+    "queue_load_failed": "Échec du chargement de la file d'attente"
   }
 }
 

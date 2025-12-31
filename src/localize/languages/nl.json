@@ -29,7 +29,9 @@
     "sort_recent": "Recent toegevoegd",
     "view_grid": "Rasterweergave",
     "view_list": "Lijstweergave",
-    "no_results": "Geen resultaten gevonden"
+    "no_results": "Geen resultaten gevonden",
+    "queue": "Wachtrij",
+    "queue_empty": "Wachtrij is leeg"
   },
   "config": {
     "title": "Kaarttitel",
@@ -40,13 +42,16 @@
     "columns_auto": "Automatisch",
     "favorites_only": "Alleen favorieten",
     "language": "Taal",
-    "language_auto": "Automatisch (van Home Assistant)"
+    "language_auto": "Automatisch (van Home Assistant)",
+    "ma_server_url": "Music Assistant Server URL",
+    "ma_server_url_helper": "Optioneel. Vereist voor wachtrijweergave (bijv. http://192.168.1.100:8095)"
   },
   "error": {
     "missing_config": "Configuratie ontbreekt. Configureer de kaart.",
     "missing_speakers": "Geen speakers geconfigureerd. Voeg speakers toe.",
     "load_failed": "Kan afspeellijsten niet laden. Controleer de Music Assistant configuratie.",
-    "play_failed": "Kan afspeellijst niet afspelen"
+    "play_failed": "Kan afspeellijst niet afspelen",
+    "queue_load_failed": "Kan wachtrij niet laden"
   }
 }
 

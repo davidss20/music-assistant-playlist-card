@@ -183,6 +183,32 @@ export interface MusicAssistantQueueItem {
   stream_title?: string;
 }
 
+/**
+ * Queue item from Music Assistant Server API (player_queues/items)
+ */
+export interface QueueItemFromAPI {
+  queue_item_id: string;
+  queue_id: string;
+  name: string;
+  duration?: number;
+  sort_index: number;
+  image?: MusicAssistantImage;
+  media_item?: {
+    item_id: string;
+    provider: string;
+    name: string;
+    uri: string;
+    media_type: string;
+    image?: MusicAssistantImage;
+    artists?: Array<{ item_id: string; name: string }>;
+    album?: { item_id: string; name: string; image?: MusicAssistantImage };
+  };
+  streamdetails?: {
+    provider: string;
+    item_id: string;
+  };
+}
+
 // ============================================================================
 // Card Configuration Types
 // ============================================================================
@@ -202,6 +228,8 @@ export interface MusicAssistantPlaylistCardConfig extends LovelaceCardConfig {
   title?: string;
   /** Card height in pixels (default: 400) */
   card_height?: number;
+  /** Music Assistant Server URL for direct API calls (e.g., http://192.168.1.100:8095) */
+  ma_server_url?: string;
 }
 
 // ============================================================================

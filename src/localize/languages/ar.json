@@ -29,7 +29,9 @@
     "sort_recent": "المضافة حديثاً",
     "view_grid": "عرض شبكي",
     "view_list": "عرض قائمة",
-    "no_results": "لا توجد نتائج"
+    "no_results": "لا توجد نتائج",
+    "queue": "قائمة الانتظار",
+    "queue_empty": "قائمة الانتظار فارغة"
   },
   "config": {
     "title": "عنوان البطاقة",
@@ -40,13 +42,16 @@
     "columns_auto": "تلقائي",
     "favorites_only": "المفضلة فقط",
     "language": "اللغة",
-    "language_auto": "تلقائي (من Home Assistant)"
+    "language_auto": "تلقائي (من Home Assistant)",
+    "ma_server_url": "عنوان URL لخادم Music Assistant",
+    "ma_server_url_helper": "اختياري. مطلوب لعرض قائمة الانتظار (مثال: http://192.168.1.100:8095)"
   },
   "error": {
     "missing_config": "الإعدادات مفقودة. يرجى تهيئة البطاقة.",
     "missing_speakers": "لم يتم تهيئة مكبرات الصوت. يرجى إضافة مكبرات صوت.",
     "load_failed": "فشل تحميل قوائم التشغيل. يرجى التحقق من إعدادات Music Assistant.",
-    "play_failed": "فشل تشغيل قائمة التشغيل"
+    "play_failed": "فشل تشغيل قائمة التشغيل",
+    "queue_load_failed": "فشل تحميل قائمة الانتظار"
   }
 }
 

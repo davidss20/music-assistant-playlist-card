@@ -29,7 +29,9 @@
     "sort_recent": "Ostatnio dodane",
     "view_grid": "Widok siatki",
     "view_list": "Widok listy",
-    "no_results": "Brak wyników"
+    "no_results": "Brak wyników",
+    "queue": "Kolejka",
+    "queue_empty": "Kolejka jest pusta"
   },
   "config": {
     "title": "Tytuł karty",
@@ -40,13 +42,16 @@
     "columns_auto": "Auto",
     "favorites_only": "Tylko ulubione",
     "language": "Język",
-    "language_auto": "Auto (z Home Assistant)"
+    "language_auto": "Auto (z Home Assistant)",
+    "ma_server_url": "URL serwera Music Assistant",
+    "ma_server_url_helper": "Opcjonalnie. Wymagane do wyświetlania kolejki (np. http://192.168.1.100:8095)"
   },
   "error": {
     "missing_config": "Brak konfiguracji. Skonfiguruj kartę.",
     "missing_speakers": "Nie skonfigurowano głośników. Dodaj głośniki.",
     "load_failed": "Nie udało się załadować playlist. Sprawdź konfigurację Music Assistant.",
-    "play_failed": "Nie udało się odtworzyć playlisty"
+    "play_failed": "Nie udało się odtworzyć playlisty",
+    "queue_load_failed": "Nie udało się załadować kolejki"
   }
 }
 

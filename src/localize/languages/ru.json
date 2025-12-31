@@ -29,7 +29,9 @@
     "sort_recent": "Недавно добавленные",
     "view_grid": "Сетка",
     "view_list": "Список",
-    "no_results": "Результаты не найдены"
+    "no_results": "Результаты не найдены",
+    "queue": "Очередь",
+    "queue_empty": "Очередь пуста"
   },
   "config": {
     "title": "Заголовок карточки",
@@ -40,13 +42,16 @@
     "columns_auto": "Авто",
     "favorites_only": "Только избранное",
     "language": "Язык",
-    "language_auto": "Авто (из Home Assistant)"
+    "language_auto": "Авто (из Home Assistant)",
+    "ma_server_url": "URL сервера Music Assistant",
+    "ma_server_url_helper": "Опционально. Требуется для отображения очереди (напр. http://192.168.1.100:8095)"
   },
   "error": {
     "missing_config": "Отсутствует конфигурация. Настройте карточку.",
     "missing_speakers": "Колонки не настроены. Добавьте колонки в настройках.",
     "load_failed": "Не удалось загрузить плейлисты. Проверьте настройки Music Assistant.",
-    "play_failed": "Не удалось воспроизвести плейлист"
+    "play_failed": "Не удалось воспроизвести плейлист",
+    "queue_load_failed": "Не удалось загрузить очередь"
   }
 }
 
