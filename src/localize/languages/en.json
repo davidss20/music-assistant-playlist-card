@@ -1,6 +1,7 @@
 {
   "tabs": {
     "now_playing": "Now Playing",
+    "queue": "Queue",
     "playlists": "Playlists",
     "search": "Search",
     "speakers": "Speakers"
@@ -31,8 +32,7 @@
     "view_list": "List view",
     "no_results": "No results found",
     "queue": "Queue",
-    "queue_empty": "Queue is empty",
-    "queue_hint": "Configure MA Server URL in card settings to display queue"
+    "queue_empty": "Queue is empty"
   },
   "config": {
     "title": "Card Title",
@@ -43,9 +43,7 @@
     "columns_auto": "Auto",
     "favorites_only": "Favorites Only",
     "language": "Language",
-    "language_auto": "Auto (from Home Assistant)",
-    "ma_server_url": "Music Assistant Server URL",
-    "ma_server_url_helper": "Optional. Required for queue display (e.g., http://192.168.1.100:8095)"
+    "language_auto": "Auto (from Home Assistant)"
   },
   "error": {
     "missing_config": "Missing configuration. Please configure the card.",

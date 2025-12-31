@@ -1,6 +1,7 @@
 {
   "tabs": {
     "now_playing": "再生中",
+    "queue": "キュー",
     "playlists": "プレイリスト",
     "search": "検索",
     "speakers": "スピーカー"
@@ -31,8 +32,7 @@
     "view_list": "リスト表示",
     "no_results": "結果が見つかりません",
     "queue": "キュー",
-    "queue_empty": "キューは空です",
-    "queue_hint": "カード設定でMAサーバーURLを設定してください"
+    "queue_empty": "キューは空です"
   },
   "config": {
     "title": "カードタイトル",
@@ -43,9 +43,7 @@
     "columns_auto": "自動",
     "favorites_only": "お気に入りのみ",
     "language": "言語",
-    "language_auto": "自動（Home Assistantから）",
-    "ma_server_url": "Music Assistant サーバー URL",
-    "ma_server_url_helper": "任意。キュー表示に必要（例: http://192.168.1.100:8095）"
+    "language_auto": "自動（Home Assistantから）"
   },
   "error": {
     "missing_config": "設定がありません。カードを設定してください。",

@@ -1,6 +1,7 @@
 {
   "tabs": {
     "now_playing": "Nu speelt",
+    "queue": "Wachtrij",
     "playlists": "Afspeellijsten",
     "search": "Zoeken",
     "speakers": "Luidsprekers"
@@ -31,8 +32,7 @@
     "view_list": "Lijstweergave",
     "no_results": "Geen resultaten gevonden",
     "queue": "Wachtrij",
-    "queue_empty": "Wachtrij is leeg",
-    "queue_hint": "Configureer MA Server URL in kaartinstellingen"
+    "queue_empty": "Wachtrij is leeg"
   },
   "config": {
     "title": "Kaarttitel",
@@ -43,9 +43,7 @@
     "columns_auto": "Automatisch",
     "favorites_only": "Alleen favorieten",
     "language": "Taal",
-    "language_auto": "Automatisch (van Home Assistant)",
-    "ma_server_url": "Music Assistant Server URL",
-    "ma_server_url_helper": "Optioneel. Vereist voor wachtrijweergave (bijv. http://192.168.1.100:8095)"
+    "language_auto": "Automatisch (van Home Assistant)"
   },
   "error": {
     "missing_config": "Configuratie ontbreekt. Configureer de kaart.",

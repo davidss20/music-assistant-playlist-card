@@ -1,6 +1,7 @@
 {
   "tabs": {
     "now_playing": "En cours",
+    "queue": "File d'attente",
     "playlists": "Playlists",
     "search": "Recherche",
     "speakers": "Enceintes"
@@ -31,8 +32,7 @@
     "view_list": "Vue liste",
     "no_results": "Aucun résultat trouvé",
     "queue": "File d'attente",
-    "queue_empty": "La file d'attente est vide",
-    "queue_hint": "Configurez l'URL du serveur MA dans les paramètres"
+    "queue_empty": "La file d'attente est vide"
   },
   "config": {
     "title": "Titre de la carte",
@@ -43,9 +43,7 @@
     "columns_auto": "Automatique",
     "favorites_only": "Favoris uniquement",
     "language": "Langue",
-    "language_auto": "Automatique (depuis Home Assistant)",
-    "ma_server_url": "URL du serveur Music Assistant",
-    "ma_server_url_helper": "Optionnel. Requis pour l'affichage de la file d'attente (ex: http://192.168.1.100:8095)"
+    "language_auto": "Automatique (depuis Home Assistant)"
   },
   "error": {
     "missing_config": "Configuration manquante. Veuillez configurer la carte.",

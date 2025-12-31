@@ -1,6 +1,7 @@
 {
   "tabs": {
     "now_playing": "Сейчас играет",
+    "queue": "Очередь",
     "playlists": "Плейлисты",
     "search": "Поиск",
     "speakers": "Колонки"
@@ -31,8 +32,7 @@
     "view_list": "Список",
     "no_results": "Результаты не найдены",
     "queue": "Очередь",
-    "queue_empty": "Очередь пуста",
-    "queue_hint": "Настройте URL сервера MA в настройках карточки"
+    "queue_empty": "Очередь пуста"
   },
   "config": {
     "title": "Заголовок карточки",
@@ -43,9 +43,7 @@
     "columns_auto": "Авто",
     "favorites_only": "Только избранное",
     "language": "Язык",
-    "language_auto": "Авто (из Home Assistant)",
-    "ma_server_url": "URL сервера Music Assistant",
-    "ma_server_url_helper": "Опционально. Требуется для отображения очереди (напр. http://192.168.1.100:8095)"
+    "language_auto": "Авто (из Home Assistant)"
   },
   "error": {
     "missing_config": "Отсутствует конфигурация. Настройте карточку.",

@@ -1,6 +1,7 @@
 {
   "tabs": {
     "now_playing": "Tocando agora",
+    "queue": "Fila",
     "playlists": "Playlists",
     "search": "Pesquisar",
     "speakers": "Alto-falantes"
@@ -31,8 +32,7 @@
     "view_list": "Visualização em lista",
     "no_results": "Nenhum resultado encontrado",
     "queue": "Fila",
-    "queue_empty": "A fila está vazia",
-    "queue_hint": "Configure a URL do servidor MA nas configurações"
+    "queue_empty": "A fila está vazia"
   },
   "config": {
     "title": "Título do cartão",
@@ -43,9 +43,7 @@
     "columns_auto": "Auto",
     "favorites_only": "Apenas favoritos",
     "language": "Idioma",
-    "language_auto": "Auto (do Home Assistant)",
-    "ma_server_url": "URL do servidor Music Assistant",
-    "ma_server_url_helper": "Opcional. Necessário para exibir a fila (ex: http://192.168.1.100:8095)"
+    "language_auto": "Auto (do Home Assistant)"
   },
   "error": {
     "missing_config": "Configuração ausente. Configure o cartão.",

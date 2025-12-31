@@ -1,6 +1,7 @@
 {
   "tabs": {
     "now_playing": "Teraz gra",
+    "queue": "Kolejka",
     "playlists": "Playlisty",
     "search": "Szukaj",
     "speakers": "Głośniki"
@@ -31,8 +32,7 @@
     "view_list": "Widok listy",
     "no_results": "Brak wyników",
     "queue": "Kolejka",
-    "queue_empty": "Kolejka jest pusta",
-    "queue_hint": "Skonfiguruj URL serwera MA w ustawieniach karty"
+    "queue_empty": "Kolejka jest pusta"
   },
   "config": {
     "title": "Tytuł karty",
@@ -43,9 +43,7 @@
     "columns_auto": "Auto",
     "favorites_only": "Tylko ulubione",
     "language": "Język",
-    "language_auto": "Auto (z Home Assistant)",
-    "ma_server_url": "URL serwera Music Assistant",
-    "ma_server_url_helper": "Opcjonalnie. Wymagane do wyświetlania kolejki (np. http://192.168.1.100:8095)"
+    "language_auto": "Auto (z Home Assistant)"
   },
   "error": {
     "missing_config": "Brak konfiguracji. Skonfiguruj kartę.",

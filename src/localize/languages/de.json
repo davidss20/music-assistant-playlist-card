@@ -1,6 +1,7 @@
 {
   "tabs": {
     "now_playing": "Läuft gerade",
+    "queue": "Warteschlange",
     "playlists": "Wiedergabelisten",
     "search": "Suche",
     "speakers": "Lautsprecher"
@@ -31,8 +32,7 @@
     "view_list": "Listenansicht",
     "no_results": "Keine Ergebnisse gefunden",
     "queue": "Warteschlange",
-    "queue_empty": "Warteschlange ist leer",
-    "queue_hint": "MA Server URL in Karteneinstellungen konfigurieren"
+    "queue_empty": "Warteschlange ist leer"
   },
   "config": {
     "title": "Kartentitel",
@@ -43,9 +43,7 @@
     "columns_auto": "Automatisch",
     "favorites_only": "Nur Favoriten",
     "language": "Sprache",
-    "language_auto": "Automatisch (von Home Assistant)",
-    "ma_server_url": "Music Assistant Server URL",
-    "ma_server_url_helper": "Optional. Für Warteschlangenanzeige erforderlich (z.B. http://192.168.1.100:8095)"
+    "language_auto": "Automatisch (von Home Assistant)"
   },
   "error": {
     "missing_config": "Konfiguration fehlt. Bitte konfigurieren Sie die Karte.",

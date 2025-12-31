@@ -1,6 +1,7 @@
 {
   "tabs": {
     "now_playing": "قيد التشغيل",
+    "queue": "قائمة الانتظار",
     "playlists": "قوائم التشغيل",
     "search": "بحث",
     "speakers": "مكبرات الصوت"
@@ -31,8 +32,7 @@
     "view_list": "عرض قائمة",
     "no_results": "لا توجد نتائج",
     "queue": "قائمة الانتظار",
-    "queue_empty": "قائمة الانتظار فارغة",
-    "queue_hint": "قم بتكوين عنوان URL لخادم MA في إعدادات البطاقة"
+    "queue_empty": "قائمة الانتظار فارغة"
   },
   "config": {
     "title": "عنوان البطاقة",
@@ -43,9 +43,7 @@
     "columns_auto": "تلقائي",
     "favorites_only": "المفضلة فقط",
     "language": "اللغة",
-    "language_auto": "تلقائي (من Home Assistant)",
-    "ma_server_url": "عنوان URL لخادم Music Assistant",
-    "ma_server_url_helper": "اختياري. مطلوب لعرض قائمة الانتظار (مثال: http://192.168.1.100:8095)"
+    "language_auto": "تلقائي (من Home Assistant)"
   },
   "error": {
     "missing_config": "الإعدادات مفقودة. يرجى تهيئة البطاقة.",

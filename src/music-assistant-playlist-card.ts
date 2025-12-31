@@ -23,7 +23,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.5.1';
+const CARD_VERSION = '1.6.0';
 
 // Log card info on load
 console.info(
@@ -173,12 +173,12 @@ export class MusicAssistantPlaylistCard extends LitElement {
       }
 
       // Check if media changed and reload queue if needed
-      if (this._config?.ma_server_url && this._selectedSpeaker) {
+      if (this._selectedSpeaker) {
         const currentState = this._getMediaPlayerState();
         if (currentState?.media_title !== this._previousMediaTitle) {
           this._previousMediaTitle = currentState?.media_title;
-          // Only load queue if in now-playing tab and media changed
-          if (this._activeTab === 'now-playing') {
+          // Only load queue if in queue tab and media changed
+          if (this._activeTab === 'queue') {
             this._loadQueueItems();
           }
         }
@@ -307,8 +307,8 @@ export class MusicAssistantPlaylistCard extends LitElement {
    */
   private _handleTabChange(tabId: TabId): void {
     this._activeTab = tabId;
-    // Load queue items when switching to now-playing tab
-    if (tabId === 'now-playing' && this._config?.ma_server_url && this._selectedSpeaker) {
+    // Load queue items when switching to queue tab
+    if (tabId === 'queue' && this._selectedSpeaker) {
       this._loadQueueItems();
     }
   }
@@ -318,11 +318,9 @@ export class MusicAssistantPlaylistCard extends LitElement {
    */
   private _handleSpeakerSelect(entityId: string): void {
     this._selectedSpeaker = entityId;
-    // Reload queue items for the new speaker
-    if (this._config?.ma_server_url) {
-      this._previousMediaTitle = undefined;
-      this._loadQueueItems();
-    }
+    // Reset queue when speaker changes
+    this._previousMediaTitle = undefined;
+    this._queueItems = [];
   }
 
   /**
@@ -411,10 +409,10 @@ export class MusicAssistantPlaylistCard extends LitElement {
   // ==========================================================================
 
   /**
-   * Load queue items from Music Assistant Server API
+   * Load queue items using Home Assistant WebSocket API
    */
   private async _loadQueueItems(): Promise<void> {
-    if (!this._config?.ma_server_url || !this._selectedSpeaker) {
+    if (!this.hass || !this._selectedSpeaker || !this._config?.config_entry_id) {
       this._queueItems = [];
       return;
     }
@@ -423,39 +421,35 @@ export class MusicAssistantPlaylistCard extends LitElement {
     this._queueError = null;
 
     try {
-      // Extract player_id from entity_id (e.g., media_player.kitchen_speaker -> kitchen_speaker)
-      // For MA, the queue_id is typically the full entity_id or just the player name
-      const queueId = this._selectedSpeaker;
-
-      const response = await fetch(`${this._config.ma_server_url}/api`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          message_id: Date.now().toString(),
+      // Use HA WebSocket to call Music Assistant command
+      const response = await this.hass.callWS<{
+        response: QueueItemFromAPI[] | { items?: QueueItemFromAPI[] };
+      }>({
+        type: 'call_service',
+        domain: 'mass',
+        service: 'command',
+        service_data: {
           command: 'player_queues/items',
           args: {
-            queue_id: queueId,
+            queue_id: this._selectedSpeaker,
             limit: 100,
             offset: 0,
           },
-        }),
+        },
+        return_response: true,
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
+      console.info('[music-assistant-playlist-card] Queue items response:', response);
 
-      const data = await response.json();
-      console.info('[music-assistant-playlist-card] Queue items response:', data);
-
-      // The response should contain the queue items
-      if (data.result && Array.isArray(data.result)) {
-        this._queueItems = data.result;
-      } else if (Array.isArray(data)) {
-        this._queueItems = data;
+      // Extract queue items from response
+      if (response?.response) {
+        if (Array.isArray(response.response)) {
+          this._queueItems = response.response;
+        } else if (response.response.items && Array.isArray(response.response.items)) {
+          this._queueItems = response.response.items;
+        } else {
+          this._queueItems = [];
+        }
       } else {
         this._queueItems = [];
       }
@@ -485,25 +479,19 @@ export class MusicAssistantPlaylistCard extends LitElement {
     if (!this.hass || !this._selectedSpeaker) return;
 
     try {
-      // Use Music Assistant's queue play index command if available
-      // Otherwise fall back to playing the media item directly
-      if (this._config?.ma_server_url) {
-        await fetch(`${this._config.ma_server_url}/api`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
+      // Use HA WebSocket to call Music Assistant play_index command
+      await this.hass.callWS({
+        type: 'call_service',
+        domain: 'mass',
+        service: 'command',
+        service_data: {
+          command: 'player_queues/play_index',
+          args: {
+            queue_id: this._selectedSpeaker,
+            index: index,
           },
-          body: JSON.stringify({
-            message_id: Date.now().toString(),
-            command: 'player_queues/play_index',
-            args: {
-              queue_id: this._selectedSpeaker,
-              index: index,
-            },
-          }),
-        });
-      }
+        },
+      });
       
       console.info('[music-assistant-playlist-card] Playing queue item:', item.name, 'at index:', index);
     } catch (error) {
@@ -541,23 +529,22 @@ export class MusicAssistantPlaylistCard extends LitElement {
   }
 
   /**
-   * Render the queue section in Now Playing view
+   * Render Queue tab view
    */
-  private _renderQueueSection(): TemplateResult {
-    // Show hint if MA server URL is not configured
-    if (!this._config?.ma_server_url) {
+  private _renderQueue(): TemplateResult {
+    if (!this._selectedSpeaker) {
       return html`
-        <div class="queue-section">
-          <div class="queue-config-hint">
-            <ha-icon icon="mdi:playlist-music"></ha-icon>
-            <span>${localize('common.queue_hint')}</span>
+        <div class="queue-view">
+          <div class="queue-empty-state">
+            <ha-icon icon="mdi:speaker-off"></ha-icon>
+            <span>${localize('common.no_speaker_selected')}</span>
           </div>
         </div>
       `;
     }
 
     return html`
-      <div class="queue-section">
+      <div class="queue-view">
         <div class="queue-header">
           <h4 class="queue-title">${localize('common.queue')}</h4>
           <span class="queue-count">${this._queueItems.length} ${localize('common.tracks')}</span>
@@ -565,19 +552,21 @@ export class MusicAssistantPlaylistCard extends LitElement {
         
         ${this._queueLoading ? html`
           <div class="queue-loading">
-            <div class="loading-spinner small"></div>
+            <div class="loading-spinner"></div>
+            <span class="loading-text">${localize('common.loading')}</span>
           </div>
         ` : this._queueError ? html`
-          <div class="queue-error">
+          <div class="queue-error-state">
             <ha-icon icon="mdi:alert-circle"></ha-icon>
             <span>${this._queueError}</span>
           </div>
         ` : this._queueItems.length === 0 ? html`
-          <div class="queue-empty">
+          <div class="queue-empty-state">
+            <ha-icon icon="mdi:playlist-music"></ha-icon>
             <span>${localize('common.queue_empty')}</span>
           </div>
         ` : html`
-          <div class="queue-list">
+          <div class="queue-list-container">
             ${this._queueItems.map((item, index) => {
               const imageUrl = this._getQueueItemImage(item);
               const artist = this._getQueueItemArtist(item);
@@ -1008,8 +997,6 @@ export class MusicAssistantPlaylistCard extends LitElement {
           />
           <ha-icon icon="mdi:volume-high"></ha-icon>
         </div>
-
-        ${this._renderQueueSection()}
       </div>
     `;
   }
@@ -1290,6 +1277,8 @@ export class MusicAssistantPlaylistCard extends LitElement {
     switch (this._activeTab) {
       case 'now-playing':
         return this._renderNowPlaying();
+      case 'queue':
+        return this._renderQueue();
       case 'playlists':
         return this._loading
           ? this._renderLoading()

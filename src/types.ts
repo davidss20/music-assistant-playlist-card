@@ -83,7 +83,7 @@ export interface HassWebSocketMessage {
 // Tab Navigation Types
 // ============================================================================
 
-export type TabId = 'now-playing' | 'playlists' | 'search' | 'speakers';
+export type TabId = 'now-playing' | 'queue' | 'playlists' | 'search' | 'speakers';
 
 export type SortOption = 'name' | 'name_desc' | 'tracks' | 'recent';
 export type ViewMode = 'grid' | 'list';
@@ -97,6 +97,7 @@ export interface Tab {
 
 export const TABS: Tab[] = [
   { id: 'now-playing', icon: 'mdi:music-note', labelKey: 'tabs.now_playing' },
+  { id: 'queue', icon: 'mdi:playlist-play', labelKey: 'tabs.queue' },
   { id: 'playlists', icon: 'mdi:playlist-music', labelKey: 'tabs.playlists' },
   { id: 'search', icon: 'mdi:magnify', labelKey: 'tabs.search' },
   { id: 'speakers', icon: 'mdi:speaker', labelKey: 'tabs.speakers' },
@@ -228,8 +229,6 @@ export interface MusicAssistantPlaylistCardConfig extends LovelaceCardConfig {
   title?: string;
   /** Card height in pixels (default: 400) */
   card_height?: number;
-  /** Music Assistant Server URL for direct API calls (e.g., http://192.168.1.100:8095) */
-  ma_server_url?: string;
 }
 
 // ============================================================================

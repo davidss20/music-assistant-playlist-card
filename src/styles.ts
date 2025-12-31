@@ -1468,14 +1468,15 @@ export const cardStyles = css`
   }
 
   /* ==========================================================================
-     Queue Section (in Now Playing)
+     Queue Tab View
      ========================================================================== */
 
-  .queue-section {
-    width: 100%;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--divider-color, rgba(0, 0, 0, 0.1));
+  .queue-view {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
   }
 
   .queue-header {
@@ -1484,98 +1485,90 @@ export const cardStyles = css`
     justify-content: space-between;
     margin-bottom: 12px;
     padding: 0 4px;
+    flex-shrink: 0;
   }
 
   .queue-title {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     color: var(--primary-text-color);
     margin: 0;
   }
 
   .queue-count {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--secondary-text-color);
   }
 
   .queue-loading {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 48px 24px;
+    gap: 16px;
+    flex: 1;
   }
 
-  .loading-spinner.small {
-    width: 24px;
-    height: 24px;
-    border-width: 2px;
-  }
-
-  .queue-error {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 16px;
-    color: var(--error-color, #db4437);
-    font-size: 13px;
-  }
-
-  .queue-error ha-icon {
-    --mdc-icon-size: 18px;
-  }
-
-  .queue-empty {
-    text-align: center;
-    padding: 24px;
-    color: var(--secondary-text-color);
-    font-size: 13px;
-  }
-
-  .queue-config-hint {
+  .queue-empty-state,
+  .queue-error-state {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 16px;
+    justify-content: center;
+    gap: 12px;
+    padding: 48px 24px;
     color: var(--secondary-text-color);
-    font-size: 12px;
-    text-align: center;
-    opacity: 0.7;
+    flex: 1;
   }
 
-  .queue-config-hint ha-icon {
-    --mdc-icon-size: 24px;
+  .queue-empty-state ha-icon,
+  .queue-error-state ha-icon {
+    --mdc-icon-size: 48px;
     opacity: 0.5;
   }
 
-  .queue-list {
+  .queue-error-state {
+    color: var(--error-color, #db4437);
+  }
+
+  .queue-error-state ha-icon {
+    opacity: 1;
+  }
+
+  .queue-list-container {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    max-height: 300px;
+    gap: 4px;
+    flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
   }
 
-  .queue-list::-webkit-scrollbar {
-    width: 4px;
+  .queue-list-container::-webkit-scrollbar {
+    width: 6px;
   }
 
-  .queue-list::-webkit-scrollbar-track {
+  .queue-list-container::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .queue-list::-webkit-scrollbar-thumb {
+  .queue-list-container::-webkit-scrollbar-thumb {
     background: var(--divider-color, rgba(0, 0, 0, 0.2));
-    border-radius: 2px;
+    border-radius: 3px;
+  }
+
+  .queue-list-container::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-text-color);
   }
 
   .queue-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
-    border-radius: 8px;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
     cursor: pointer;
     transition: background 0.15s ease;
   }
@@ -1594,9 +1587,9 @@ export const cardStyles = css`
   }
 
   .queue-item-index {
-    width: 24px;
+    width: 28px;
     text-align: center;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--secondary-text-color);
     flex-shrink: 0;
   }
@@ -1606,7 +1599,7 @@ export const cardStyles = css`
   }
 
   .queue-item-index .playing-icon {
-    --mdc-icon-size: 16px;
+    --mdc-icon-size: 18px;
     animation: pulse 1.5s ease-in-out infinite;
   }
 
@@ -1616,9 +1609,9 @@ export const cardStyles = css`
   }
 
   .queue-item-image {
-    width: 40px;
-    height: 40px;
-    border-radius: 6px;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
     overflow: hidden;
     background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
     flex-shrink: 0;
@@ -1634,7 +1627,7 @@ export const cardStyles = css`
   }
 
   .queue-item-image ha-icon {
-    --mdc-icon-size: 20px;
+    --mdc-icon-size: 24px;
     color: var(--secondary-text-color);
     opacity: 0.5;
   }
@@ -1645,7 +1638,7 @@ export const cardStyles = css`
   }
 
   .queue-item-name {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--primary-text-color);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1653,16 +1646,16 @@ export const cardStyles = css`
   }
 
   .queue-item-artist {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--secondary-text-color);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-top: 1px;
+    margin-top: 2px;
   }
 
   .queue-item-duration {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--secondary-text-color);
     flex-shrink: 0;
   }

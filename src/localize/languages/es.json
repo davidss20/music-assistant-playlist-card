@@ -1,6 +1,7 @@
 {
   "tabs": {
     "now_playing": "Reproduciendo",
+    "queue": "Cola",
     "playlists": "Listas",
     "search": "Buscar",
     "speakers": "Altavoces"
@@ -31,8 +32,7 @@
     "view_list": "Vista lista",
     "no_results": "No se encontraron resultados",
     "queue": "Cola",
-    "queue_empty": "La cola está vacía",
-    "queue_hint": "Configure la URL del servidor MA en la configuración"
+    "queue_empty": "La cola está vacía"
   },
   "config": {
     "title": "Título de la tarjeta",
@@ -43,9 +43,7 @@
     "columns_auto": "Automático",
     "favorites_only": "Solo favoritos",
     "language": "Idioma",
-    "language_auto": "Automático (desde Home Assistant)",
-    "ma_server_url": "URL del servidor Music Assistant",
-    "ma_server_url_helper": "Opcional. Necesario para mostrar la cola (ej: http://192.168.1.100:8095)"
+    "language_auto": "Automático (desde Home Assistant)"
   },
   "error": {
     "missing_config": "Falta la configuración. Por favor, configure la tarjeta.",

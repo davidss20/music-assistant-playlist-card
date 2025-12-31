@@ -1,6 +1,7 @@
 {
   "tabs": {
     "now_playing": "In riproduzione",
+    "queue": "Coda",
     "playlists": "Playlist",
     "search": "Cerca",
     "speakers": "Altoparlanti"
@@ -31,8 +32,7 @@
     "view_list": "Vista elenco",
     "no_results": "Nessun risultato trovato",
     "queue": "Coda",
-    "queue_empty": "La coda è vuota",
-    "queue_hint": "Configura l'URL del server MA nelle impostazioni"
+    "queue_empty": "La coda è vuota"
   },
   "config": {
     "title": "Titolo scheda",
@@ -43,9 +43,7 @@
     "columns_auto": "Auto",
     "favorites_only": "Solo preferiti",
     "language": "Lingua",
-    "language_auto": "Auto (da Home Assistant)",
-    "ma_server_url": "URL del server Music Assistant",
-    "ma_server_url_helper": "Opzionale. Richiesto per la visualizzazione della coda (es: http://192.168.1.100:8095)"
+    "language_auto": "Auto (da Home Assistant)"
   },
   "error": {
     "missing_config": "Configurazione mancante. Configura la scheda.",
