@@ -1,6 +1,6 @@
 {
   "name": "music-assistant-playlist-card",
-  "version": "1.7.5",
+  "version": "1.7.6",
   "description": "A Home Assistant custom card for Music Assistant playlist display with speaker selection",
   "type": "module",
   "main": "dist/music-assistant-playlist-card.js",

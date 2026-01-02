@@ -788,8 +788,8 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     flex: 1;
-    /* Fixed minimum height to prevent size changes between tabs */
-    min-height: 520px;
+    /* Fixed minimum height to match the player tab (largest tab) */
+    min-height: 580px;
     overflow: hidden;
   }
 
