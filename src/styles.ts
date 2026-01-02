@@ -788,13 +788,15 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     flex: 1;
-    min-height: 0;
+    /* Fixed minimum height to prevent size changes between tabs */
+    min-height: 520px;
     overflow: hidden;
   }
 
   .tab-view {
     padding: var(--playlist-card-spacing);
     flex: 1;
+    min-height: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
