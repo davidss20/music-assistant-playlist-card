@@ -1,7 +1,6 @@
 {
   "tabs": {
     "now_playing": "Nu speelt",
-    "queue": "Wachtrij",
     "playlists": "Afspeellijsten",
     "search": "Zoeken",
     "speakers": "Luidsprekers"
@@ -30,9 +29,7 @@
     "sort_recent": "Recent toegevoegd",
     "view_grid": "Rasterweergave",
     "view_list": "Lijstweergave",
-    "no_results": "Geen resultaten gevonden",
-    "queue": "Wachtrij",
-    "queue_empty": "Wachtrij is leeg"
+    "no_results": "Geen resultaten gevonden"
   },
   "config": {
     "title": "Kaarttitel",
@@ -49,8 +46,7 @@
     "missing_config": "Configuratie ontbreekt. Configureer de kaart.",
     "missing_speakers": "Geen speakers geconfigureerd. Voeg speakers toe.",
     "load_failed": "Kan afspeellijsten niet laden. Controleer de Music Assistant configuratie.",
-    "play_failed": "Kan afspeellijst niet afspelen",
-    "queue_load_failed": "Kan wachtrij niet laden"
+    "play_failed": "Kan afspeellijst niet afspelen"
   }
 }
 

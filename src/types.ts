@@ -83,7 +83,7 @@ export interface HassWebSocketMessage {
 // Tab Navigation Types
 // ============================================================================
 
-export type TabId = 'now-playing' | 'queue' | 'playlists' | 'search' | 'speakers';
+export type TabId = 'now-playing' | 'playlists' | 'search' | 'speakers';
 
 export type SortOption = 'name' | 'name_desc' | 'tracks' | 'recent';
 export type ViewMode = 'grid' | 'list';
@@ -97,7 +97,6 @@ export interface Tab {
 
 export const TABS: Tab[] = [
   { id: 'now-playing', icon: 'mdi:music-note', labelKey: 'tabs.now_playing' },
-  { id: 'queue', icon: 'mdi:playlist-play', labelKey: 'tabs.queue' },
   { id: 'playlists', icon: 'mdi:playlist-music', labelKey: 'tabs.playlists' },
   { id: 'search', icon: 'mdi:magnify', labelKey: 'tabs.search' },
   { id: 'speakers', icon: 'mdi:speaker', labelKey: 'tabs.speakers' },
@@ -182,32 +181,6 @@ export interface MusicAssistantQueueItem {
     album?: { name: string };
   };
   stream_title?: string;
-}
-
-/**
- * Queue item from Music Assistant Server API (player_queues/items)
- */
-export interface QueueItemFromAPI {
-  queue_item_id: string;
-  queue_id: string;
-  name: string;
-  duration?: number;
-  sort_index: number;
-  image?: MusicAssistantImage;
-  media_item?: {
-    item_id: string;
-    provider: string;
-    name: string;
-    uri: string;
-    media_type: string;
-    image?: MusicAssistantImage;
-    artists?: Array<{ item_id: string; name: string }>;
-    album?: { item_id: string; name: string; image?: MusicAssistantImage };
-  };
-  streamdetails?: {
-    provider: string;
-    item_id: string;
-  };
 }
 
 // ============================================================================

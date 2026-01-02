@@ -1,7 +1,6 @@
 {
   "tabs": {
     "now_playing": "Teraz gra",
-    "queue": "Kolejka",
     "playlists": "Playlisty",
     "search": "Szukaj",
     "speakers": "Głośniki"
@@ -30,9 +29,7 @@
     "sort_recent": "Ostatnio dodane",
     "view_grid": "Widok siatki",
     "view_list": "Widok listy",
-    "no_results": "Brak wyników",
-    "queue": "Kolejka",
-    "queue_empty": "Kolejka jest pusta"
+    "no_results": "Brak wyników"
   },
   "config": {
     "title": "Tytuł karty",
@@ -49,8 +46,7 @@
     "missing_config": "Brak konfiguracji. Skonfiguruj kartę.",
     "missing_speakers": "Nie skonfigurowano głośników. Dodaj głośniki.",
     "load_failed": "Nie udało się załadować playlist. Sprawdź konfigurację Music Assistant.",
-    "play_failed": "Nie udało się odtworzyć playlisty",
-    "queue_load_failed": "Nie udało się załadować kolejki"
+    "play_failed": "Nie udało się odtworzyć playlisty"
   }
 }
 

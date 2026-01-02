@@ -1,7 +1,6 @@
 {
   "tabs": {
     "now_playing": "En cours",
-    "queue": "File d'attente",
     "playlists": "Playlists",
     "search": "Recherche",
     "speakers": "Enceintes"
@@ -30,9 +29,7 @@
     "sort_recent": "Ajoutés récemment",
     "view_grid": "Vue grille",
     "view_list": "Vue liste",
-    "no_results": "Aucun résultat trouvé",
-    "queue": "File d'attente",
-    "queue_empty": "La file d'attente est vide"
+    "no_results": "Aucun résultat trouvé"
   },
   "config": {
     "title": "Titre de la carte",
@@ -49,8 +46,7 @@
     "missing_config": "Configuration manquante. Veuillez configurer la carte.",
     "missing_speakers": "Aucun haut-parleur configuré. Veuillez ajouter des haut-parleurs.",
     "load_failed": "Échec du chargement des playlists. Vérifiez la configuration de Music Assistant.",
-    "play_failed": "Échec de la lecture de la playlist",
-    "queue_load_failed": "Échec du chargement de la file d'attente"
+    "play_failed": "Échec de la lecture de la playlist"
   }
 }
 

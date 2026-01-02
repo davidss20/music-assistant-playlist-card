@@ -1,7 +1,6 @@
 {
   "tabs": {
     "now_playing": "Tocando agora",
-    "queue": "Fila",
     "playlists": "Playlists",
     "search": "Pesquisar",
     "speakers": "Alto-falantes"
@@ -30,9 +29,7 @@
     "sort_recent": "Adicionados recentemente",
     "view_grid": "Visualização em grade",
     "view_list": "Visualização em lista",
-    "no_results": "Nenhum resultado encontrado",
-    "queue": "Fila",
-    "queue_empty": "A fila está vazia"
+    "no_results": "Nenhum resultado encontrado"
   },
   "config": {
     "title": "Título do cartão",
@@ -49,8 +46,7 @@
     "missing_config": "Configuração ausente. Configure o cartão.",
     "missing_speakers": "Nenhum alto-falante configurado. Adicione alto-falantes.",
     "load_failed": "Falha ao carregar playlists. Verifique a configuração do Music Assistant.",
-    "play_failed": "Falha ao reproduzir a playlist",
-    "queue_load_failed": "Falha ao carregar a fila"
+    "play_failed": "Falha ao reproduzir a playlist"
   }
 }
 

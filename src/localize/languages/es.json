@@ -1,7 +1,6 @@
 {
   "tabs": {
     "now_playing": "Reproduciendo",
-    "queue": "Cola",
     "playlists": "Listas",
     "search": "Buscar",
     "speakers": "Altavoces"
@@ -30,9 +29,7 @@
     "sort_recent": "Añadidos recientemente",
     "view_grid": "Vista cuadrícula",
     "view_list": "Vista lista",
-    "no_results": "No se encontraron resultados",
-    "queue": "Cola",
-    "queue_empty": "La cola está vacía"
+    "no_results": "No se encontraron resultados"
   },
   "config": {
     "title": "Título de la tarjeta",
@@ -49,8 +46,7 @@
     "missing_config": "Falta la configuración. Por favor, configure la tarjeta.",
     "missing_speakers": "No hay altavoces configurados. Por favor, agregue altavoces.",
     "load_failed": "Error al cargar las listas de reproducción. Verifique la configuración de Music Assistant.",
-    "play_failed": "Error al reproducir la lista de reproducción",
-    "queue_load_failed": "Error al cargar la cola"
+    "play_failed": "Error al reproducir la lista de reproducción"
   }
 }
 

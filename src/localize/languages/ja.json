@@ -1,7 +1,6 @@
 {
   "tabs": {
     "now_playing": "再生中",
-    "queue": "キュー",
     "playlists": "プレイリスト",
     "search": "検索",
     "speakers": "スピーカー"
@@ -30,9 +29,7 @@
     "sort_recent": "最近追加",
     "view_grid": "グリッド表示",
     "view_list": "リスト表示",
-    "no_results": "結果が見つかりません",
-    "queue": "キュー",
-    "queue_empty": "キューは空です"
+    "no_results": "結果が見つかりません"
   },
   "config": {
     "title": "カードタイトル",
@@ -49,8 +46,7 @@
     "missing_config": "設定がありません。カードを設定してください。",
     "missing_speakers": "スピーカーが設定されていません。スピーカーを追加してください。",
     "load_failed": "プレイリストの読み込みに失敗しました。Music Assistantの設定を確認してください。",
-    "play_failed": "プレイリストの再生に失敗しました",
-    "queue_load_failed": "キューの読み込みに失敗しました"
+    "play_failed": "プレイリストの再生に失敗しました"
   }
 }
 

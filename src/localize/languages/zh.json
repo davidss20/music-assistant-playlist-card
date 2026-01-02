@@ -1,7 +1,6 @@
 {
   "tabs": {
     "now_playing": "正在播放",
-    "queue": "队列",
     "playlists": "播放列表",
     "search": "搜索",
     "speakers": "扬声器"
@@ -30,9 +29,7 @@
     "sort_recent": "最近添加",
     "view_grid": "网格视图",
     "view_list": "列表视图",
-    "no_results": "未找到结果",
-    "queue": "队列",
-    "queue_empty": "队列为空"
+    "no_results": "未找到结果"
   },
   "config": {
     "title": "卡片标题",
@@ -49,8 +46,7 @@
     "missing_config": "缺少配置。请配置卡片。",
     "missing_speakers": "未配置扬声器。请添加扬声器。",
     "load_failed": "无法加载播放列表。请检查 Music Assistant 配置。",
-    "play_failed": "无法播放播放列表",
-    "queue_load_failed": "无法加载队列"
+    "play_failed": "无法播放播放列表"
   }
 }
 

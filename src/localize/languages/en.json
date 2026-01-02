@@ -1,7 +1,6 @@
 {
   "tabs": {
     "now_playing": "Now Playing",
-    "queue": "Queue",
     "playlists": "Playlists",
     "search": "Search",
     "speakers": "Speakers"
@@ -30,9 +29,7 @@
     "sort_recent": "Recently added",
     "view_grid": "Grid view",
     "view_list": "List view",
-    "no_results": "No results found",
-    "queue": "Queue",
-    "queue_empty": "Queue is empty"
+    "no_results": "No results found"
   },
   "config": {
     "title": "Card Title",
@@ -49,8 +46,7 @@
     "missing_config": "Missing configuration. Please configure the card.",
     "missing_speakers": "No speakers configured. Please add speakers in card settings.",
     "load_failed": "Failed to load playlists. Please check your Music Assistant configuration.",
-    "play_failed": "Failed to play playlist",
-    "queue_load_failed": "Failed to load queue"
+    "play_failed": "Failed to play playlist"
   }
 }
 

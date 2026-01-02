@@ -1,7 +1,6 @@
 {
   "tabs": {
     "now_playing": "מתנגן עכשיו",
-    "queue": "תור",
     "playlists": "פלייליסטים",
     "search": "חיפוש",
     "speakers": "רמקולים"
@@ -30,9 +29,7 @@
     "sort_recent": "נוספו לאחרונה",
     "view_grid": "תצוגת רשת",
     "view_list": "תצוגת רשימה",
-    "no_results": "לא נמצאו תוצאות",
-    "queue": "תור",
-    "queue_empty": "התור ריק"
+    "no_results": "לא נמצאו תוצאות"
   },
   "config": {
     "title": "כותרת הכרטיס",
@@ -49,8 +46,7 @@
     "missing_config": "חסרה הגדרה. אנא הגדר את הכרטיס.",
     "missing_speakers": "לא הוגדרו רמקולים. אנא הוסף רמקולים בהגדרות הכרטיס.",
     "load_failed": "נכשל בטעינת פלייליסטים. אנא בדוק את הגדרות Music Assistant.",
-    "play_failed": "נכשל בהפעלת הפלייליסט",
-    "queue_load_failed": "נכשל בטעינת התור"
+    "play_failed": "נכשל בהפעלת הפלייליסט"
   }
 }
 

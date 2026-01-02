@@ -1,7 +1,6 @@
 {
   "tabs": {
     "now_playing": "Läuft gerade",
-    "queue": "Warteschlange",
     "playlists": "Wiedergabelisten",
     "search": "Suche",
     "speakers": "Lautsprecher"
@@ -30,9 +29,7 @@
     "sort_recent": "Kürzlich hinzugefügt",
     "view_grid": "Rasteransicht",
     "view_list": "Listenansicht",
-    "no_results": "Keine Ergebnisse gefunden",
-    "queue": "Warteschlange",
-    "queue_empty": "Warteschlange ist leer"
+    "no_results": "Keine Ergebnisse gefunden"
   },
   "config": {
     "title": "Kartentitel",
@@ -49,8 +46,7 @@
     "missing_config": "Konfiguration fehlt. Bitte konfigurieren Sie die Karte.",
     "missing_speakers": "Keine Lautsprecher konfiguriert. Bitte fügen Sie Lautsprecher hinzu.",
     "load_failed": "Wiedergabelisten konnten nicht geladen werden. Überprüfen Sie die Music Assistant Konfiguration.",
-    "play_failed": "Wiedergabeliste konnte nicht abgespielt werden",
-    "queue_load_failed": "Warteschlange konnte nicht geladen werden"
+    "play_failed": "Wiedergabeliste konnte nicht abgespielt werden"
   }
 }
 
