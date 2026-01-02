@@ -29,7 +29,10 @@
     "sort_recent": "Recent toegevoegd",
     "view_grid": "Rasterweergave",
     "view_list": "Lijstweergave",
-    "no_results": "Geen resultaten gevonden"
+    "no_results": "Geen resultaten gevonden",
+    "play_all": "Alles afspelen",
+    "back": "Terug",
+    "no_tracks": "Geen nummers gevonden"
   },
   "config": {
     "title": "Kaarttitel",

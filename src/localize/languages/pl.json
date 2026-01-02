@@ -29,7 +29,10 @@
     "sort_recent": "Ostatnio dodane",
     "view_grid": "Widok siatki",
     "view_list": "Widok listy",
-    "no_results": "Brak wyników"
+    "no_results": "Brak wyników",
+    "play_all": "Odtwórz wszystko",
+    "back": "Wstecz",
+    "no_tracks": "Nie znaleziono utworów"
   },
   "config": {
     "title": "Tytuł karty",

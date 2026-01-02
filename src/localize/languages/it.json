@@ -29,7 +29,10 @@
     "sort_recent": "Aggiunti di recente",
     "view_grid": "Vista griglia",
     "view_list": "Vista elenco",
-    "no_results": "Nessun risultato trovato"
+    "no_results": "Nessun risultato trovato",
+    "play_all": "Riproduci tutto",
+    "back": "Indietro",
+    "no_tracks": "Nessun brano trovato"
   },
   "config": {
     "title": "Titolo scheda",

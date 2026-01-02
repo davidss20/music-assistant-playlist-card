@@ -29,7 +29,10 @@
     "sort_recent": "Adicionados recentemente",
     "view_grid": "Visualização em grade",
     "view_list": "Visualização em lista",
-    "no_results": "Nenhum resultado encontrado"
+    "no_results": "Nenhum resultado encontrado",
+    "play_all": "Reproduzir tudo",
+    "back": "Voltar",
+    "no_tracks": "Nenhuma faixa encontrada"
   },
   "config": {
     "title": "Título do cartão",

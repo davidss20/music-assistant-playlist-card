@@ -29,7 +29,10 @@
     "sort_recent": "Ajoutés récemment",
     "view_grid": "Vue grille",
     "view_list": "Vue liste",
-    "no_results": "Aucun résultat trouvé"
+    "no_results": "Aucun résultat trouvé",
+    "play_all": "Tout lire",
+    "back": "Retour",
+    "no_tracks": "Aucune piste trouvée"
   },
   "config": {
     "title": "Titre de la carte",

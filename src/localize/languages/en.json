@@ -29,7 +29,10 @@
     "sort_recent": "Recently added",
     "view_grid": "Grid view",
     "view_list": "List view",
-    "no_results": "No results found"
+    "no_results": "No results found",
+    "play_all": "Play All",
+    "back": "Back",
+    "no_tracks": "No tracks found"
   },
   "config": {
     "title": "Card Title",

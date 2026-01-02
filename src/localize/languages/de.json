@@ -29,7 +29,10 @@
     "sort_recent": "Kürzlich hinzugefügt",
     "view_grid": "Rasteransicht",
     "view_list": "Listenansicht",
-    "no_results": "Keine Ergebnisse gefunden"
+    "no_results": "Keine Ergebnisse gefunden",
+    "play_all": "Alle abspielen",
+    "back": "Zurück",
+    "no_tracks": "Keine Titel gefunden"
   },
   "config": {
     "title": "Kartentitel",

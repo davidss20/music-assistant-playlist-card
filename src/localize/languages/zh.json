@@ -29,7 +29,10 @@
     "sort_recent": "最近添加",
     "view_grid": "网格视图",
     "view_list": "列表视图",
-    "no_results": "未找到结果"
+    "no_results": "未找到结果",
+    "play_all": "全部播放",
+    "back": "返回",
+    "no_tracks": "未找到歌曲"
   },
   "config": {
     "title": "卡片标题",

@@ -18,11 +18,12 @@ import type {
   ViewMode,
   SearchMediaType,
   MusicAssistantSearchResult,
+  PlaylistTrack,
 } from './types';
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.6.1';
+const CARD_VERSION = '1.7.0';
 
 // Log card info on load
 console.info(
@@ -69,6 +70,11 @@ export class MusicAssistantPlaylistCard extends LitElement {
   @state() private _searchResults: MusicAssistantSearchResult[] = [];
   @state() private _searchLoading = false;
   @state() private _searchMediaType: SearchMediaType = 'track';
+
+  // Playlist detail view state
+  @state() private _selectedPlaylist: MusicAssistantPlaylist | null = null;
+  @state() private _playlistTracks: PlaylistTrack[] = [];
+  @state() private _loadingTracks = false;
 
   // Apply styles
   static styles = cardStyles;
@@ -278,6 +284,180 @@ export class MusicAssistantPlaylistCard extends LitElement {
     } catch (error) {
       console.error('[music-assistant-playlist-card] Failed to play playlist:', error);
     }
+  }
+
+  /**
+   * Open playlist detail view to see tracks
+   */
+  private async _openPlaylist(playlist: MusicAssistantPlaylist): Promise<void> {
+    this._selectedPlaylist = playlist;
+    this._loadingTracks = true;
+    this._playlistTracks = [];
+    await this._loadPlaylistTracks(playlist);
+  }
+
+  /**
+   * Close playlist detail view and go back to playlists list
+   */
+  private _closePlaylistDetail(): void {
+    this._selectedPlaylist = null;
+    this._playlistTracks = [];
+    this._loadingTracks = false;
+  }
+
+  /**
+   * Load tracks from a playlist using Music Assistant API
+   */
+  private async _loadPlaylistTracks(playlist: MusicAssistantPlaylist): Promise<void> {
+    if (!this.hass || !this._config?.config_entry_id) return;
+
+    try {
+      // Try to get playlist tracks using get_item service
+      // This returns full playlist details including tracks
+      const response = await this.hass.callWS<{
+        response: {
+          tracks?: PlaylistTrack[];
+          items?: PlaylistTrack[];
+          [key: string]: unknown;
+        };
+      }>({
+        type: 'call_service',
+        domain: 'music_assistant',
+        service: 'get_item',
+        service_data: {
+          config_entry_id: this._config.config_entry_id,
+          media_type: 'playlist',
+          item_id: playlist.item_id,
+        },
+        return_response: true,
+      });
+
+      console.info('[music-assistant-playlist-card] Get item response:', response);
+
+      // Extract tracks from response
+      let tracks: PlaylistTrack[] = [];
+      
+      if (response?.response?.tracks && Array.isArray(response.response.tracks)) {
+        tracks = response.response.tracks;
+      } else if (response?.response?.items && Array.isArray(response.response.items)) {
+        tracks = response.response.items;
+      } else if (response?.response) {
+        // Search for any array that might contain tracks
+        for (const [key, value] of Object.entries(response.response)) {
+          if (Array.isArray(value) && value.length > 0) {
+            // Check if items look like tracks
+            const firstItem = value[0] as Record<string, unknown>;
+            if (firstItem && (firstItem.name || firstItem.uri || firstItem.item_id)) {
+              tracks = value as PlaylistTrack[];
+              console.info('[music-assistant-playlist-card] Found tracks in key:', key);
+              break;
+            }
+          }
+        }
+      }
+
+      // If get_item didn't return tracks, try alternative method
+      if (tracks.length === 0) {
+        console.info('[music-assistant-playlist-card] Trying alternative API...');
+        
+        // Try using search with playlist URI to get tracks
+        const searchResponse = await this.hass.callWS<{
+          response: {
+            tracks?: PlaylistTrack[];
+            [key: string]: unknown;
+          };
+        }>({
+          type: 'call_service',
+          domain: 'music_assistant',
+          service: 'search',
+          service_data: {
+            config_entry_id: this._config.config_entry_id,
+            name: playlist.name,
+            media_type: ['track'],
+            library_only: true,
+            limit: 100,
+          },
+          return_response: true,
+        });
+
+        console.info('[music-assistant-playlist-card] Search response:', searchResponse);
+
+        if (searchResponse?.response?.tracks) {
+          tracks = searchResponse.response.tracks;
+        }
+      }
+
+      this._playlistTracks = tracks;
+      console.info('[music-assistant-playlist-card] Loaded tracks:', this._playlistTracks.length);
+      
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Failed to load playlist tracks:', error);
+      this._playlistTracks = [];
+    } finally {
+      this._loadingTracks = false;
+    }
+  }
+
+  /**
+   * Play a specific track from the playlist
+   */
+  private async _playTrack(track: PlaylistTrack): Promise<void> {
+    if (!this.hass || !this._selectedSpeaker) {
+      console.warn('[music-assistant-playlist-card] No speaker selected');
+      return;
+    }
+
+    try {
+      const mediaId = track.uri || track.item_id;
+      
+      await this.hass.callService('music_assistant', 'play_media', {
+        media_id: mediaId,
+        media_type: 'track',
+        enqueue: 'replace',
+      }, { entity_id: this._selectedSpeaker });
+      
+      console.info('[music-assistant-playlist-card] Playing track:', track.name);
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Failed to play track:', error);
+    }
+  }
+
+  /**
+   * Get artist name from track
+   */
+  private _getTrackArtist(track: PlaylistTrack): string {
+    if (track.artist) return track.artist;
+    if (track.artists && track.artists.length > 0) {
+      return track.artists.map(a => a.name).join(', ');
+    }
+    return '';
+  }
+
+  /**
+   * Get image URL for a track
+   */
+  private _getTrackImage(track: PlaylistTrack): string | null {
+    if (!track.image) return null;
+    
+    if (typeof track.image === 'string') {
+      return track.image;
+    }
+    
+    if (typeof track.image === 'object' && track.image.path) {
+      return track.image.path;
+    }
+    
+    return null;
+  }
+
+  /**
+   * Format duration in mm:ss
+   */
+  private _formatDuration(seconds: number | undefined): string {
+    if (!seconds) return '';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
 
   /**
@@ -1067,6 +1247,12 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Render playlists view (with toolbar)
    */
   private _renderPlaylistsView(): TemplateResult {
+    // If a playlist is selected, show detail view with tracks
+    if (this._selectedPlaylist) {
+      return this._renderPlaylistDetail();
+    }
+
+    // Otherwise show playlists grid/list
     const filteredPlaylists = this._getFilteredPlaylists();
 
     return html`
@@ -1078,6 +1264,100 @@ export class MusicAssistantPlaylistCard extends LitElement {
           : this._viewMode === 'grid'
             ? this._renderPlaylistGrid(filteredPlaylists)
             : this._renderPlaylistList(filteredPlaylists)}
+    `;
+  }
+
+  /**
+   * Render playlist detail view with tracks list
+   */
+  private _renderPlaylistDetail(): TemplateResult {
+    if (!this._selectedPlaylist) return html``;
+
+    const playlist = this._selectedPlaylist;
+    const imageUrl = this._getPlaylistImage(playlist);
+
+    return html`
+      <div class="playlist-detail">
+        <div class="playlist-detail-header">
+          <button class="back-button" @click=${this._closePlaylistDetail} title="${localize('common.back')}">
+            <ha-icon icon="${isRTL() ? 'mdi:arrow-left' : 'mdi:arrow-right'}"></ha-icon>
+          </button>
+          <div class="playlist-detail-image">
+            ${imageUrl
+              ? html`<img src="${imageUrl}" alt="${playlist.name}" />`
+              : html`<ha-icon icon="mdi:playlist-music"></ha-icon>`}
+          </div>
+          <div class="playlist-detail-info">
+            <h3 class="playlist-detail-title">${playlist.name}</h3>
+            <span class="playlist-detail-meta">
+              ${this._loadingTracks 
+                ? localize('common.loading')
+                : `${this._playlistTracks.length} ${localize('common.tracks')}`}
+            </span>
+          </div>
+        </div>
+
+        <div class="playlist-detail-actions">
+          <button 
+            class="play-all-button"
+            @click=${() => this._playPlaylist(playlist)}
+            ?disabled=${!this._selectedSpeaker}
+          >
+            <ha-icon icon="mdi:play"></ha-icon>
+            <span>${localize('common.play_all')}</span>
+          </button>
+        </div>
+
+        ${this._loadingTracks 
+          ? this._renderLoading()
+          : this._playlistTracks.length === 0
+            ? html`
+                <div class="empty-container">
+                  <ha-icon icon="mdi:music-note-off"></ha-icon>
+                  <span class="empty-message">${localize('common.no_tracks')}</span>
+                </div>
+              `
+            : html`
+                <div class="tracks-list">
+                  ${this._playlistTracks.map((track, index) => this._renderTrackItem(track, index))}
+                </div>
+              `}
+      </div>
+    `;
+  }
+
+  /**
+   * Render a single track item in the playlist detail view
+   */
+  private _renderTrackItem(track: PlaylistTrack, index: number): TemplateResult {
+    const imageUrl = this._getTrackImage(track);
+    const artist = this._getTrackArtist(track);
+    const duration = this._formatDuration(track.duration);
+
+    return html`
+      <div 
+        class="track-item"
+        @click=${() => this._playTrack(track)}
+      >
+        <span class="track-number">${index + 1}</span>
+        <div class="track-image">
+          ${imageUrl
+            ? html`<img src="${imageUrl}" alt="${track.name}" />`
+            : html`<ha-icon icon="mdi:music-note"></ha-icon>`}
+        </div>
+        <div class="track-info">
+          <span class="track-name">${track.name}</span>
+          ${artist ? html`<span class="track-artist">${artist}</span>` : nothing}
+        </div>
+        ${duration ? html`<span class="track-duration">${duration}</span>` : nothing}
+        <button 
+          class="track-play-btn"
+          @click=${(e: Event) => { e.stopPropagation(); this._playTrack(track); }}
+          title="${localize('common.play')}"
+        >
+          <ha-icon icon="mdi:play"></ha-icon>
+        </button>
+      </div>
     `;
   }
 
@@ -1114,17 +1394,18 @@ export class MusicAssistantPlaylistCard extends LitElement {
 
   /**
    * Render a single playlist item
+   * - Click on image/info area opens playlist detail view
+   * - Click on play button starts playing immediately
    */
   private _renderPlaylistItem(playlist: MusicAssistantPlaylist): TemplateResult {
     const imageUrl = this._getPlaylistImage(playlist);
 
     return html`
-      <div
-        class="playlist-item ripple"
-        @click=${() => this._playPlaylist(playlist)}
-        title="${playlist.name}"
-      >
-        <div class="playlist-image-container">
+      <div class="playlist-item ripple" title="${playlist.name}">
+        <div 
+          class="playlist-image-container"
+          @click=${() => this._openPlaylist(playlist)}
+        >
           ${imageUrl
             ? html`<img
                 class="playlist-image"
@@ -1138,12 +1419,19 @@ export class MusicAssistantPlaylistCard extends LitElement {
                 </div>
               `}
           <div class="play-overlay">
-            <button class="play-button" aria-label="${localize('common.play')}">
+            <button 
+              class="play-button" 
+              aria-label="${localize('common.play')}"
+              @click=${(e: Event) => { e.stopPropagation(); this._playPlaylist(playlist); }}
+            >
               <ha-icon icon="mdi:play"></ha-icon>
             </button>
           </div>
         </div>
-        <div class="playlist-info">
+        <div 
+          class="playlist-info"
+          @click=${() => this._openPlaylist(playlist)}
+        >
           <p class="playlist-name">${playlist.name}</p>
           ${playlist.track_count
             ? html`<p class="playlist-meta">${playlist.track_count} ${localize('common.tracks')}</p>`

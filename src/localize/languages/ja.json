@@ -29,7 +29,10 @@
     "sort_recent": "最近追加",
     "view_grid": "グリッド表示",
     "view_list": "リスト表示",
-    "no_results": "結果が見つかりません"
+    "no_results": "結果が見つかりません",
+    "play_all": "すべて再生",
+    "back": "戻る",
+    "no_tracks": "曲が見つかりません"
   },
   "config": {
     "title": "カードタイトル",

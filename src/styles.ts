@@ -540,10 +540,16 @@ export const cardStyles = css`
     background: rgba(0, 0, 0, 0.4);
     opacity: 0;
     transition: opacity 0.2s ease;
+    pointer-events: none;
   }
 
   .playlist-item:hover .play-overlay {
     opacity: 1;
+    pointer-events: auto;
+  }
+
+  .play-overlay .play-button {
+    pointer-events: auto;
   }
 
   .play-button {
@@ -1460,6 +1466,287 @@ export const cardStyles = css`
   .search-empty ha-icon {
     --mdc-icon-size: 48px;
     opacity: 0.3;
+  }
+
+  /* ==========================================================================
+     Playlist Detail View
+     ========================================================================== */
+
+  .playlist-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .playlist-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  :host([dir="rtl"]) .playlist-detail-header {
+    flex-direction: row-reverse;
+  }
+
+  .back-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    border: none;
+    cursor: pointer;
+    color: var(--primary-text-color);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .back-button:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.15));
+  }
+
+  .back-button ha-icon {
+    --mdc-icon-size: 24px;
+  }
+
+  :host([dir="rtl"]) .back-button ha-icon {
+    transform: rotate(180deg);
+  }
+
+  .playlist-detail-image {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .playlist-detail-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .playlist-detail-image ha-icon {
+    --mdc-icon-size: 28px;
+    color: var(--secondary-text-color);
+    opacity: 0.5;
+  }
+
+  .playlist-detail-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  :host([dir="rtl"]) .playlist-detail-info {
+    text-align: right;
+  }
+
+  .playlist-detail-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-text-color);
+    margin: 0 0 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .playlist-detail-meta {
+    font-size: 13px;
+    color: var(--secondary-text-color);
+  }
+
+  .playlist-detail-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .play-all-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 20px;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 12px;
+    color: var(--text-primary-color, #fff);
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .play-all-button:hover {
+    filter: brightness(1.1);
+  }
+
+  .play-all-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .play-all-button ha-icon {
+    --mdc-icon-size: 22px;
+  }
+
+  .tracks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+  }
+
+  .tracks-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .tracks-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .tracks-list::-webkit-scrollbar-thumb {
+    background: var(--divider-color, rgba(0, 0, 0, 0.2));
+    border-radius: 3px;
+  }
+
+  .tracks-list::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-text-color);
+  }
+
+  .track-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  :host([dir="rtl"]) .track-item {
+    flex-direction: row-reverse;
+  }
+
+  .track-item:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.05));
+  }
+
+  .track-number {
+    width: 24px;
+    font-size: 13px;
+    color: var(--secondary-text-color);
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  :host([dir="rtl"]) .track-number {
+    text-align: center;
+  }
+
+  .track-image {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .track-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .track-image ha-icon {
+    --mdc-icon-size: 22px;
+    color: var(--secondary-text-color);
+    opacity: 0.5;
+  }
+
+  .track-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  :host([dir="rtl"]) .track-info {
+    text-align: right;
+  }
+
+  .track-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--primary-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .track-artist {
+    font-size: 12px;
+    color: var(--secondary-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .track-duration {
+    font-size: 12px;
+    color: var(--secondary-text-color);
+    flex-shrink: 0;
+  }
+
+  .track-play-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    border: none;
+    cursor: pointer;
+    color: var(--text-primary-color, #fff);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .track-item:hover .track-play-btn {
+    opacity: 1;
+  }
+
+  .track-play-btn:hover {
+    transform: scale(1.1);
+  }
+
+  .track-play-btn ha-icon {
+    --mdc-icon-size: 18px;
   }
 
 `;

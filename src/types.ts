@@ -305,6 +305,29 @@ export interface MusicAssistantSearchResult {
   provider?: string;
 }
 
+export interface PlaylistTrack {
+  /** Track item ID */
+  item_id: string;
+  /** Track URI */
+  uri: string;
+  /** Track name */
+  name: string;
+  /** Artist name (simple) */
+  artist?: string;
+  /** Artists array */
+  artists?: Array<{ name: string }>;
+  /** Album info */
+  album?: { name: string };
+  /** Duration in seconds */
+  duration?: number;
+  /** Track image */
+  image?: string | MusicAssistantImage;
+  /** Track number in album */
+  track_number?: number;
+  /** Position in playlist */
+  position?: number;
+}
+
 // ============================================================================
 // Component Types
 // ============================================================================
