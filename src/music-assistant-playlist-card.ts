@@ -23,7 +23,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.7.2';
+const CARD_VERSION = '1.7.3';
 
 // Log card info on load
 console.info(
@@ -309,6 +309,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
 
   /**
    * Load tracks from a playlist using Music Assistant API
+   * Uses browse_media as the primary method (standard HA API that works with playlist URI)
    */
   private async _loadPlaylistTracks(playlist: MusicAssistantPlaylist): Promise<void> {
     if (!this.hass || !this._config?.config_entry_id) return;
@@ -318,41 +319,46 @@ export class MusicAssistantPlaylistCard extends LitElement {
     try {
       let tracks: PlaylistTrack[] = [];
       
-      // Method 1: Try get_library with album_type playlist
+      // Method 1: Try browse_media (standard HA API) - this is the correct way to get playlist tracks
       try {
-        console.info('[music-assistant-playlist-card] Trying get_library with playlist tracks...');
-        const libraryResponse = await this.hass.callWS<{
-          response: PlaylistTrack[] | { items?: PlaylistTrack[]; tracks?: PlaylistTrack[] };
+        console.info('[music-assistant-playlist-card] Trying browse_media with playlist URI...');
+        const browseUri = playlist.uri || `library://playlist/${playlist.item_id}`;
+        const speakerEntity = this._selectedSpeaker || this._config.speakers?.[0];
+        
+        console.info('[music-assistant-playlist-card] browse_media params - entity:', speakerEntity, 'uri:', browseUri);
+        
+        const browseResponse = await this.hass.callWS<{
+          children?: Array<Record<string, unknown>>;
+          title?: string;
+          media_content_id?: string;
+          [key: string]: unknown;
         }>({
-          type: 'call_service',
-          domain: 'music_assistant',
-          service: 'get_library',
-          service_data: {
-            config_entry_id: this._config.config_entry_id,
-            media_type: 'track',
-            limit: 500,
-          },
-          return_response: true,
+          type: 'media_player/browse_media',
+          entity_id: speakerEntity,
+          media_content_type: 'playlist',
+          media_content_id: browseUri,
         });
 
-        console.info('[music-assistant-playlist-card] get_library response:', libraryResponse);
+        console.info('[music-assistant-playlist-card] browse_media response:', JSON.stringify(browseResponse, null, 2));
 
-        // Check response structure
-        if (libraryResponse?.response) {
-          if (Array.isArray(libraryResponse.response)) {
-            // Response is directly an array of tracks - filter by playlist if possible
-            tracks = libraryResponse.response as PlaylistTrack[];
-          } else if (libraryResponse.response.items) {
-            tracks = libraryResponse.response.items;
-          } else if (libraryResponse.response.tracks) {
-            tracks = libraryResponse.response.tracks;
-          }
+        if (browseResponse?.children && Array.isArray(browseResponse.children)) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          tracks = browseResponse.children.map((child: any) => ({
+            item_id: child.media_content_id || child.item_id || '',
+            uri: child.media_content_id || child.uri || '',
+            name: child.title || child.name || '',
+            artist: child.media_artist || child.artist || '',
+            image: child.thumbnail || child.image,
+            duration: child.duration,
+            album: child.media_album_name ? { name: child.media_album_name } : undefined,
+          })) as PlaylistTrack[];
+          console.info('[music-assistant-playlist-card] browse_media found tracks:', tracks.length);
         }
       } catch (e) {
-        console.info('[music-assistant-playlist-card] get_library failed:', e);
+        console.info('[music-assistant-playlist-card] browse_media failed:', e);
       }
 
-      // Method 2: Try to get playlist tracks directly via get_item
+      // Method 2: Try get_item with playlist ID to get tracks array
       if (tracks.length === 0) {
         try {
           console.info('[music-assistant-playlist-card] Trying get_item...');
@@ -375,9 +381,9 @@ export class MusicAssistantPlaylistCard extends LitElement {
           // Search for tracks in any key of the response
           if (getItemResponse?.response) {
             for (const [key, value] of Object.entries(getItemResponse.response)) {
-              console.info('[music-assistant-playlist-card] Checking key:', key, 'isArray:', Array.isArray(value));
               if (Array.isArray(value) && value.length > 0) {
                 const firstItem = value[0] as Record<string, unknown>;
+                // Check if this looks like a track (has name/uri/item_id and possibly artist/duration)
                 if (firstItem && (firstItem.name || firstItem.uri || firstItem.item_id)) {
                   tracks = value as PlaylistTrack[];
                   console.info('[music-assistant-playlist-card] Found tracks in key:', key, 'count:', tracks.length);
@@ -391,38 +397,38 @@ export class MusicAssistantPlaylistCard extends LitElement {
         }
       }
 
-      // Method 3: Try browse_media (standard HA API)
+      // Method 3: Try Music Assistant specific playlist_tracks service (if available)
       if (tracks.length === 0) {
         try {
-          console.info('[music-assistant-playlist-card] Trying browse_media...');
-          const browseUri = playlist.uri || `library://playlist/${playlist.item_id}`;
-          
-          const browseResponse = await this.hass.callWS<{
-            children?: PlaylistTrack[];
-            [key: string]: unknown;
+          console.info('[music-assistant-playlist-card] Trying playlist_tracks service...');
+          const playlistTracksResponse = await this.hass.callWS<{
+            response: PlaylistTrack[] | { items?: PlaylistTrack[]; tracks?: PlaylistTrack[] };
           }>({
-            type: 'media_player/browse_media',
-            entity_id: this._selectedSpeaker || this._config.speakers?.[0],
-            media_content_type: 'playlist',
-            media_content_id: browseUri,
+            type: 'call_service',
+            domain: 'music_assistant',
+            service: 'get_library',
+            service_data: {
+              config_entry_id: this._config.config_entry_id,
+              media_type: 'playlist_tracks',
+              item_id: playlist.item_id,
+              limit: 500,
+            },
+            return_response: true,
           });
 
-          console.info('[music-assistant-playlist-card] browse_media response:', browseResponse);
+          console.info('[music-assistant-playlist-card] playlist_tracks response:', playlistTracksResponse);
 
-          if (browseResponse?.children && Array.isArray(browseResponse.children)) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            tracks = (browseResponse.children as any[]).map((child) => ({
-              item_id: child.media_content_id || child.item_id || '',
-              uri: child.media_content_id || child.uri || '',
-              name: child.title || child.name || '',
-              artist: child.artist || '',
-              image: child.thumbnail || child.image,
-              duration: child.duration,
-            })) as PlaylistTrack[];
-            console.info('[music-assistant-playlist-card] browse_media found tracks:', tracks.length);
+          if (playlistTracksResponse?.response) {
+            if (Array.isArray(playlistTracksResponse.response)) {
+              tracks = playlistTracksResponse.response as PlaylistTrack[];
+            } else if (playlistTracksResponse.response.items) {
+              tracks = playlistTracksResponse.response.items;
+            } else if (playlistTracksResponse.response.tracks) {
+              tracks = playlistTracksResponse.response.tracks;
+            }
           }
         } catch (e) {
-          console.info('[music-assistant-playlist-card] browse_media failed:', e);
+          console.info('[music-assistant-playlist-card] playlist_tracks failed:', e);
         }
       }
 
