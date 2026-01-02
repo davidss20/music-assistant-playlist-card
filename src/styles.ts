@@ -355,7 +355,8 @@ export const cardStyles = css`
   /* Playlist Container with Scroll */
   .playlists-scroll-container {
     flex: 1;
-    overflow: visible;
+    overflow-y: auto;
+    overflow-x: hidden;
     min-height: 0;
   }
 
@@ -787,16 +788,16 @@ export const cardStyles = css`
   .tab-content {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    /* Fixed minimum height to match the player tab (largest tab) */
-    min-height: 580px;
+    /* Fixed height based on player tab */
+    height: 580px;
     overflow: hidden;
   }
 
   .tab-view {
     padding: var(--playlist-card-spacing);
     flex: 1;
-    min-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -1103,6 +1104,10 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     gap: 8px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
   }
 
   .speakers-grid::-webkit-scrollbar {
@@ -1318,6 +1323,10 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     gap: 4px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
   }
 
   .search-results::-webkit-scrollbar {
@@ -1591,6 +1600,10 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     gap: 2px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
   }
 
   .tracks-list::-webkit-scrollbar {
