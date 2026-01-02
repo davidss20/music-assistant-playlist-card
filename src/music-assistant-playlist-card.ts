@@ -290,9 +290,11 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Open playlist detail view to see tracks
    */
   private async _openPlaylist(playlist: MusicAssistantPlaylist): Promise<void> {
+    console.info('[music-assistant-playlist-card] Opening playlist:', playlist.name);
     this._selectedPlaylist = playlist;
     this._loadingTracks = true;
     this._playlistTracks = [];
+    console.info('[music-assistant-playlist-card] Selected playlist set, loading tracks...');
     await this._loadPlaylistTracks(playlist);
   }
 
