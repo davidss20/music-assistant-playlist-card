@@ -74,12 +74,12 @@ export const cardStyles = css`
   }
 
   ha-card {
-    overflow: hidden;
+    overflow: visible;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 500px;
+    /* Responsive height - no fixed height */
   }
 
   .card-header {
@@ -355,8 +355,7 @@ export const cardStyles = css`
   /* Playlist Container with Scroll */
   .playlists-scroll-container {
     flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: visible;
     min-height: 0;
   }
 
@@ -814,27 +813,6 @@ export const cardStyles = css`
     padding: 16px;
     width: 100%;
     box-sizing: border-box;
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    min-height: 0;
-  }
-
-  .now-playing::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .now-playing::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .now-playing::-webkit-scrollbar-thumb {
-    background: var(--divider-color, rgba(0, 0, 0, 0.2));
-    border-radius: 3px;
-  }
-
-  .now-playing::-webkit-scrollbar-thumb:hover {
-    background: var(--secondary-text-color);
   }
 
   .now-playing-artwork {
@@ -1123,10 +1101,6 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     gap: 8px;
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    min-height: 0;
   }
 
   .speakers-grid::-webkit-scrollbar {
@@ -1342,10 +1316,6 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     gap: 4px;
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    min-height: 0;
   }
 
   .search-results::-webkit-scrollbar {
@@ -1619,10 +1589,6 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     gap: 2px;
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    min-height: 0;
   }
 
   .tracks-list::-webkit-scrollbar {

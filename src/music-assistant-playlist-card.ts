@@ -23,7 +23,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.7.3';
+const CARD_VERSION = '1.7.4';
 
 // Log card info on load
 console.info(
@@ -885,7 +885,8 @@ export class MusicAssistantPlaylistCard extends LitElement {
   private _renderNowPlaying(): TemplateResult {
     const state = this._getMediaPlayerState();
     
-    if (!state || !this._selectedSpeaker) {
+    // If no speaker selected, show message
+    if (!this._selectedSpeaker) {
       return html`
         <div class="now-playing">
           <div class="now-playing-idle">
@@ -896,28 +897,18 @@ export class MusicAssistantPlaylistCard extends LitElement {
       `;
     }
 
-    const isPlaying = state.state === 'playing';
-    const isIdle = state.state === 'idle' || state.state === 'off' || !state.media_title;
+    const isPlaying = state?.state === 'playing';
+    const hasMedia = state?.media_title;
     
-    if (isIdle) {
-      return html`
-        <div class="now-playing">
-          <div class="now-playing-idle">
-            <ha-icon icon="mdi:music-note-off"></ha-icon>
-            <span class="now-playing-idle-text">${localize('common.nothing_playing')}</span>
-          </div>
-        </div>
-      `;
-    }
-
-    const progress = state.media_duration && state.media_position 
+    const progress = state?.media_duration && state?.media_position 
       ? (state.media_position / state.media_duration) * 100 
       : 0;
 
+    // Always show the player - with or without media
     return html`
       <div class="now-playing">
         <div class="now-playing-artwork">
-          ${state.entity_picture
+          ${hasMedia && state?.entity_picture
             ? html`<img src="${state.entity_picture}" alt="Album art" />`
             : html`
                 <div class="now-playing-artwork-placeholder">
@@ -927,18 +918,18 @@ export class MusicAssistantPlaylistCard extends LitElement {
         </div>
 
         <div class="now-playing-info">
-          <h3 class="now-playing-title">${state.media_title || 'Unknown'}</h3>
-          <p class="now-playing-artist">${state.media_artist || 'Unknown artist'}</p>
+          <h3 class="now-playing-title">${hasMedia ? state?.media_title : localize('common.nothing_playing')}</h3>
+          <p class="now-playing-artist">${hasMedia ? (state?.media_artist || '') : ''}</p>
         </div>
 
-        ${state.media_duration
+        ${state?.media_duration
           ? html`
               <div class="progress-container">
                 <div class="progress-bar">
                   <div class="progress-bar-fill" style="width: ${progress}%"></div>
                 </div>
                 <div class="progress-time">
-                  <span>${this._formatTime(state.media_position || 0)}</span>
+                  <span>${this._formatTime(state?.media_position || 0)}</span>
                   <span>${this._formatTime(state.media_duration)}</span>
                 </div>
               </div>
@@ -960,7 +951,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
         <div class="secondary-controls">
           <div class="secondary-controls-left">
             <button 
-              class="control-button small ${state.shuffle ? 'active' : ''}" 
+              class="control-button small ${state?.shuffle ? 'active' : ''}" 
               @click=${this._toggleShuffle}
               title="Shuffle"
             >
@@ -969,11 +960,11 @@ export class MusicAssistantPlaylistCard extends LitElement {
           </div>
           <div class="secondary-controls-right">
             <button 
-              class="control-button small ${state.repeat !== 'off' ? 'active' : ''}" 
+              class="control-button small ${state?.repeat !== 'off' ? 'active' : ''}" 
               @click=${this._toggleRepeat}
-              title="Repeat: ${state.repeat || 'off'}"
+              title="Repeat: ${state?.repeat || 'off'}"
             >
-              <ha-icon icon="${state.repeat === 'one' ? 'mdi:repeat-once' : 'mdi:repeat'}"></ha-icon>
+              <ha-icon icon="${state?.repeat === 'one' ? 'mdi:repeat-once' : 'mdi:repeat'}"></ha-icon>
             </button>
           </div>
         </div>
@@ -986,10 +977,10 @@ export class MusicAssistantPlaylistCard extends LitElement {
             min="0"
             max="1"
             step="0.01"
-            .value=${String(state.volume_level || 0)}
+            .value=${String(state?.volume_level || 0)}
             @input=${this._updateVolumeSliderFill}
             @change=${this._setVolume}
-            style="--volume-percent: ${(state.volume_level || 0) * 100}%"
+            style="--volume-percent: ${(state?.volume_level || 0) * 100}%"
           />
           <ha-icon icon="mdi:volume-high"></ha-icon>
         </div>

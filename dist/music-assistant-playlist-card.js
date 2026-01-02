@@ -66,12 +66,12 @@ function e(e,t,i,s){var a,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPro
   }
 
   ha-card {
-    overflow: hidden;
+    overflow: visible;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 500px;
+    /* Responsive height - no fixed height */
   }
 
   .card-header {
@@ -347,8 +347,7 @@ function e(e,t,i,s){var a,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPro
   /* Playlist Container with Scroll */
   .playlists-scroll-container {
     flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: visible;
     min-height: 0;
   }
 
@@ -806,27 +805,6 @@ function e(e,t,i,s){var a,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPro
     padding: 16px;
     width: 100%;
     box-sizing: border-box;
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    min-height: 0;
-  }
-
-  .now-playing::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .now-playing::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .now-playing::-webkit-scrollbar-thumb {
-    background: var(--divider-color, rgba(0, 0, 0, 0.2));
-    border-radius: 3px;
-  }
-
-  .now-playing::-webkit-scrollbar-thumb:hover {
-    background: var(--secondary-text-color);
   }
 
   .now-playing-artwork {
@@ -1115,10 +1093,6 @@ function e(e,t,i,s){var a,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPro
     display: flex;
     flex-direction: column;
     gap: 8px;
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    min-height: 0;
   }
 
   .speakers-grid::-webkit-scrollbar {
@@ -1334,10 +1308,6 @@ function e(e,t,i,s){var a,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPro
     display: flex;
     flex-direction: column;
     gap: 4px;
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    min-height: 0;
   }
 
   .search-results::-webkit-scrollbar {
@@ -1611,10 +1581,6 @@ function e(e,t,i,s){var a,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPro
     display: flex;
     flex-direction: column;
     gap: 2px;
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    min-height: 0;
   }
 
   .tracks-list::-webkit-scrollbar {
@@ -2012,7 +1978,7 @@ function e(e,t,i,s){var a,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPro
           </ha-select>
         </div>
       </div>
-    `}};Rt.styles=me,e([he({attribute:!1})],Rt.prototype,"hass",void 0),e([ue()],Rt.prototype,"_config",void 0),e([ue()],Rt.prototype,"_selectedNewSpeaker",void 0),e([ue()],Rt.prototype,"_massInstances",void 0),e([ue()],Rt.prototype,"_loadingInstances",void 0),Rt=e([ce("music-assistant-playlist-card-editor")],Rt);console.info("%c MUSIC-ASSISTANT-PLAYLIST-CARD %c v1.7.3 ","color: white; background: #7c3aed; font-weight: bold; padding: 2px 6px; border-radius: 4px 0 0 4px;","color: #7c3aed; background: #e9d5ff; font-weight: bold; padding: 2px 6px; border-radius: 0 4px 4px 0;");let Lt=class extends ne{constructor(){super(...arguments),this._playlists=[],this._loading=!0,this._error=null,this._selectedSpeaker="",this._activeTab="now-playing",this._currentLanguage="en",this._searchQuery="",this._showFavoritesOnly=!1,this._sortOption="name",this._viewMode="grid",this._showSortMenu=!1,this._globalSearchQuery="",this._searchResults=[],this._searchLoading=!1,this._searchMediaType="track",this._selectedPlaylist=null,this._playlistTracks=[],this._loadingTracks=!1}setConfig(e){this._config={limit:50,columns:"auto",...e},!this._selectedSpeaker&&this._config.speakers&&this._config.speakers.length>0&&(this._selectedSpeaker=this._config.speakers[0])}getCardConfig(){return this._config}getCardSize(){return 8}getLayoutOptions(){return{grid_rows:8,grid_min_rows:3,grid_columns:4,grid_min_columns:2}}static getConfigElement(){return document.createElement("music-assistant-playlist-card-editor")}static getStubConfig(){return{config_entry_id:"",speakers:[],limit:50}}updated(e){if(super.updated(e),e.has("hass")&&this.hass){const t=this._config?.language;Mt(t&&"auto"!==t?t:this.hass.language);const i=Tt;this._currentLanguage!==i&&(this._currentLanguage=i),this._updateDirection(),this._config&&void 0===e.get("hass")&&this._loadPlaylists()}}_updateDirection(){Nt()?this.setAttribute("dir","rtl"):this.setAttribute("dir","ltr")}async _loadPlaylists(){if(this.hass&&this._config?.config_entry_id){this._loading=!0,this._error=null;try{const e=await this.hass.callWS({type:"call_service",domain:"music_assistant",service:"get_library",service_data:{config_entry_id:this._config.config_entry_id,media_type:"playlist",limit:1e3,offset:0,order_by:"name"},return_response:!0});if(console.info("[music-assistant-playlist-card] Raw response:",e),console.info("[music-assistant-playlist-card] Response keys:",e?.response?Object.keys(e.response):"no response"),e?.response)for(const[t,i]of Object.entries(e.response))Array.isArray(i)?console.info(`[music-assistant-playlist-card] Key "${t}" has ${i.length} items`):console.info(`[music-assistant-playlist-card] Key "${t}":`,i);if(e?.response?.playlists)this._playlists=e.response.playlists,console.info("[music-assistant-playlist-card] Found in playlists key:",this._playlists.length);else if(e?.response?.items)this._playlists=e.response.items,console.info("[music-assistant-playlist-card] Found in items key:",this._playlists.length);else if(e?.response&&"object"==typeof e.response){const t=Object.keys(e.response);for(const i of t){const t=e.response[i];if(Array.isArray(t)&&t.length>0){this._playlists=t,console.info("[music-assistant-playlist-card] Found playlists in key:",i);break}}}else this._playlists=[];console.info("[music-assistant-playlist-card] Loaded playlists:",this._playlists.length)}catch(e){console.error("[music-assistant-playlist-card] Failed to load playlists:",e),this._error=jt("error.load_failed")}finally{this._loading=!1}}}async _playPlaylist(e){if(this.hass&&this._selectedSpeaker)try{const t=e.uri||e.item_id;await this.hass.callService("music_assistant","play_media",{media_id:t,media_type:"playlist",enqueue:"replace"},{entity_id:this._selectedSpeaker}),console.info("[music-assistant-playlist-card] Playing playlist:",e.name)}catch(e){console.error("[music-assistant-playlist-card] Failed to play playlist:",e)}else console.warn("[music-assistant-playlist-card] No speaker selected")}async _openPlaylist(e){console.info("[music-assistant-playlist-card] Opening playlist:",e.name),this._selectedPlaylist=e,this._loadingTracks=!0,this._playlistTracks=[],console.info("[music-assistant-playlist-card] Selected playlist set, loading tracks..."),await this._loadPlaylistTracks(e)}_closePlaylistDetail(){this._selectedPlaylist=null,this._playlistTracks=[],this._loadingTracks=!1}async _loadPlaylistTracks(e){if(this.hass&&this._config?.config_entry_id){console.info("[music-assistant-playlist-card] Loading tracks for playlist:",e.name,"item_id:",e.item_id,"uri:",e.uri);try{let t=[];try{console.info("[music-assistant-playlist-card] Trying browse_media with playlist URI...");const i=e.uri||`library://playlist/${e.item_id}`,s=this._selectedSpeaker||this._config.speakers?.[0];console.info("[music-assistant-playlist-card] browse_media params - entity:",s,"uri:",i);const a=await this.hass.callWS({type:"media_player/browse_media",entity_id:s,media_content_type:"playlist",media_content_id:i});console.info("[music-assistant-playlist-card] browse_media response:",JSON.stringify(a,null,2)),a?.children&&Array.isArray(a.children)&&(t=a.children.map(e=>({item_id:e.media_content_id||e.item_id||"",uri:e.media_content_id||e.uri||"",name:e.title||e.name||"",artist:e.media_artist||e.artist||"",image:e.thumbnail||e.image,duration:e.duration,album:e.media_album_name?{name:e.media_album_name}:void 0})),console.info("[music-assistant-playlist-card] browse_media found tracks:",t.length))}catch(e){console.info("[music-assistant-playlist-card] browse_media failed:",e)}if(0===t.length)try{console.info("[music-assistant-playlist-card] Trying get_item...");const i=await this.hass.callWS({type:"call_service",domain:"music_assistant",service:"get_item",service_data:{config_entry_id:this._config.config_entry_id,media_type:"playlist",item_id:e.item_id},return_response:!0});if(console.info("[music-assistant-playlist-card] get_item full response:",JSON.stringify(i,null,2)),i?.response)for(const[e,s]of Object.entries(i.response))if(Array.isArray(s)&&s.length>0){const i=s[0];if(i&&(i.name||i.uri||i.item_id)){t=s,console.info("[music-assistant-playlist-card] Found tracks in key:",e,"count:",t.length);break}}}catch(e){console.info("[music-assistant-playlist-card] get_item failed:",e)}if(0===t.length)try{console.info("[music-assistant-playlist-card] Trying playlist_tracks service...");const i=await this.hass.callWS({type:"call_service",domain:"music_assistant",service:"get_library",service_data:{config_entry_id:this._config.config_entry_id,media_type:"playlist_tracks",item_id:e.item_id,limit:500},return_response:!0});console.info("[music-assistant-playlist-card] playlist_tracks response:",i),i?.response&&(Array.isArray(i.response)?t=i.response:i.response.items?t=i.response.items:i.response.tracks&&(t=i.response.tracks))}catch(e){console.info("[music-assistant-playlist-card] playlist_tracks failed:",e)}this._playlistTracks=t,console.info("[music-assistant-playlist-card] Final loaded tracks:",this._playlistTracks.length)}catch(e){console.error("[music-assistant-playlist-card] Failed to load playlist tracks:",e),this._playlistTracks=[]}finally{this._loadingTracks=!1}}}async _playTrack(e){if(this.hass&&this._selectedSpeaker)try{const t=e.uri||e.item_id;await this.hass.callService("music_assistant","play_media",{media_id:t,media_type:"track",enqueue:"replace"},{entity_id:this._selectedSpeaker}),console.info("[music-assistant-playlist-card] Playing track:",e.name)}catch(e){console.error("[music-assistant-playlist-card] Failed to play track:",e)}else console.warn("[music-assistant-playlist-card] No speaker selected")}_getTrackArtist(e){return e.artist?e.artist:e.artists&&e.artists.length>0?e.artists.map(e=>e.name).join(", "):""}_getTrackImage(e){return e.image?"string"==typeof e.image?e.image:"object"==typeof e.image&&e.image.path?e.image.path:null:null}_formatDuration(e){if(!e)return"";return`${Math.floor(e/60)}:${Math.floor(e%60).toString().padStart(2,"0")}`}_handleTabChange(e){this._activeTab=e}_handleSpeakerSelect(e){this._selectedSpeaker=e}_getMediaPlayerState(){if(!this.hass||!this._selectedSpeaker)return null;const e=this.hass.states[this._selectedSpeaker];return e?{state:e.state,media_title:e.attributes.media_title,media_artist:e.attributes.media_artist,media_album_name:e.attributes.media_album_name,entity_picture:e.attributes.entity_picture,media_duration:e.attributes.media_duration,media_position:e.attributes.media_position,media_position_updated_at:e.attributes.media_position_updated_at,volume_level:e.attributes.volume_level,is_volume_muted:e.attributes.is_volume_muted,shuffle:e.attributes.shuffle,repeat:e.attributes.repeat}:null}async _mediaPlayPause(){this.hass&&this._selectedSpeaker&&await this.hass.callService("media_player","media_play_pause",{},{entity_id:this._selectedSpeaker})}async _mediaNext(){this.hass&&this._selectedSpeaker&&await this.hass.callService("media_player","media_next_track",{},{entity_id:this._selectedSpeaker})}async _mediaPrevious(){this.hass&&this._selectedSpeaker&&await this.hass.callService("media_player","media_previous_track",{},{entity_id:this._selectedSpeaker})}async _toggleShuffle(){if(!this.hass||!this._selectedSpeaker)return;const e=this._getMediaPlayerState();await this.hass.callService("media_player","shuffle_set",{shuffle:!e?.shuffle},{entity_id:this._selectedSpeaker})}async _toggleRepeat(){if(!this.hass||!this._selectedSpeaker)return;const e=this._getMediaPlayerState(),t=["off","all","one"],i=t.indexOf(e?.repeat??"off"),s=t[(i+1)%t.length];await this.hass.callService("media_player","repeat_set",{repeat:s},{entity_id:this._selectedSpeaker})}async _setVolume(e){if(!this.hass||!this._selectedSpeaker)return;const t=e.target,i=parseFloat(t.value);await this.hass.callService("media_player","volume_set",{volume_level:i},{entity_id:this._selectedSpeaker})}_updateVolumeSliderFill(e){const t=e.target,i=100*parseFloat(t.value);t.style.background=`linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) ${i}%, var(--divider-color, rgba(0,0,0,0.1)) ${i}%, var(--divider-color, rgba(0,0,0,0.1)) 100%)`}_handleSearchInput(e){const t=e.target;this._searchQuery=t.value}_toggleFavorites(){this._showFavoritesOnly=!this._showFavoritesOnly}_setSortOption(e){this._sortOption=e,this._showSortMenu=!1}_toggleSortMenu(){this._showSortMenu=!this._showSortMenu}_closeSortMenu(){this._showSortMenu=!1}_setViewMode(e){this._viewMode=e}_getFilteredPlaylists(){let e=[...this._playlists];if(this._showFavoritesOnly&&(e=e.filter(e=>!0===e.favorite)),this._searchQuery.trim()){const t=this._searchQuery.toLowerCase().trim();e=e.filter(e=>e.name.toLowerCase().includes(t))}switch(this._sortOption){case"name":e.sort((e,t)=>e.name.localeCompare(t.name));break;case"name_desc":e.sort((e,t)=>t.name.localeCompare(e.name));break;case"tracks":e.sort((e,t)=>(t.track_count||0)-(e.track_count||0))}return e}_getPlaylistImage(e){return e.image?"string"==typeof e.image?e.image:"object"==typeof e.image&&e.image.path?e.image.path:null:null}_renderLoading(){return D`
+    `}};Rt.styles=me,e([he({attribute:!1})],Rt.prototype,"hass",void 0),e([ue()],Rt.prototype,"_config",void 0),e([ue()],Rt.prototype,"_selectedNewSpeaker",void 0),e([ue()],Rt.prototype,"_massInstances",void 0),e([ue()],Rt.prototype,"_loadingInstances",void 0),Rt=e([ce("music-assistant-playlist-card-editor")],Rt);console.info("%c MUSIC-ASSISTANT-PLAYLIST-CARD %c v1.7.4 ","color: white; background: #7c3aed; font-weight: bold; padding: 2px 6px; border-radius: 4px 0 0 4px;","color: #7c3aed; background: #e9d5ff; font-weight: bold; padding: 2px 6px; border-radius: 0 4px 4px 0;");let Lt=class extends ne{constructor(){super(...arguments),this._playlists=[],this._loading=!0,this._error=null,this._selectedSpeaker="",this._activeTab="now-playing",this._currentLanguage="en",this._searchQuery="",this._showFavoritesOnly=!1,this._sortOption="name",this._viewMode="grid",this._showSortMenu=!1,this._globalSearchQuery="",this._searchResults=[],this._searchLoading=!1,this._searchMediaType="track",this._selectedPlaylist=null,this._playlistTracks=[],this._loadingTracks=!1}setConfig(e){this._config={limit:50,columns:"auto",...e},!this._selectedSpeaker&&this._config.speakers&&this._config.speakers.length>0&&(this._selectedSpeaker=this._config.speakers[0])}getCardConfig(){return this._config}getCardSize(){return 8}getLayoutOptions(){return{grid_rows:8,grid_min_rows:3,grid_columns:4,grid_min_columns:2}}static getConfigElement(){return document.createElement("music-assistant-playlist-card-editor")}static getStubConfig(){return{config_entry_id:"",speakers:[],limit:50}}updated(e){if(super.updated(e),e.has("hass")&&this.hass){const t=this._config?.language;Mt(t&&"auto"!==t?t:this.hass.language);const i=Tt;this._currentLanguage!==i&&(this._currentLanguage=i),this._updateDirection(),this._config&&void 0===e.get("hass")&&this._loadPlaylists()}}_updateDirection(){Nt()?this.setAttribute("dir","rtl"):this.setAttribute("dir","ltr")}async _loadPlaylists(){if(this.hass&&this._config?.config_entry_id){this._loading=!0,this._error=null;try{const e=await this.hass.callWS({type:"call_service",domain:"music_assistant",service:"get_library",service_data:{config_entry_id:this._config.config_entry_id,media_type:"playlist",limit:1e3,offset:0,order_by:"name"},return_response:!0});if(console.info("[music-assistant-playlist-card] Raw response:",e),console.info("[music-assistant-playlist-card] Response keys:",e?.response?Object.keys(e.response):"no response"),e?.response)for(const[t,i]of Object.entries(e.response))Array.isArray(i)?console.info(`[music-assistant-playlist-card] Key "${t}" has ${i.length} items`):console.info(`[music-assistant-playlist-card] Key "${t}":`,i);if(e?.response?.playlists)this._playlists=e.response.playlists,console.info("[music-assistant-playlist-card] Found in playlists key:",this._playlists.length);else if(e?.response?.items)this._playlists=e.response.items,console.info("[music-assistant-playlist-card] Found in items key:",this._playlists.length);else if(e?.response&&"object"==typeof e.response){const t=Object.keys(e.response);for(const i of t){const t=e.response[i];if(Array.isArray(t)&&t.length>0){this._playlists=t,console.info("[music-assistant-playlist-card] Found playlists in key:",i);break}}}else this._playlists=[];console.info("[music-assistant-playlist-card] Loaded playlists:",this._playlists.length)}catch(e){console.error("[music-assistant-playlist-card] Failed to load playlists:",e),this._error=jt("error.load_failed")}finally{this._loading=!1}}}async _playPlaylist(e){if(this.hass&&this._selectedSpeaker)try{const t=e.uri||e.item_id;await this.hass.callService("music_assistant","play_media",{media_id:t,media_type:"playlist",enqueue:"replace"},{entity_id:this._selectedSpeaker}),console.info("[music-assistant-playlist-card] Playing playlist:",e.name)}catch(e){console.error("[music-assistant-playlist-card] Failed to play playlist:",e)}else console.warn("[music-assistant-playlist-card] No speaker selected")}async _openPlaylist(e){console.info("[music-assistant-playlist-card] Opening playlist:",e.name),this._selectedPlaylist=e,this._loadingTracks=!0,this._playlistTracks=[],console.info("[music-assistant-playlist-card] Selected playlist set, loading tracks..."),await this._loadPlaylistTracks(e)}_closePlaylistDetail(){this._selectedPlaylist=null,this._playlistTracks=[],this._loadingTracks=!1}async _loadPlaylistTracks(e){if(this.hass&&this._config?.config_entry_id){console.info("[music-assistant-playlist-card] Loading tracks for playlist:",e.name,"item_id:",e.item_id,"uri:",e.uri);try{let t=[];try{console.info("[music-assistant-playlist-card] Trying browse_media with playlist URI...");const i=e.uri||`library://playlist/${e.item_id}`,s=this._selectedSpeaker||this._config.speakers?.[0];console.info("[music-assistant-playlist-card] browse_media params - entity:",s,"uri:",i);const a=await this.hass.callWS({type:"media_player/browse_media",entity_id:s,media_content_type:"playlist",media_content_id:i});console.info("[music-assistant-playlist-card] browse_media response:",JSON.stringify(a,null,2)),a?.children&&Array.isArray(a.children)&&(t=a.children.map(e=>({item_id:e.media_content_id||e.item_id||"",uri:e.media_content_id||e.uri||"",name:e.title||e.name||"",artist:e.media_artist||e.artist||"",image:e.thumbnail||e.image,duration:e.duration,album:e.media_album_name?{name:e.media_album_name}:void 0})),console.info("[music-assistant-playlist-card] browse_media found tracks:",t.length))}catch(e){console.info("[music-assistant-playlist-card] browse_media failed:",e)}if(0===t.length)try{console.info("[music-assistant-playlist-card] Trying get_item...");const i=await this.hass.callWS({type:"call_service",domain:"music_assistant",service:"get_item",service_data:{config_entry_id:this._config.config_entry_id,media_type:"playlist",item_id:e.item_id},return_response:!0});if(console.info("[music-assistant-playlist-card] get_item full response:",JSON.stringify(i,null,2)),i?.response)for(const[e,s]of Object.entries(i.response))if(Array.isArray(s)&&s.length>0){const i=s[0];if(i&&(i.name||i.uri||i.item_id)){t=s,console.info("[music-assistant-playlist-card] Found tracks in key:",e,"count:",t.length);break}}}catch(e){console.info("[music-assistant-playlist-card] get_item failed:",e)}if(0===t.length)try{console.info("[music-assistant-playlist-card] Trying playlist_tracks service...");const i=await this.hass.callWS({type:"call_service",domain:"music_assistant",service:"get_library",service_data:{config_entry_id:this._config.config_entry_id,media_type:"playlist_tracks",item_id:e.item_id,limit:500},return_response:!0});console.info("[music-assistant-playlist-card] playlist_tracks response:",i),i?.response&&(Array.isArray(i.response)?t=i.response:i.response.items?t=i.response.items:i.response.tracks&&(t=i.response.tracks))}catch(e){console.info("[music-assistant-playlist-card] playlist_tracks failed:",e)}this._playlistTracks=t,console.info("[music-assistant-playlist-card] Final loaded tracks:",this._playlistTracks.length)}catch(e){console.error("[music-assistant-playlist-card] Failed to load playlist tracks:",e),this._playlistTracks=[]}finally{this._loadingTracks=!1}}}async _playTrack(e){if(this.hass&&this._selectedSpeaker)try{const t=e.uri||e.item_id;await this.hass.callService("music_assistant","play_media",{media_id:t,media_type:"track",enqueue:"replace"},{entity_id:this._selectedSpeaker}),console.info("[music-assistant-playlist-card] Playing track:",e.name)}catch(e){console.error("[music-assistant-playlist-card] Failed to play track:",e)}else console.warn("[music-assistant-playlist-card] No speaker selected")}_getTrackArtist(e){return e.artist?e.artist:e.artists&&e.artists.length>0?e.artists.map(e=>e.name).join(", "):""}_getTrackImage(e){return e.image?"string"==typeof e.image?e.image:"object"==typeof e.image&&e.image.path?e.image.path:null:null}_formatDuration(e){if(!e)return"";return`${Math.floor(e/60)}:${Math.floor(e%60).toString().padStart(2,"0")}`}_handleTabChange(e){this._activeTab=e}_handleSpeakerSelect(e){this._selectedSpeaker=e}_getMediaPlayerState(){if(!this.hass||!this._selectedSpeaker)return null;const e=this.hass.states[this._selectedSpeaker];return e?{state:e.state,media_title:e.attributes.media_title,media_artist:e.attributes.media_artist,media_album_name:e.attributes.media_album_name,entity_picture:e.attributes.entity_picture,media_duration:e.attributes.media_duration,media_position:e.attributes.media_position,media_position_updated_at:e.attributes.media_position_updated_at,volume_level:e.attributes.volume_level,is_volume_muted:e.attributes.is_volume_muted,shuffle:e.attributes.shuffle,repeat:e.attributes.repeat}:null}async _mediaPlayPause(){this.hass&&this._selectedSpeaker&&await this.hass.callService("media_player","media_play_pause",{},{entity_id:this._selectedSpeaker})}async _mediaNext(){this.hass&&this._selectedSpeaker&&await this.hass.callService("media_player","media_next_track",{},{entity_id:this._selectedSpeaker})}async _mediaPrevious(){this.hass&&this._selectedSpeaker&&await this.hass.callService("media_player","media_previous_track",{},{entity_id:this._selectedSpeaker})}async _toggleShuffle(){if(!this.hass||!this._selectedSpeaker)return;const e=this._getMediaPlayerState();await this.hass.callService("media_player","shuffle_set",{shuffle:!e?.shuffle},{entity_id:this._selectedSpeaker})}async _toggleRepeat(){if(!this.hass||!this._selectedSpeaker)return;const e=this._getMediaPlayerState(),t=["off","all","one"],i=t.indexOf(e?.repeat??"off"),s=t[(i+1)%t.length];await this.hass.callService("media_player","repeat_set",{repeat:s},{entity_id:this._selectedSpeaker})}async _setVolume(e){if(!this.hass||!this._selectedSpeaker)return;const t=e.target,i=parseFloat(t.value);await this.hass.callService("media_player","volume_set",{volume_level:i},{entity_id:this._selectedSpeaker})}_updateVolumeSliderFill(e){const t=e.target,i=100*parseFloat(t.value);t.style.background=`linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) ${i}%, var(--divider-color, rgba(0,0,0,0.1)) ${i}%, var(--divider-color, rgba(0,0,0,0.1)) 100%)`}_handleSearchInput(e){const t=e.target;this._searchQuery=t.value}_toggleFavorites(){this._showFavoritesOnly=!this._showFavoritesOnly}_setSortOption(e){this._sortOption=e,this._showSortMenu=!1}_toggleSortMenu(){this._showSortMenu=!this._showSortMenu}_closeSortMenu(){this._showSortMenu=!1}_setViewMode(e){this._viewMode=e}_getFilteredPlaylists(){let e=[...this._playlists];if(this._showFavoritesOnly&&(e=e.filter(e=>!0===e.favorite)),this._searchQuery.trim()){const t=this._searchQuery.toLowerCase().trim();e=e.filter(e=>e.name.toLowerCase().includes(t))}switch(this._sortOption){case"name":e.sort((e,t)=>e.name.localeCompare(t.name));break;case"name_desc":e.sort((e,t)=>t.name.localeCompare(e.name));break;case"tracks":e.sort((e,t)=>(t.track_count||0)-(e.track_count||0))}return e}_getPlaylistImage(e){return e.image?"string"==typeof e.image?e.image:"object"==typeof e.image&&e.image.path?e.image.path:null:null}_renderLoading(){return D`
       <div class="loading-container">
         <div class="loading-spinner"></div>
         <span class="loading-text">${jt("common.loading")}</span>
@@ -2130,24 +2096,17 @@ function e(e,t,i,s){var a,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPro
             </button>
           `)}
       </div>
-    `}_formatTime(e){return`${Math.floor(e/60)}:${Math.floor(e%60).toString().padStart(2,"0")}`}_renderNowPlaying(){const e=this._getMediaPlayerState();if(!e||!this._selectedSpeaker)return D`
+    `}_formatTime(e){return`${Math.floor(e/60)}:${Math.floor(e%60).toString().padStart(2,"0")}`}_renderNowPlaying(){const e=this._getMediaPlayerState();if(!this._selectedSpeaker)return D`
         <div class="now-playing">
           <div class="now-playing-idle">
             <ha-icon icon="mdi:speaker-off"></ha-icon>
             <span class="now-playing-idle-text">${jt("common.no_speaker_selected")}</span>
           </div>
         </div>
-      `;const t="playing"===e.state;if("idle"===e.state||"off"===e.state||!e.media_title)return D`
-        <div class="now-playing">
-          <div class="now-playing-idle">
-            <ha-icon icon="mdi:music-note-off"></ha-icon>
-            <span class="now-playing-idle-text">${jt("common.nothing_playing")}</span>
-          </div>
-        </div>
-      `;const i=e.media_duration&&e.media_position?e.media_position/e.media_duration*100:0;return D`
+      `;const t="playing"===e?.state,i=e?.media_title,s=e?.media_duration&&e?.media_position?e.media_position/e.media_duration*100:0;return D`
       <div class="now-playing">
         <div class="now-playing-artwork">
-          ${e.entity_picture?D`<img src="${e.entity_picture}" alt="Album art" />`:D`
+          ${i&&e?.entity_picture?D`<img src="${e.entity_picture}" alt="Album art" />`:D`
                 <div class="now-playing-artwork-placeholder">
                   <ha-icon icon="mdi:music"></ha-icon>
                 </div>
@@ -2155,17 +2114,17 @@ function e(e,t,i,s){var a,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPro
         </div>
 
         <div class="now-playing-info">
-          <h3 class="now-playing-title">${e.media_title||"Unknown"}</h3>
-          <p class="now-playing-artist">${e.media_artist||"Unknown artist"}</p>
+          <h3 class="now-playing-title">${i?e?.media_title:jt("common.nothing_playing")}</h3>
+          <p class="now-playing-artist">${i&&e?.media_artist||""}</p>
         </div>
 
-        ${e.media_duration?D`
+        ${e?.media_duration?D`
               <div class="progress-container">
                 <div class="progress-bar">
-                  <div class="progress-bar-fill" style="width: ${i}%"></div>
+                  <div class="progress-bar-fill" style="width: ${s}%"></div>
                 </div>
                 <div class="progress-time">
-                  <span>${this._formatTime(e.media_position||0)}</span>
+                  <span>${this._formatTime(e?.media_position||0)}</span>
                   <span>${this._formatTime(e.media_duration)}</span>
                 </div>
               </div>
@@ -2186,7 +2145,7 @@ function e(e,t,i,s){var a,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPro
         <div class="secondary-controls">
           <div class="secondary-controls-left">
             <button 
-              class="control-button small ${e.shuffle?"active":""}" 
+              class="control-button small ${e?.shuffle?"active":""}" 
               @click=${this._toggleShuffle}
               title="Shuffle"
             >
@@ -2195,11 +2154,11 @@ function e(e,t,i,s){var a,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPro
           </div>
           <div class="secondary-controls-right">
             <button 
-              class="control-button small ${"off"!==e.repeat?"active":""}" 
+              class="control-button small ${"off"!==e?.repeat?"active":""}" 
               @click=${this._toggleRepeat}
-              title="Repeat: ${e.repeat||"off"}"
+              title="Repeat: ${e?.repeat||"off"}"
             >
-              <ha-icon icon="${"one"===e.repeat?"mdi:repeat-once":"mdi:repeat"}"></ha-icon>
+              <ha-icon icon="${"one"===e?.repeat?"mdi:repeat-once":"mdi:repeat"}"></ha-icon>
             </button>
           </div>
         </div>
@@ -2212,10 +2171,10 @@ function e(e,t,i,s){var a,r=arguments.length,o=r<3?t:null===s?s=Object.getOwnPro
             min="0"
             max="1"
             step="0.01"
-            .value=${String(e.volume_level||0)}
+            .value=${String(e?.volume_level||0)}
             @input=${this._updateVolumeSliderFill}
             @change=${this._setVolume}
-            style="--volume-percent: ${100*(e.volume_level||0)}%"
+            style="--volume-percent: ${100*(e?.volume_level||0)}%"
           />
           <ha-icon icon="mdi:volume-high"></ha-icon>
         </div>
