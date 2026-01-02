@@ -39,6 +39,8 @@
     "config_entry_id": "Istanza Music Assistant",
     "speakers": "Altoparlanti",
     "limit": "Numero di playlist",
+    "card_height": "Altezza scheda (px)",
+    "card_height_helper": "Altezza minore = immagine più piccola",
     "columns": "Colonne",
     "columns_auto": "Auto",
     "favorites_only": "Solo preferiti",

@@ -788,8 +788,8 @@ export const cardStyles = css`
   .tab-content {
     display: flex;
     flex-direction: column;
-    /* Fixed height based on player tab */
-    height: 680px;
+    /* Height controlled by CSS variable, default 680px */
+    height: var(--card-height, 680px);
     overflow: hidden;
   }
 
@@ -819,8 +819,9 @@ export const cardStyles = css`
   }
 
   .now-playing-artwork {
-    width: min(280px, 80vw);
-    height: min(280px, 80vw);
+    /* Size controlled by CSS variable, responsive to card height */
+    width: min(var(--artwork-size, 280px), 80vw);
+    height: min(var(--artwork-size, 280px), 80vw);
     border-radius: 16px;
     overflow: hidden;
     background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));

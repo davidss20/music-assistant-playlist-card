@@ -39,6 +39,8 @@
     "config_entry_id": "مثيل Music Assistant",
     "speakers": "مكبرات الصوت",
     "limit": "عدد قوائم التشغيل",
+    "card_height": "ارتفاع البطاقة (بكسل)",
+    "card_height_helper": "ارتفاع أقل = صورة أصغر",
     "columns": "الأعمدة",
     "columns_auto": "تلقائي",
     "favorites_only": "المفضلة فقط",

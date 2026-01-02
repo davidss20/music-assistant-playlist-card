@@ -23,7 +23,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.7.9';
+const CARD_VERSION = '1.8.0';
 
 // Log card info on load
 console.info(
@@ -1571,9 +1571,11 @@ export class MusicAssistantPlaylistCard extends LitElement {
 
     const isValid = this._isConfigValid();
     const isPreview = this._isPreviewMode() && !isValid;
+    const cardHeight = this._config.card_height || 680;
+    const artworkSize = Math.min(280, Math.max(120, cardHeight * 0.4));
 
     return html`
-      <ha-card>
+      <ha-card style="--card-height: ${cardHeight}px; --artwork-size: ${artworkSize}px;">
         ${this._config.title
           ? html`
               <div class="card-header">

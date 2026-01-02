@@ -39,6 +39,8 @@
     "config_entry_id": "Instância do Music Assistant",
     "speakers": "Alto-falantes",
     "limit": "Número de playlists",
+    "card_height": "Altura do cartão (px)",
+    "card_height_helper": "Altura menor = imagem menor",
     "columns": "Colunas",
     "columns_auto": "Auto",
     "favorites_only": "Apenas favoritos",

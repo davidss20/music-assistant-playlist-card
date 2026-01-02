@@ -39,6 +39,8 @@
     "config_entry_id": "Экземпляр Music Assistant",
     "speakers": "Колонки",
     "limit": "Количество плейлистов",
+    "card_height": "Высота карточки (px)",
+    "card_height_helper": "Меньше высота = меньше обложка",
     "columns": "Столбцы",
     "columns_auto": "Авто",
     "favorites_only": "Только избранное",

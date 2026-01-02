@@ -39,6 +39,8 @@
     "config_entry_id": "Music Assistant Instanz",
     "speakers": "Lautsprecher",
     "limit": "Anzahl der Wiedergabelisten",
+    "card_height": "Kartenhöhe (px)",
+    "card_height_helper": "Kleinere Höhe = kleineres Artwork",
     "columns": "Spalten",
     "columns_auto": "Automatisch",
     "favorites_only": "Nur Favoriten",

@@ -346,6 +346,19 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
         </div>
 
         <div class="form-row">
+          <label class="form-label">${localize('config.card_height')}</label>
+          <ha-textfield
+            type="number"
+            .value=${String(this._config.card_height || 680)}
+            data-config-key="card_height"
+            @input=${this._valueChanged}
+            min="400"
+            max="1000"
+            helper="${localize('config.card_height_helper')}"
+          ></ha-textfield>
+        </div>
+
+        <div class="form-row">
           <label class="form-label">${localize('config.columns')}</label>
           <ha-select
             .value=${String(this._config.columns || 'auto')}

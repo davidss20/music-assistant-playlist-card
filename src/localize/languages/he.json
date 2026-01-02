@@ -39,6 +39,8 @@
     "config_entry_id": "מופע Music Assistant",
     "speakers": "רמקולים",
     "limit": "מספר פלייליסטים",
+    "card_height": "גובה הכרטיס (פיקסלים)",
+    "card_height_helper": "גובה קטן יותר = תמונה קטנה יותר",
     "columns": "עמודות",
     "columns_auto": "אוטומטי",
     "favorites_only": "מועדפים בלבד",

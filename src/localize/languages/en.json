@@ -39,6 +39,8 @@
     "config_entry_id": "Music Assistant Instance",
     "speakers": "Speakers",
     "limit": "Number of Playlists",
+    "card_height": "Card Height (px)",
+    "card_height_helper": "Smaller height = smaller artwork",
     "columns": "Columns",
     "columns_auto": "Auto",
     "favorites_only": "Favorites Only",

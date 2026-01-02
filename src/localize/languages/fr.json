@@ -39,6 +39,8 @@
     "config_entry_id": "Instance Music Assistant",
     "speakers": "Haut-parleurs",
     "limit": "Nombre de playlists",
+    "card_height": "Hauteur de la carte (px)",
+    "card_height_helper": "Hauteur réduite = image réduite",
     "columns": "Colonnes",
     "columns_auto": "Automatique",
     "favorites_only": "Favoris uniquement",

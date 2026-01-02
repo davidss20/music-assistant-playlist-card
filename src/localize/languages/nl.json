@@ -39,6 +39,8 @@
     "config_entry_id": "Music Assistant instantie",
     "speakers": "Speakers",
     "limit": "Aantal afspeellijsten",
+    "card_height": "Kaarthoogte (px)",
+    "card_height_helper": "Kleinere hoogte = kleinere afbeelding",
     "columns": "Kolommen",
     "columns_auto": "Automatisch",
     "favorites_only": "Alleen favorieten",

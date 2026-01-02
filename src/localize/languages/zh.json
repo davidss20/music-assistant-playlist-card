@@ -39,6 +39,8 @@
     "config_entry_id": "Music Assistant 实例",
     "speakers": "扬声器",
     "limit": "播放列表数量",
+    "card_height": "卡片高度 (px)",
+    "card_height_helper": "高度越小 = 封面越小",
     "columns": "列数",
     "columns_auto": "自动",
     "favorites_only": "仅收藏",

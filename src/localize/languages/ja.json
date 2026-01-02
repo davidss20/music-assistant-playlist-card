@@ -39,6 +39,8 @@
     "config_entry_id": "Music Assistant インスタンス",
     "speakers": "スピーカー",
     "limit": "プレイリスト数",
+    "card_height": "カードの高さ (px)",
+    "card_height_helper": "高さを小さく = アートワークを小さく",
     "columns": "列数",
     "columns_auto": "自動",
     "favorites_only": "お気に入りのみ",
