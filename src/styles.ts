@@ -789,7 +789,7 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     /* Fixed height based on player tab */
-    height: 580px;
+    height: 620px;
     overflow: hidden;
   }
 
