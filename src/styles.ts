@@ -448,25 +448,7 @@ export const cardStyles = css`
     font-size: 14px;
   }
 
-  .playlist-list .play-overlay {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    background: transparent;
-    opacity: 1;
-    flex-shrink: 0;
-  }
-
-  .playlist-list .play-button {
-    width: 40px;
-    height: 40px;
-    opacity: 0.7;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-  }
-
-  .playlist-list .playlist-item:hover .play-button {
-    opacity: 1;
-  }
+  /* List view specific styles handled in .playlist-list .play-button-corner above */
 
   /* Playlist Item */
   .playlist-item {
@@ -527,31 +509,60 @@ export const cardStyles = css`
     opacity: 0.5;
   }
 
-  /* Play Overlay */
-  .play-overlay {
+  /* Play button in corner (like official HA player) */
+  .play-button-corner {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    bottom: 48px;
+    right: 8px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    border: none;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.4);
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
+    transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+    opacity: 0.9;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 2;
   }
 
-  .playlist-item:hover .play-overlay {
+  :host([dir="rtl"]) .play-button-corner {
+    right: auto;
+    left: 8px;
+  }
+
+  .play-button-corner:hover {
+    transform: scale(1.1);
     opacity: 1;
-    pointer-events: auto;
+    filter: brightness(1.1);
   }
 
-  .play-overlay .play-button {
-    pointer-events: auto;
+  .play-button-corner ha-icon {
+    --mdc-icon-size: 20px;
+    color: var(--text-primary-color, #fff);
   }
 
+  /* List view play button */
+  .playlist-list .play-button-corner {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    left: auto;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    opacity: 0.8;
+    box-shadow: none;
+  }
+
+  .playlist-list .playlist-item:hover .play-button-corner {
+    opacity: 1;
+  }
+
+  /* Legacy play button (for other components) */
   .play-button {
     width: 48px;
     height: 48px;
