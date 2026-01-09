@@ -1461,6 +1461,40 @@ export const cardStyles = css`
     opacity: 0.3;
   }
 
+  /* Load More Indicator */
+  .load-more-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  .loading-spinner.small {
+    width: 24px;
+    height: 24px;
+    border-width: 2px;
+  }
+
+  /* End of List */
+  .end-of-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    color: var(--secondary-text-color);
+    font-size: 12px;
+    opacity: 0.6;
+  }
+
+  /* Artist Image (rounded) */
+  .search-result-image.artist-image {
+    border-radius: 50%;
+  }
+
+  .search-result-image.artist-image img {
+    border-radius: 50%;
+  }
+
   /* ==========================================================================
      Playlist Detail View
      ========================================================================== */

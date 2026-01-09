@@ -23,7 +23,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.8.0';
+const CARD_VERSION = '1.9.0';
 
 // Log card info on load
 console.info(
@@ -70,6 +70,16 @@ export class MusicAssistantPlaylistCard extends LitElement {
   @state() private _searchResults: MusicAssistantSearchResult[] = [];
   @state() private _searchLoading = false;
   @state() private _searchMediaType: SearchMediaType = 'track';
+
+  // Library browsing state (for empty search)
+  @state() private _libraryItems: MusicAssistantSearchResult[] = [];
+  @state() private _libraryLoading = false;
+  @state() private _libraryOffset = 0;
+  @state() private _libraryHasMore = true;
+  private _libraryLimit = 25;
+  
+  // Debounce timer for search
+  private _searchDebounceTimer?: ReturnType<typeof setTimeout>;
 
   // Playlist detail view state
   @state() private _selectedPlaylist: MusicAssistantPlaylist | null = null;
@@ -510,6 +520,11 @@ export class MusicAssistantPlaylistCard extends LitElement {
    */
   private _handleTabChange(tabId: TabId): void {
     this._activeTab = tabId;
+    
+    // Load library when switching to search tab if not already loaded
+    if (tabId === 'search' && !this._globalSearchQuery.trim() && this._libraryItems.length === 0) {
+      this._loadLibrary(true);
+    }
   }
 
   /**
@@ -1028,6 +1043,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
   private _handleGlobalSearchInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     this._globalSearchQuery = input.value;
+    this._debouncedSearch();
   }
 
   /**
@@ -1035,6 +1051,10 @@ export class MusicAssistantPlaylistCard extends LitElement {
    */
   private _handleSearchSubmit(event: Event): void {
     event.preventDefault();
+    // Cancel debounce and search immediately
+    if (this._searchDebounceTimer) {
+      clearTimeout(this._searchDebounceTimer);
+    }
     if (this._globalSearchQuery.trim()) {
       this._performSearch();
     }
@@ -1044,10 +1064,26 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Set search media type filter
    */
   private _setSearchMediaType(type: SearchMediaType): void {
+    const typeChanged = this._searchMediaType !== type;
     this._searchMediaType = type;
-    if (this._globalSearchQuery.trim()) {
-      this._performSearch();
+    
+    if (typeChanged) {
+      if (this._globalSearchQuery.trim()) {
+        this._performSearch();
+      } else {
+        // Reload library with new type
+        this._loadLibrary(true);
+      }
     }
+  }
+
+  /**
+   * Clear search and show library
+   */
+  private _clearSearch(): void {
+    this._globalSearchQuery = '';
+    this._searchResults = [];
+    this._loadLibrary(true);
   }
 
   /**
@@ -1103,6 +1139,145 @@ export class MusicAssistantPlaylistCard extends LitElement {
     } finally {
       this._searchLoading = false;
     }
+  }
+
+  // ==========================================================================
+  // Library Browsing Functions (for empty search state)
+  // ==========================================================================
+
+  /**
+   * Load library items based on current media type
+   * Called when search is empty to show browsable content
+   */
+  private async _loadLibrary(reset = true): Promise<void> {
+    if (!this.hass || !this._config?.config_entry_id) return;
+
+    if (reset) {
+      this._libraryItems = [];
+      this._libraryOffset = 0;
+      this._libraryHasMore = true;
+    }
+
+    if (!this._libraryHasMore || this._libraryLoading) return;
+
+    this._libraryLoading = true;
+
+    try {
+      const response = await this.hass.callWS<{
+        response: {
+          tracks?: MusicAssistantSearchResult[];
+          albums?: MusicAssistantSearchResult[];
+          artists?: MusicAssistantSearchResult[];
+          items?: MusicAssistantSearchResult[];
+        };
+      }>({
+        type: 'call_service',
+        domain: 'music_assistant',
+        service: 'get_library',
+        service_data: {
+          config_entry_id: this._config.config_entry_id,
+          media_type: this._searchMediaType,
+          limit: this._libraryLimit,
+          offset: this._libraryOffset,
+          order_by: 'name',
+        },
+        return_response: true,
+      });
+
+      console.info('[music-assistant-playlist-card] Library response:', response);
+
+      // Extract items from response based on media type
+      let newItems: MusicAssistantSearchResult[] = [];
+      const results = response?.response;
+      
+      if (results) {
+        // Try different keys based on media type
+        const typeKey = this._searchMediaType + 's'; // tracks, albums, artists
+        if (results[typeKey as keyof typeof results]) {
+          newItems = results[typeKey as keyof typeof results] as MusicAssistantSearchResult[];
+        } else if (results.items) {
+          newItems = results.items;
+        } else {
+          // Try to find any array in the response
+          for (const value of Object.values(results)) {
+            if (Array.isArray(value) && value.length > 0) {
+              newItems = value as MusicAssistantSearchResult[];
+              break;
+            }
+          }
+        }
+      }
+
+      // Add media_type to items if missing
+      newItems = newItems.map(item => ({
+        ...item,
+        media_type: item.media_type || this._searchMediaType,
+      }));
+
+      if (reset) {
+        this._libraryItems = newItems;
+      } else {
+        this._libraryItems = [...this._libraryItems, ...newItems];
+      }
+
+      // Check if there are more items to load
+      this._libraryHasMore = newItems.length >= this._libraryLimit;
+      this._libraryOffset += newItems.length;
+
+      console.info('[music-assistant-playlist-card] Library items loaded:', this._libraryItems.length, 'hasMore:', this._libraryHasMore);
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Failed to load library:', error);
+      this._libraryHasMore = false;
+    } finally {
+      this._libraryLoading = false;
+    }
+  }
+
+  /**
+   * Load more library items (for infinite scroll)
+   */
+  private async _loadMoreLibrary(): Promise<void> {
+    if (this._libraryLoading || !this._libraryHasMore) return;
+    await this._loadLibrary(false);
+  }
+
+  /**
+   * Handle scroll event for infinite scroll
+   */
+  private _handleSearchScroll(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (!target) return;
+
+    const scrollTop = target.scrollTop;
+    const scrollHeight = target.scrollHeight;
+    const clientHeight = target.clientHeight;
+
+    // Load more when user scrolls to bottom (with 100px threshold)
+    if (scrollHeight - scrollTop - clientHeight < 100) {
+      // Only load library if search is empty
+      if (!this._globalSearchQuery.trim()) {
+        this._loadMoreLibrary();
+      }
+    }
+  }
+
+  /**
+   * Debounced search - waits 300ms after user stops typing
+   */
+  private _debouncedSearch(): void {
+    if (this._searchDebounceTimer) {
+      clearTimeout(this._searchDebounceTimer);
+    }
+
+    this._searchDebounceTimer = setTimeout(() => {
+      if (this._globalSearchQuery.trim()) {
+        this._performSearch();
+      } else {
+        // If search is cleared, load library
+        this._searchResults = [];
+        this._loadLibrary(true);
+      }
+    }, 300);
   }
 
   /**
@@ -1161,6 +1336,11 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Render Search view
    */
   private _renderSearch(): TemplateResult {
+    const hasSearchQuery = this._globalSearchQuery.trim().length > 0;
+    const showLibrary = !hasSearchQuery;
+    const items = hasSearchQuery ? this._searchResults : this._libraryItems;
+    const isLoading = hasSearchQuery ? this._searchLoading : this._libraryLoading;
+    
     return html`
       <div class="search-view">
         <form class="global-search-form" @submit=${this._handleSearchSubmit}>
@@ -1177,7 +1357,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
               <button 
                 type="button" 
                 class="search-clear-button"
-                @click=${() => { this._globalSearchQuery = ''; this._searchResults = []; }}
+                @click=${this._clearSearch}
               >
                 <ha-icon icon="mdi:close"></ha-icon>
               </button>
@@ -1209,26 +1389,32 @@ export class MusicAssistantPlaylistCard extends LitElement {
           </button>
         </div>
 
-        ${this._searchLoading ? html`
+        ${showLibrary && !isLoading && items.length === 0 && this._libraryHasMore ? html`
+          <!-- Initial library load -->
+          ${this._loadLibrary(true), nothing}
+        ` : nothing}
+
+        ${isLoading && items.length === 0 ? html`
           <div class="loading-container">
             <div class="loading-spinner"></div>
             <span class="loading-text">${localize('common.loading')}</span>
           </div>
-        ` : this._searchResults.length > 0 ? html`
-          <div class="search-results">
-            ${this._searchResults.map(result => {
+        ` : items.length > 0 ? html`
+          <div class="search-results" @scroll=${this._handleSearchScroll}>
+            ${items.map(result => {
               const imageUrl = this._getSearchResultImage(result);
               const artist = this._getSearchResultArtist(result);
+              const mediaType = result.media_type || this._searchMediaType;
               
               return html`
                 <div 
                   class="search-result-item"
                   @click=${() => this._playSearchResult(result)}
                 >
-                  <div class="search-result-image">
+                  <div class="search-result-image ${mediaType === 'artist' ? 'artist-image' : ''}">
                     ${imageUrl
                       ? html`<img src="${imageUrl}" alt="${result.name}" />`
-                      : html`<ha-icon icon="${this._searchMediaType === 'artist' ? 'mdi:account-music' : this._searchMediaType === 'album' ? 'mdi:album' : 'mdi:music-note'}"></ha-icon>`}
+                      : html`<ha-icon icon="${mediaType === 'artist' ? 'mdi:account-music' : mediaType === 'album' ? 'mdi:album' : 'mdi:music-note'}"></ha-icon>`}
                   </div>
                   <div class="search-result-info">
                     <div class="search-result-title">${result.name}</div>
@@ -1241,18 +1427,28 @@ export class MusicAssistantPlaylistCard extends LitElement {
                 </div>
               `;
             })}
+            ${showLibrary && this._libraryLoading ? html`
+              <div class="load-more-indicator">
+                <div class="loading-spinner small"></div>
+              </div>
+            ` : nothing}
+            ${showLibrary && !this._libraryHasMore && items.length > 0 ? html`
+              <div class="end-of-list">
+                <span>${localize('common.end_of_list')}</span>
+              </div>
+            ` : nothing}
           </div>
-        ` : this._globalSearchQuery && !this._searchLoading ? html`
+        ` : hasSearchQuery && !isLoading ? html`
           <div class="search-empty">
             <ha-icon icon="mdi:magnify"></ha-icon>
             <span>${localize('common.no_results')}</span>
           </div>
-        ` : html`
+        ` : !isLoading ? html`
           <div class="search-empty">
             <ha-icon icon="mdi:music-box-multiple"></ha-icon>
-            <span>${localize('common.search_hint')}</span>
+            <span>${localize('common.browse_library')}</span>
           </div>
-        `}
+        ` : nothing}
       </div>
     `;
   }
