@@ -23,7 +23,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.10.1';
+const CARD_VERSION = '1.10.2';
 
 // Log card info on load
 console.info(
@@ -1307,10 +1307,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
   /**
    * Toggle favorite status for a search result
    */
-  private async _toggleFavorite(result: MusicAssistantSearchResult, event: Event): Promise<void> {
-    event.stopPropagation();
-    event.preventDefault();
-    
+  private async _toggleFavorite(result: MusicAssistantSearchResult, _event: Event): Promise<void> {
     if (!this.hass || !this._config?.config_entry_id) {
       console.warn('[music-assistant-playlist-card] Cannot toggle favorite: missing hass or config');
       return;
@@ -1511,11 +1508,15 @@ export class MusicAssistantPlaylistCard extends LitElement {
                   <button 
                     class="search-result-favorite ${isFavorite ? 'active' : ''}" 
                     title="${isFavorite ? localize('common.remove_favorite') : localize('common.add_favorite')}"
-                    @click=${(e: Event) => this._toggleFavorite(result, e)}
+                    @click=${(e: Event) => { e.stopPropagation(); e.preventDefault(); this._toggleFavorite(result, e); }}
                   >
                     <ha-icon icon="${isFavorite ? 'mdi:heart' : 'mdi:heart-outline'}"></ha-icon>
                   </button>
-                  <button class="search-result-play" title="${localize('common.play')}">
+                  <button 
+                    class="search-result-play" 
+                    title="${localize('common.play')}"
+                    @click=${(e: Event) => { e.stopPropagation(); this._playSearchResult(result); }}
+                  >
                     <ha-icon icon="mdi:play"></ha-icon>
                   </button>
                 </div>

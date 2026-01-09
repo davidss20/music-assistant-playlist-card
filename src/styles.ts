@@ -1428,19 +1428,23 @@ export const cardStyles = css`
     border: none;
     cursor: pointer;
     color: var(--secondary-text-color);
-    opacity: 0.3;
+    opacity: 0.6;
     transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
     flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
   }
 
   .search-result-item:hover .search-result-favorite {
-    opacity: 0.7;
+    opacity: 0.8;
   }
 
   .search-result-favorite:hover {
     opacity: 1;
     transform: scale(1.15);
     color: var(--error-color, #e91e63);
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
   }
 
   .search-result-favorite.active {
@@ -1450,10 +1454,12 @@ export const cardStyles = css`
 
   .search-result-favorite.active:hover {
     transform: scale(1.15);
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
   }
 
   .search-result-favorite ha-icon {
     --mdc-icon-size: 22px;
+    pointer-events: none;
   }
 
   .search-result-play {
@@ -1470,6 +1476,9 @@ export const cardStyles = css`
     opacity: 0;
     transition: opacity 0.2s ease, transform 0.2s ease;
     flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
   }
 
   .search-result-item:hover .search-result-play {
@@ -1482,6 +1491,7 @@ export const cardStyles = css`
 
   .search-result-play ha-icon {
     --mdc-icon-size: 20px;
+    pointer-events: none;
   }
 
   .search-empty {
