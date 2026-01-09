@@ -23,7 +23,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.10.0';
+const CARD_VERSION = '1.10.1';
 
 // Log card info on load
 console.info(
@@ -1309,59 +1309,85 @@ export class MusicAssistantPlaylistCard extends LitElement {
    */
   private async _toggleFavorite(result: MusicAssistantSearchResult, event: Event): Promise<void> {
     event.stopPropagation();
+    event.preventDefault();
     
-    if (!this.hass || !this._config?.config_entry_id) return;
+    if (!this.hass || !this._config?.config_entry_id) {
+      console.warn('[music-assistant-playlist-card] Cannot toggle favorite: missing hass or config');
+      return;
+    }
 
-    const newFavoriteStatus = !result.favorite;
+    const currentFavorite = result.favorite === true;
+    const newFavoriteStatus = !currentFavorite;
     const mediaType = result.media_type || this._searchMediaType;
+    const mediaUri = result.uri || `library://${mediaType}/${result.item_id}`;
 
-    try {
-      // Call Music Assistant service to set favorite
-      await this.hass.callWS({
-        type: 'call_service',
-        domain: 'music_assistant',
-        service: newFavoriteStatus ? 'add_to_favorites' : 'remove_from_favorites',
-        service_data: {
+    console.info('[music-assistant-playlist-card] Toggling favorite:', {
+      name: result.name,
+      item_id: result.item_id,
+      uri: mediaUri,
+      media_type: mediaType,
+      current: currentFavorite,
+      new: newFavoriteStatus
+    });
+
+    // Optimistically update UI first
+    result.favorite = newFavoriteStatus;
+    this._searchResults = [...this._searchResults];
+    this._libraryItems = [...this._libraryItems];
+
+    // Try multiple API approaches
+    const approaches = [
+      // Approach 1: library_add / library_remove with URI
+      async () => {
+        await this.hass!.callService('music_assistant', newFavoriteStatus ? 'library_add' : 'library_remove', {
+          config_entry_id: this._config.config_entry_id,
+          uri: mediaUri,
+        });
+      },
+      // Approach 2: library_add / library_remove with media_id
+      async () => {
+        await this.hass!.callService('music_assistant', newFavoriteStatus ? 'library_add' : 'library_remove', {
+          config_entry_id: this._config.config_entry_id,
+          media_id: mediaUri,
+        });
+      },
+      // Approach 3: library_add / library_remove with item_id and media_type
+      async () => {
+        await this.hass!.callService('music_assistant', newFavoriteStatus ? 'library_add' : 'library_remove', {
           config_entry_id: this._config.config_entry_id,
           media_type: mediaType,
           item_id: result.item_id,
-        },
-      });
-
-      // Update local state
-      result.favorite = newFavoriteStatus;
-      
-      // Trigger re-render
-      this._searchResults = [...this._searchResults];
-      this._libraryItems = [...this._libraryItems];
-
-      console.info('[music-assistant-playlist-card] Favorite toggled:', result.name, '->', newFavoriteStatus);
-    } catch (error) {
-      console.error('[music-assistant-playlist-card] Failed to toggle favorite:', error);
-      
-      // Try alternative service name
-      try {
-        await this.hass.callWS({
+        });
+      },
+      // Approach 4: WebSocket call with URI array
+      async () => {
+        await this.hass!.callWS({
           type: 'call_service',
           domain: 'music_assistant',
-          service: 'favorite',
+          service: newFavoriteStatus ? 'library_add' : 'library_remove',
           service_data: {
             config_entry_id: this._config.config_entry_id,
-            media_type: mediaType,
-            item_id: result.item_id,
-            favorite: newFavoriteStatus,
+            uri: [mediaUri],
           },
         });
+      },
+    ];
 
-        result.favorite = newFavoriteStatus;
-        this._searchResults = [...this._searchResults];
-        this._libraryItems = [...this._libraryItems];
-
-        console.info('[music-assistant-playlist-card] Favorite toggled (alt):', result.name, '->', newFavoriteStatus);
-      } catch (altError) {
-        console.error('[music-assistant-playlist-card] Failed to toggle favorite (alt):', altError);
+    for (let i = 0; i < approaches.length; i++) {
+      try {
+        await approaches[i]();
+        console.info(`[music-assistant-playlist-card] Favorite toggled successfully (approach ${i + 1}):`, result.name, '->', newFavoriteStatus);
+        return; // Success!
+      } catch (error) {
+        console.warn(`[music-assistant-playlist-card] Approach ${i + 1} failed:`, error);
       }
     }
+
+    // All approaches failed - revert UI
+    console.error('[music-assistant-playlist-card] All favorite toggle approaches failed');
+    result.favorite = currentFavorite;
+    this._searchResults = [...this._searchResults];
+    this._libraryItems = [...this._libraryItems];
   }
 
   /**
