@@ -23,6 +23,8 @@
     "albums": "ألبومات",
     "artists": "فنانين",
     "favorites": "المفضلة",
+    "add_favorite": "إضافة إلى المفضلة",
+    "remove_favorite": "إزالة من المفضلة",
     "all": "الكل",
     "sort": "ترتيب",
     "sort_name": "الاسم (أ-ي)",

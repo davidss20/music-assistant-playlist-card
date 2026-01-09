@@ -23,6 +23,8 @@
     "albums": "アルバム",
     "artists": "アーティスト",
     "favorites": "お気に入り",
+    "add_favorite": "お気に入りに追加",
+    "remove_favorite": "お気に入りから削除",
     "all": "すべて",
     "sort": "並び替え",
     "sort_name": "名前 (A-Z)",

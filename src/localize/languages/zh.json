@@ -23,6 +23,8 @@
     "albums": "专辑",
     "artists": "艺术家",
     "favorites": "收藏",
+    "add_favorite": "添加到收藏",
+    "remove_favorite": "从收藏中移除",
     "all": "全部",
     "sort": "排序",
     "sort_name": "名称 (A-Z)",

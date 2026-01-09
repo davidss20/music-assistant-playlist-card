@@ -23,7 +23,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.9.0';
+const CARD_VERSION = '1.10.0';
 
 // Log card info on load
 console.info(
@@ -1305,6 +1305,66 @@ export class MusicAssistantPlaylistCard extends LitElement {
   }
 
   /**
+   * Toggle favorite status for a search result
+   */
+  private async _toggleFavorite(result: MusicAssistantSearchResult, event: Event): Promise<void> {
+    event.stopPropagation();
+    
+    if (!this.hass || !this._config?.config_entry_id) return;
+
+    const newFavoriteStatus = !result.favorite;
+    const mediaType = result.media_type || this._searchMediaType;
+
+    try {
+      // Call Music Assistant service to set favorite
+      await this.hass.callWS({
+        type: 'call_service',
+        domain: 'music_assistant',
+        service: newFavoriteStatus ? 'add_to_favorites' : 'remove_from_favorites',
+        service_data: {
+          config_entry_id: this._config.config_entry_id,
+          media_type: mediaType,
+          item_id: result.item_id,
+        },
+      });
+
+      // Update local state
+      result.favorite = newFavoriteStatus;
+      
+      // Trigger re-render
+      this._searchResults = [...this._searchResults];
+      this._libraryItems = [...this._libraryItems];
+
+      console.info('[music-assistant-playlist-card] Favorite toggled:', result.name, '->', newFavoriteStatus);
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Failed to toggle favorite:', error);
+      
+      // Try alternative service name
+      try {
+        await this.hass.callWS({
+          type: 'call_service',
+          domain: 'music_assistant',
+          service: 'favorite',
+          service_data: {
+            config_entry_id: this._config.config_entry_id,
+            media_type: mediaType,
+            item_id: result.item_id,
+            favorite: newFavoriteStatus,
+          },
+        });
+
+        result.favorite = newFavoriteStatus;
+        this._searchResults = [...this._searchResults];
+        this._libraryItems = [...this._libraryItems];
+
+        console.info('[music-assistant-playlist-card] Favorite toggled (alt):', result.name, '->', newFavoriteStatus);
+      } catch (altError) {
+        console.error('[music-assistant-playlist-card] Failed to toggle favorite (alt):', altError);
+      }
+    }
+  }
+
+  /**
    * Get image URL for a search result
    */
   private _getSearchResultImage(result: MusicAssistantSearchResult): string | null {
@@ -1405,6 +1465,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
               const imageUrl = this._getSearchResultImage(result);
               const artist = this._getSearchResultArtist(result);
               const mediaType = result.media_type || this._searchMediaType;
+              const isFavorite = result.favorite === true;
               
               return html`
                 <div 
@@ -1421,6 +1482,13 @@ export class MusicAssistantPlaylistCard extends LitElement {
                     ${artist ? html`<div class="search-result-artist">${artist}</div>` : nothing}
                     ${result.album?.name ? html`<div class="search-result-album">${result.album.name}</div>` : nothing}
                   </div>
+                  <button 
+                    class="search-result-favorite ${isFavorite ? 'active' : ''}" 
+                    title="${isFavorite ? localize('common.remove_favorite') : localize('common.add_favorite')}"
+                    @click=${(e: Event) => this._toggleFavorite(result, e)}
+                  >
+                    <ha-icon icon="${isFavorite ? 'mdi:heart' : 'mdi:heart-outline'}"></ha-icon>
+                  </button>
                   <button class="search-result-play" title="${localize('common.play')}">
                     <ha-icon icon="mdi:play"></ha-icon>
                   </button>

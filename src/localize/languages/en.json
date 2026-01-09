@@ -23,6 +23,8 @@
     "albums": "Albums",
     "artists": "Artists",
     "favorites": "Favorites",
+    "add_favorite": "Add to favorites",
+    "remove_favorite": "Remove from favorites",
     "all": "All",
     "sort": "Sort",
     "sort_name": "Name (A-Z)",

@@ -1417,6 +1417,45 @@ export const cardStyles = css`
     white-space: nowrap;
   }
 
+  .search-result-favorite {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--secondary-text-color);
+    opacity: 0.3;
+    transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .search-result-item:hover .search-result-favorite {
+    opacity: 0.7;
+  }
+
+  .search-result-favorite:hover {
+    opacity: 1;
+    transform: scale(1.15);
+    color: var(--error-color, #e91e63);
+  }
+
+  .search-result-favorite.active {
+    opacity: 1;
+    color: var(--error-color, #e91e63);
+  }
+
+  .search-result-favorite.active:hover {
+    transform: scale(1.15);
+  }
+
+  .search-result-favorite ha-icon {
+    --mdc-icon-size: 22px;
+  }
+
   .search-result-play {
     display: flex;
     align-items: center;

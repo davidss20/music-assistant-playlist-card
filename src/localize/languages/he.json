@@ -23,6 +23,8 @@
     "albums": "אלבומים",
     "artists": "אמנים",
     "favorites": "מועדפים",
+    "add_favorite": "הוסף למועדפים",
+    "remove_favorite": "הסר מהמועדפים",
     "all": "הכל",
     "sort": "מיון",
     "sort_name": "שם (א-ת)",

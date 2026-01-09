@@ -303,6 +303,8 @@ export interface MusicAssistantSearchResult {
   duration?: number;
   /** Provider */
   provider?: string;
+  /** Whether item is a favorite */
+  favorite?: boolean;
 }
 
 export interface PlaylistTrack {
