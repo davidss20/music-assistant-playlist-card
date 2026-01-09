@@ -23,7 +23,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.10.2';
+const CARD_VERSION = '1.10.3';
 
 // Log card info on load
 console.info(
@@ -1317,10 +1317,19 @@ export class MusicAssistantPlaylistCard extends LitElement {
     const newFavoriteStatus = !currentFavorite;
     const mediaType = result.media_type || this._searchMediaType;
     const mediaUri = result.uri || `library://${mediaType}/${result.item_id}`;
+    
+    // Extract item_id from URI if not available (e.g., "library://track/123" -> "123")
+    let itemId = result.item_id;
+    if (!itemId && result.uri) {
+      const uriMatch = result.uri.match(/\/([^/]+)$/);
+      if (uriMatch) {
+        itemId = uriMatch[1];
+      }
+    }
 
     console.info('[music-assistant-playlist-card] Toggling favorite:', {
       name: result.name,
-      item_id: result.item_id,
+      item_id: itemId,
       uri: mediaUri,
       media_type: mediaType,
       current: currentFavorite,
@@ -1332,40 +1341,54 @@ export class MusicAssistantPlaylistCard extends LitElement {
     this._searchResults = [...this._searchResults];
     this._libraryItems = [...this._libraryItems];
 
-    // Try multiple API approaches
+    // Try multiple API approaches - Music Assistant uses different service names in different versions
     const approaches = [
-      // Approach 1: library_add / library_remove with URI
+      // Approach 1: play_media with enqueue "add" to library (some versions)
       async () => {
-        await this.hass!.callService('music_assistant', newFavoriteStatus ? 'library_add' : 'library_remove', {
+        if (newFavoriteStatus) {
+          await this.hass!.callService('music_assistant', 'play_media', {
+            media_id: mediaUri,
+            media_type: mediaType,
+            enqueue: 'add',
+          }, { entity_id: this._selectedSpeaker || this._config.speakers?.[0] });
+        } else {
+          throw new Error('Cannot remove favorite with play_media');
+        }
+      },
+      // Approach 2: add_to_library / remove_from_library
+      async () => {
+        await this.hass!.callService('music_assistant', newFavoriteStatus ? 'add_to_library' : 'remove_from_library', {
           config_entry_id: this._config.config_entry_id,
           uri: mediaUri,
         });
       },
-      // Approach 2: library_add / library_remove with media_id
+      // Approach 3: add_item_to_library / remove_item_from_library
       async () => {
-        await this.hass!.callService('music_assistant', newFavoriteStatus ? 'library_add' : 'library_remove', {
+        await this.hass!.callService('music_assistant', newFavoriteStatus ? 'add_item_to_library' : 'remove_item_from_library', {
           config_entry_id: this._config.config_entry_id,
-          media_id: mediaUri,
+          uri: mediaUri,
         });
       },
-      // Approach 3: library_add / library_remove with item_id and media_type
+      // Approach 4: favorite / unfavorite service
       async () => {
-        await this.hass!.callService('music_assistant', newFavoriteStatus ? 'library_add' : 'library_remove', {
+        await this.hass!.callService('music_assistant', newFavoriteStatus ? 'favorite' : 'unfavorite', {
           config_entry_id: this._config.config_entry_id,
-          media_type: mediaType,
-          item_id: result.item_id,
+          uri: mediaUri,
         });
       },
-      // Approach 4: WebSocket call with URI array
+      // Approach 5: set_favorite service
+      async () => {
+        await this.hass!.callService('music_assistant', 'set_favorite', {
+          config_entry_id: this._config.config_entry_id,
+          uri: mediaUri,
+          favorite: newFavoriteStatus,
+        });
+      },
+      // Approach 6: WebSocket mass command
       async () => {
         await this.hass!.callWS({
-          type: 'call_service',
-          domain: 'music_assistant',
-          service: newFavoriteStatus ? 'library_add' : 'library_remove',
-          service_data: {
-            config_entry_id: this._config.config_entry_id,
-            uri: [mediaUri],
-          },
+          type: 'mass/favorites/' + (newFavoriteStatus ? 'add' : 'remove'),
+          uri: mediaUri,
         });
       },
     ];
@@ -1381,7 +1404,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
     }
 
     // All approaches failed - revert UI
-    console.error('[music-assistant-playlist-card] All favorite toggle approaches failed');
+    console.error('[music-assistant-playlist-card] All favorite toggle approaches failed. Please check Music Assistant services in Developer Tools.');
     result.favorite = currentFavorite;
     this._searchResults = [...this._searchResults];
     this._libraryItems = [...this._libraryItems];
