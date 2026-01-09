@@ -23,7 +23,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.10.3';
+const CARD_VERSION = '1.10.4';
 
 // Log card info on load
 console.info(
@@ -1528,6 +1528,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
                     ${artist ? html`<div class="search-result-artist">${artist}</div>` : nothing}
                     ${result.album?.name ? html`<div class="search-result-album">${result.album.name}</div>` : nothing}
                   </div>
+                  ${/* TODO: Enable favorite button when Music Assistant adds favorite service support
                   <button 
                     class="search-result-favorite ${isFavorite ? 'active' : ''}" 
                     title="${isFavorite ? localize('common.remove_favorite') : localize('common.add_favorite')}"
@@ -1535,6 +1536,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
                   >
                     <ha-icon icon="${isFavorite ? 'mdi:heart' : 'mdi:heart-outline'}"></ha-icon>
                   </button>
+                  */ ''}
                   <button 
                     class="search-result-play" 
                     title="${localize('common.play')}"
