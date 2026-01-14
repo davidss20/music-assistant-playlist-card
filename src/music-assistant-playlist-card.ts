@@ -24,7 +24,7 @@ import type {
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.12.0';
+const CARD_VERSION = '1.12.1';
 
 // Log card info on load
 console.info(
@@ -532,15 +532,17 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Based on https://github.com/droans/mass_queue
    */
   private _checkMassQueueAvailable(): boolean {
-    if (this._massQueueAvailable !== null) {
-      return this._massQueueAvailable;
+    // If already confirmed available, return cached value
+    if (this._massQueueAvailable === true) {
+      return true;
     }
     
     // Check if mass_queue service exists
     const available = !!(this.hass?.services?.mass_queue?.get_queue_items);
-    this._massQueueAvailable = available;
     
+    // Only cache positive result - services may load after initial render
     if (available) {
+      this._massQueueAvailable = true;
       console.info('[music-assistant-playlist-card] mass_queue integration detected');
     }
     
