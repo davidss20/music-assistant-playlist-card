@@ -2,6 +2,7 @@
   "tabs": {
     "now_playing": "En cours",
     "playlists": "Playlists",
+    "queue": "File d'attente",
     "search": "Recherche",
     "speakers": "Enceintes"
   },
@@ -36,7 +37,14 @@
     "no_results": "Aucun résultat trouvé",
     "play_all": "Tout lire",
     "back": "Retour",
-    "no_tracks": "Aucune piste trouvée"
+    "no_tracks": "Aucune piste trouvée",
+    "queue_empty": "File d'attente vide",
+    "queue_error": "Échec du chargement de la file d'attente",
+    "remove_from_queue": "Retirer de la file d'attente",
+    "move_up": "Déplacer vers le haut",
+    "move_down": "Déplacer vers le bas",
+    "play_next": "Lire ensuite",
+    "now_playing_label": "En lecture"
   },
   "config": {
     "title": "Titre de la carte",

@@ -2,6 +2,7 @@
   "tabs": {
     "now_playing": "Reproduciendo",
     "playlists": "Listas",
+    "queue": "Cola",
     "search": "Buscar",
     "speakers": "Altavoces"
   },
@@ -36,7 +37,14 @@
     "no_results": "No se encontraron resultados",
     "play_all": "Reproducir todo",
     "back": "Volver",
-    "no_tracks": "No se encontraron pistas"
+    "no_tracks": "No se encontraron pistas",
+    "queue_empty": "La cola está vacía",
+    "queue_error": "Error al cargar la cola",
+    "remove_from_queue": "Eliminar de la cola",
+    "move_up": "Mover arriba",
+    "move_down": "Mover abajo",
+    "play_next": "Reproducir siguiente",
+    "now_playing_label": "Reproduciendo ahora"
   },
   "config": {
     "title": "Título de la tarjeta",

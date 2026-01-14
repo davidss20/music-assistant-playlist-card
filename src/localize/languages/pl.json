@@ -2,6 +2,7 @@
   "tabs": {
     "now_playing": "Teraz gra",
     "playlists": "Playlisty",
+    "queue": "Kolejka",
     "search": "Szukaj",
     "speakers": "Głośniki"
   },
@@ -36,7 +37,14 @@
     "no_results": "Brak wyników",
     "play_all": "Odtwórz wszystko",
     "back": "Wstecz",
-    "no_tracks": "Nie znaleziono utworów"
+    "no_tracks": "Nie znaleziono utworów",
+    "queue_empty": "Kolejka jest pusta",
+    "queue_error": "Nie udało się załadować kolejki",
+    "remove_from_queue": "Usuń z kolejki",
+    "move_up": "Przenieś w górę",
+    "move_down": "Przenieś w dół",
+    "play_next": "Odtwórz następny",
+    "now_playing_label": "Teraz gra"
   },
   "config": {
     "title": "Tytuł karty",

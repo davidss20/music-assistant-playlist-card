@@ -2,6 +2,7 @@
   "tabs": {
     "now_playing": "Nu speelt",
     "playlists": "Afspeellijsten",
+    "queue": "Wachtrij",
     "search": "Zoeken",
     "speakers": "Luidsprekers"
   },
@@ -36,7 +37,14 @@
     "no_results": "Geen resultaten gevonden",
     "play_all": "Alles afspelen",
     "back": "Terug",
-    "no_tracks": "Geen nummers gevonden"
+    "no_tracks": "Geen nummers gevonden",
+    "queue_empty": "Wachtrij is leeg",
+    "queue_error": "Kan wachtrij niet laden",
+    "remove_from_queue": "Verwijderen uit wachtrij",
+    "move_up": "Omhoog verplaatsen",
+    "move_down": "Omlaag verplaatsen",
+    "play_next": "Hierna afspelen",
+    "now_playing_label": "Speelt nu"
   },
   "config": {
     "title": "Kaarttitel",

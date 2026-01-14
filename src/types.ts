@@ -83,7 +83,7 @@ export interface HassWebSocketMessage {
 // Tab Navigation Types
 // ============================================================================
 
-export type TabId = 'now-playing' | 'playlists' | 'search' | 'speakers';
+export type TabId = 'now-playing' | 'playlists' | 'queue' | 'search' | 'speakers';
 
 export type SortOption = 'name' | 'name_desc' | 'tracks' | 'recent';
 export type ViewMode = 'grid' | 'list';
@@ -93,11 +93,13 @@ export interface Tab {
   id: TabId;
   icon: string;
   labelKey: string;  // Localization key
+  requiresMassQueue?: boolean;  // If true, tab only shows when mass_queue is installed
 }
 
 export const TABS: Tab[] = [
   { id: 'now-playing', icon: 'mdi:music-note', labelKey: 'tabs.now_playing' },
   { id: 'playlists', icon: 'mdi:playlist-music', labelKey: 'tabs.playlists' },
+  { id: 'queue', icon: 'mdi:playlist-play', labelKey: 'tabs.queue', requiresMassQueue: true },
   { id: 'search', icon: 'mdi:magnify', labelKey: 'tabs.search' },
   { id: 'speakers', icon: 'mdi:speaker', labelKey: 'tabs.speakers' },
 ];

@@ -1545,6 +1545,250 @@ export const cardStyles = css`
   }
 
   /* ==========================================================================
+     Queue View (requires mass_queue integration)
+     ========================================================================== */
+
+  .queue-view {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .queue-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px;
+    flex-shrink: 0;
+  }
+
+  .queue-count {
+    font-size: 13px;
+    color: var(--secondary-text-color);
+  }
+
+  .refresh-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--secondary-text-color);
+    transition: all 0.2s ease;
+  }
+
+  .refresh-button:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    color: var(--primary-text-color);
+  }
+
+  .refresh-button ha-icon {
+    --mdc-icon-size: 20px;
+  }
+
+  .queue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+  }
+
+  .queue-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .queue-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .queue-list::-webkit-scrollbar-thumb {
+    background: var(--divider-color, rgba(0, 0, 0, 0.2));
+    border-radius: 3px;
+  }
+
+  .queue-list::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-text-color);
+  }
+
+  .queue-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  :host([dir="rtl"]) .queue-item {
+    flex-direction: row-reverse;
+  }
+
+  .queue-item:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.05));
+  }
+
+  .queue-item.now-playing {
+    background: color-mix(in srgb, var(--primary-color) 15%, transparent);
+  }
+
+  .queue-item-number {
+    width: 24px;
+    font-size: 12px;
+    color: var(--secondary-text-color);
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .queue-item.now-playing .queue-item-number {
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+
+  .queue-item-image {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .queue-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .queue-item-image ha-icon {
+    --mdc-icon-size: 24px;
+    color: var(--secondary-text-color);
+    opacity: 0.5;
+  }
+
+  .now-playing-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .now-playing-indicator ha-icon {
+    --mdc-icon-size: 20px;
+    color: var(--primary-color);
+    opacity: 1;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .queue-item-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  :host([dir="rtl"]) .queue-item-info {
+    text-align: right;
+  }
+
+  .queue-item-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--primary-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .queue-item.now-playing .queue-item-title {
+    color: var(--primary-color);
+  }
+
+  .queue-item-artist {
+    font-size: 12px;
+    color: var(--secondary-text-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .queue-item-album {
+    font-size: 11px;
+    color: var(--secondary-text-color);
+    opacity: 0.7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .queue-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .queue-item:hover .queue-item-actions {
+    opacity: 1;
+  }
+
+  .queue-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--secondary-text-color);
+    transition: all 0.2s ease;
+  }
+
+  .queue-action-btn:hover {
+    background: var(--secondary-background-color, rgba(0, 0, 0, 0.1));
+    color: var(--primary-text-color);
+  }
+
+  .queue-action-btn.remove:hover {
+    background: color-mix(in srgb, var(--error-color, #db4437) 20%, transparent);
+    color: var(--error-color, #db4437);
+  }
+
+  .queue-action-btn ha-icon {
+    --mdc-icon-size: 16px;
+  }
+
+  /* ==========================================================================
      Playlist Detail View
      ========================================================================== */
 

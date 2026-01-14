@@ -2,6 +2,7 @@
   "tabs": {
     "now_playing": "Now Playing",
     "playlists": "Playlists",
+    "queue": "Queue",
     "search": "Search",
     "speakers": "Speakers"
   },
@@ -36,7 +37,14 @@
     "no_results": "No results found",
     "play_all": "Play All",
     "back": "Back",
-    "no_tracks": "No tracks found"
+    "no_tracks": "No tracks found",
+    "queue_empty": "Queue is empty",
+    "queue_error": "Failed to load queue",
+    "remove_from_queue": "Remove from queue",
+    "move_up": "Move up",
+    "move_down": "Move down",
+    "play_next": "Play next",
+    "now_playing_label": "Now Playing"
   },
   "config": {
     "title": "Card Title",

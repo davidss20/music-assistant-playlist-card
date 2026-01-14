@@ -2,6 +2,7 @@
   "tabs": {
     "now_playing": "In riproduzione",
     "playlists": "Playlist",
+    "queue": "Coda",
     "search": "Cerca",
     "speakers": "Altoparlanti"
   },
@@ -36,7 +37,14 @@
     "no_results": "Nessun risultato trovato",
     "play_all": "Riproduci tutto",
     "back": "Indietro",
-    "no_tracks": "Nessun brano trovato"
+    "no_tracks": "Nessun brano trovato",
+    "queue_empty": "Coda vuota",
+    "queue_error": "Impossibile caricare la coda",
+    "remove_from_queue": "Rimuovi dalla coda",
+    "move_up": "Sposta in alto",
+    "move_down": "Sposta in basso",
+    "play_next": "Riproduci dopo",
+    "now_playing_label": "In riproduzione ora"
   },
   "config": {
     "title": "Titolo scheda",

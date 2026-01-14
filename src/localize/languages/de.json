@@ -2,6 +2,7 @@
   "tabs": {
     "now_playing": "Läuft gerade",
     "playlists": "Wiedergabelisten",
+    "queue": "Warteschlange",
     "search": "Suche",
     "speakers": "Lautsprecher"
   },
@@ -36,7 +37,14 @@
     "no_results": "Keine Ergebnisse gefunden",
     "play_all": "Alle abspielen",
     "back": "Zurück",
-    "no_tracks": "Keine Titel gefunden"
+    "no_tracks": "Keine Titel gefunden",
+    "queue_empty": "Warteschlange ist leer",
+    "queue_error": "Fehler beim Laden der Warteschlange",
+    "remove_from_queue": "Aus Warteschlange entfernen",
+    "move_up": "Nach oben verschieben",
+    "move_down": "Nach unten verschieben",
+    "play_next": "Als Nächstes abspielen",
+    "now_playing_label": "Wird gerade abgespielt"
   },
   "config": {
     "title": "Kartentitel",

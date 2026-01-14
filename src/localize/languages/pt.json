@@ -2,6 +2,7 @@
   "tabs": {
     "now_playing": "Tocando agora",
     "playlists": "Playlists",
+    "queue": "Fila",
     "search": "Pesquisar",
     "speakers": "Alto-falantes"
   },
@@ -36,7 +37,14 @@
     "no_results": "Nenhum resultado encontrado",
     "play_all": "Reproduzir tudo",
     "back": "Voltar",
-    "no_tracks": "Nenhuma faixa encontrada"
+    "no_tracks": "Nenhuma faixa encontrada",
+    "queue_empty": "Fila vazia",
+    "queue_error": "Falha ao carregar a fila",
+    "remove_from_queue": "Remover da fila",
+    "move_up": "Mover para cima",
+    "move_down": "Mover para baixo",
+    "play_next": "Tocar em seguida",
+    "now_playing_label": "Tocando agora"
   },
   "config": {
     "title": "Título do cartão",

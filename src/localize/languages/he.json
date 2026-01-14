@@ -2,6 +2,7 @@
   "tabs": {
     "now_playing": "מתנגן עכשיו",
     "playlists": "פלייליסטים",
+    "queue": "תור",
     "search": "חיפוש",
     "speakers": "רמקולים"
   },
@@ -36,7 +37,14 @@
     "no_results": "לא נמצאו תוצאות",
     "play_all": "נגן הכל",
     "back": "חזור",
-    "no_tracks": "לא נמצאו שירים"
+    "no_tracks": "לא נמצאו שירים",
+    "queue_empty": "התור ריק",
+    "queue_error": "שגיאה בטעינת התור",
+    "remove_from_queue": "הסר מהתור",
+    "move_up": "הזז למעלה",
+    "move_down": "הזז למטה",
+    "play_next": "נגן הבא",
+    "now_playing_label": "מתנגן עכשיו"
   },
   "config": {
     "title": "כותרת הכרטיס",

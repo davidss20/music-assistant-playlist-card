@@ -2,6 +2,7 @@
   "tabs": {
     "now_playing": "正在播放",
     "playlists": "播放列表",
+    "queue": "播放队列",
     "search": "搜索",
     "speakers": "扬声器"
   },
@@ -36,7 +37,14 @@
     "no_results": "未找到结果",
     "play_all": "全部播放",
     "back": "返回",
-    "no_tracks": "未找到歌曲"
+    "no_tracks": "未找到歌曲",
+    "queue_empty": "播放队列为空",
+    "queue_error": "无法加载播放队列",
+    "remove_from_queue": "从队列中移除",
+    "move_up": "上移",
+    "move_down": "下移",
+    "play_next": "下一首播放",
+    "now_playing_label": "正在播放"
   },
   "config": {
     "title": "卡片标题",

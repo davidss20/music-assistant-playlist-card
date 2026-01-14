@@ -2,6 +2,7 @@
   "tabs": {
     "now_playing": "再生中",
     "playlists": "プレイリスト",
+    "queue": "キュー",
     "search": "検索",
     "speakers": "スピーカー"
   },
@@ -36,7 +37,14 @@
     "no_results": "結果が見つかりません",
     "play_all": "すべて再生",
     "back": "戻る",
-    "no_tracks": "曲が見つかりません"
+    "no_tracks": "曲が見つかりません",
+    "queue_empty": "キューは空です",
+    "queue_error": "キューの読み込みに失敗しました",
+    "remove_from_queue": "キューから削除",
+    "move_up": "上へ移動",
+    "move_down": "下へ移動",
+    "play_next": "次に再生",
+    "now_playing_label": "再生中"
   },
   "config": {
     "title": "カードタイトル",

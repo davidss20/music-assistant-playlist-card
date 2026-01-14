@@ -19,11 +19,12 @@ import type {
   SearchMediaType,
   MusicAssistantSearchResult,
   PlaylistTrack,
+  MassQueueItem,
 } from './types';
 import { TABS } from './types';
 
 // Card information for HACS
-const CARD_VERSION = '1.10.4';
+const CARD_VERSION = '1.12.0';
 
 // Log card info on load
 console.info(
@@ -85,6 +86,13 @@ export class MusicAssistantPlaylistCard extends LitElement {
   @state() private _selectedPlaylist: MusicAssistantPlaylist | null = null;
   @state() private _playlistTracks: PlaylistTrack[] = [];
   @state() private _loadingTracks = false;
+
+  // Queue state (requires mass_queue integration)
+  @state() private _queueItems: MassQueueItem[] = [];
+  @state() private _queueLoading = false;
+  @state() private _queueError: string | null = null;
+  @state() private _massQueueAvailable: boolean | null = null;
+  @state() private _currentQueueItemId: string | null = null;
 
   // Apply styles
   static styles = cardStyles;
@@ -515,6 +523,185 @@ export class MusicAssistantPlaylistCard extends LitElement {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
 
+  // ==========================================================================
+  // Queue Functions (requires mass_queue integration)
+  // ==========================================================================
+
+  /**
+   * Check if mass_queue integration is available
+   * Based on https://github.com/droans/mass_queue
+   */
+  private _checkMassQueueAvailable(): boolean {
+    if (this._massQueueAvailable !== null) {
+      return this._massQueueAvailable;
+    }
+    
+    // Check if mass_queue service exists
+    const available = !!(this.hass?.services?.mass_queue?.get_queue_items);
+    this._massQueueAvailable = available;
+    
+    if (available) {
+      console.info('[music-assistant-playlist-card] mass_queue integration detected');
+    }
+    
+    return available;
+  }
+
+  /**
+   * Load queue items using mass_queue.get_queue_items service
+   * @see https://github.com/droans/mass_queue
+   */
+  private async _loadQueue(): Promise<void> {
+    if (!this.hass || !this._selectedSpeaker || !this._checkMassQueueAvailable()) {
+      return;
+    }
+
+    this._queueLoading = true;
+    this._queueError = null;
+
+    try {
+      // Call mass_queue.get_queue_items service
+      // Response format: { entity_id: [ { queue_item_id, media_title, ... }, ... ] }
+      const response = await this.hass.callWS<{
+        response: Record<string, MassQueueItem[]>;
+      }>({
+        type: 'call_service',
+        domain: 'mass_queue',
+        service: 'get_queue_items',
+        service_data: {
+          entity: this._selectedSpeaker,
+          limit: 100,
+          limit_before: 5,
+          limit_after: 100,
+        },
+        return_response: true,
+      });
+
+      console.info('[music-assistant-playlist-card] Queue response:', response);
+
+      // Extract queue items - response is keyed by entity_id
+      if (response?.response) {
+        const items = response.response[this._selectedSpeaker];
+        if (Array.isArray(items)) {
+          this._queueItems = items;
+          
+          // Try to find currently playing item
+          const mediaState = this._getMediaPlayerState();
+          if (mediaState?.media_title) {
+            const currentItem = items.find(item => 
+              item.media_title === mediaState.media_title
+            );
+            this._currentQueueItemId = currentItem?.queue_item_id || null;
+          }
+          
+          console.info('[music-assistant-playlist-card] Loaded queue items:', this._queueItems.length);
+        } else {
+          this._queueItems = [];
+        }
+      } else {
+        this._queueItems = [];
+      }
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Failed to load queue:', error);
+      this._queueError = localize('common.queue_error');
+      this._queueItems = [];
+    } finally {
+      this._queueLoading = false;
+    }
+  }
+
+  /**
+   * Play a specific queue item
+   */
+  private async _playQueueItem(item: MassQueueItem): Promise<void> {
+    if (!this.hass || !this._selectedSpeaker) return;
+
+    try {
+      await this.hass.callService('mass_queue', 'play_queue_item', {
+        entity: this._selectedSpeaker,
+        queue_item_id: item.queue_item_id,
+      });
+      console.info('[music-assistant-playlist-card] Playing queue item:', item.media_title);
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Failed to play queue item:', error);
+    }
+  }
+
+  /**
+   * Remove an item from the queue
+   */
+  private async _removeQueueItem(item: MassQueueItem, event: Event): Promise<void> {
+    event.stopPropagation();
+    if (!this.hass || !this._selectedSpeaker) return;
+
+    try {
+      await this.hass.callService('mass_queue', 'remove_queue_item', {
+        entity: this._selectedSpeaker,
+        queue_item_id: item.queue_item_id,
+      });
+      console.info('[music-assistant-playlist-card] Removed queue item:', item.media_title);
+      
+      // Reload queue
+      await this._loadQueue();
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Failed to remove queue item:', error);
+    }
+  }
+
+  /**
+   * Move a queue item up
+   */
+  private async _moveQueueItemUp(item: MassQueueItem, event: Event): Promise<void> {
+    event.stopPropagation();
+    if (!this.hass || !this._selectedSpeaker) return;
+
+    try {
+      await this.hass.callService('mass_queue', 'move_queue_item_up', {
+        entity: this._selectedSpeaker,
+        queue_item_id: item.queue_item_id,
+      });
+      await this._loadQueue();
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Failed to move queue item up:', error);
+    }
+  }
+
+  /**
+   * Move a queue item down
+   */
+  private async _moveQueueItemDown(item: MassQueueItem, event: Event): Promise<void> {
+    event.stopPropagation();
+    if (!this.hass || !this._selectedSpeaker) return;
+
+    try {
+      await this.hass.callService('mass_queue', 'move_queue_item_down', {
+        entity: this._selectedSpeaker,
+        queue_item_id: item.queue_item_id,
+      });
+      await this._loadQueue();
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Failed to move queue item down:', error);
+    }
+  }
+
+  /**
+   * Move a queue item to play next
+   */
+  private async _moveQueueItemNext(item: MassQueueItem, event: Event): Promise<void> {
+    event.stopPropagation();
+    if (!this.hass || !this._selectedSpeaker) return;
+
+    try {
+      await this.hass.callService('mass_queue', 'move_queue_item_next', {
+        entity: this._selectedSpeaker,
+        queue_item_id: item.queue_item_id,
+      });
+      await this._loadQueue();
+    } catch (error) {
+      console.error('[music-assistant-playlist-card] Failed to move queue item to next:', error);
+    }
+  }
+
   /**
    * Handle tab change
    */
@@ -524,6 +711,11 @@ export class MusicAssistantPlaylistCard extends LitElement {
     // Load library when switching to search tab if not already loaded
     if (tabId === 'search' && !this._globalSearchQuery.trim() && this._libraryItems.length === 0) {
       this._loadLibrary(true);
+    }
+    
+    // Load queue when switching to queue tab
+    if (tabId === 'queue' && this._checkMassQueueAvailable()) {
+      this._loadQueue();
     }
   }
 
@@ -865,11 +1057,20 @@ export class MusicAssistantPlaylistCard extends LitElement {
 
   /**
    * Render tab bar
+   * Filters tabs based on availability (e.g., queue tab only shows if mass_queue is installed)
    */
   private _renderTabBar(): TemplateResult {
+    // Filter tabs - only show queue tab if mass_queue is available
+    const visibleTabs = TABS.filter(tab => {
+      if (tab.requiresMassQueue) {
+        return this._checkMassQueueAvailable();
+      }
+      return true;
+    });
+
     return html`
       <div class="tab-bar">
-        ${TABS.map(
+        ${visibleTabs.map(
           (tab) => html`
             <button
               class="tab-button ${this._activeTab === tab.id ? 'active' : ''}"
@@ -1574,6 +1775,133 @@ export class MusicAssistantPlaylistCard extends LitElement {
   }
 
   /**
+   * Render Queue view
+   * Uses mass_queue integration: https://github.com/droans/mass_queue
+   */
+  private _renderQueue(): TemplateResult {
+    // If no speaker selected, show message
+    if (!this._selectedSpeaker) {
+      return html`
+        <div class="queue-view">
+          <div class="empty-container">
+            <ha-icon icon="mdi:speaker-off"></ha-icon>
+            <span class="empty-message">${localize('common.no_speaker_selected')}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Loading state
+    if (this._queueLoading) {
+      return html`
+        <div class="queue-view">
+          ${this._renderLoading()}
+        </div>
+      `;
+    }
+
+    // Error state
+    if (this._queueError) {
+      return html`
+        <div class="queue-view">
+          <div class="error-container">
+            <ha-icon icon="mdi:alert-circle"></ha-icon>
+            <span class="error-message">${this._queueError}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Empty queue
+    if (this._queueItems.length === 0) {
+      return html`
+        <div class="queue-view">
+          <div class="empty-container">
+            <ha-icon icon="mdi:playlist-play"></ha-icon>
+            <span class="empty-message">${localize('common.queue_empty')}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Render queue items
+    return html`
+      <div class="queue-view">
+        <div class="queue-header">
+          <span class="queue-count">${this._queueItems.length} ${localize('common.tracks')}</span>
+          <button class="refresh-button" @click=${() => this._loadQueue()} title="Refresh">
+            <ha-icon icon="mdi:refresh"></ha-icon>
+          </button>
+        </div>
+        <div class="queue-list">
+          ${this._queueItems.map((item, index) => this._renderQueueItem(item, index))}
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Render a single queue item
+   */
+  private _renderQueueItem(item: MassQueueItem, index: number): TemplateResult {
+    const isCurrentlyPlaying = item.queue_item_id === this._currentQueueItemId;
+    // Use local_image_encoded if available (for local providers), fallback to media_image
+    const imageUrl = item.media_image;
+
+    return html`
+      <div 
+        class="queue-item ${isCurrentlyPlaying ? 'now-playing' : ''}"
+        @click=${() => this._playQueueItem(item)}
+      >
+        <span class="queue-item-number">${index + 1}</span>
+        <div class="queue-item-image">
+          ${imageUrl
+            ? html`<img src="${imageUrl}" alt="${item.media_title}" />`
+            : html`<ha-icon icon="mdi:music-note"></ha-icon>`}
+          ${isCurrentlyPlaying
+            ? html`<div class="now-playing-indicator"><ha-icon icon="mdi:volume-high"></ha-icon></div>`
+            : nothing}
+        </div>
+        <div class="queue-item-info">
+          <span class="queue-item-title">${item.media_title}</span>
+          ${item.media_artist ? html`<span class="queue-item-artist">${item.media_artist}</span>` : nothing}
+          ${item.media_album_name ? html`<span class="queue-item-album">${item.media_album_name}</span>` : nothing}
+        </div>
+        <div class="queue-item-actions">
+          <button 
+            class="queue-action-btn"
+            @click=${(e: Event) => this._moveQueueItemUp(item, e)}
+            title="${localize('common.move_up')}"
+          >
+            <ha-icon icon="mdi:arrow-up"></ha-icon>
+          </button>
+          <button 
+            class="queue-action-btn"
+            @click=${(e: Event) => this._moveQueueItemDown(item, e)}
+            title="${localize('common.move_down')}"
+          >
+            <ha-icon icon="mdi:arrow-down"></ha-icon>
+          </button>
+          <button 
+            class="queue-action-btn"
+            @click=${(e: Event) => this._moveQueueItemNext(item, e)}
+            title="${localize('common.play_next')}"
+          >
+            <ha-icon icon="mdi:page-next"></ha-icon>
+          </button>
+          <button 
+            class="queue-action-btn remove"
+            @click=${(e: Event) => this._removeQueueItem(item, e)}
+            title="${localize('common.remove_from_queue')}"
+          >
+            <ha-icon icon="mdi:close"></ha-icon>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
    * Render tab content based on active tab
    */
   private _renderTabContent(): TemplateResult {
@@ -1586,6 +1914,8 @@ export class MusicAssistantPlaylistCard extends LitElement {
           : this._error
             ? this._renderError()
             : this._renderPlaylistsView();
+      case 'queue':
+        return this._renderQueue();
       case 'search':
         return this._renderSearch();
       case 'speakers':
