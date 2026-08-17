@@ -49,7 +49,9 @@
   "config": {
     "title": "عنوان البطاقة",
     "config_entry_id": "مثيل Music Assistant",
+    "config_entry_helper": "اختر مثيل Music Assistant. يُملأ الحقل تلقائيًا إذا كان هناك مثيل واحد فقط.",
     "speakers": "مكبرات الصوت",
+    "speakers_helper": "اختر مشغلات Music Assistant، وليس مكبر الصوت الأصلي من تكامل آخر.",
     "limit": "عدد قوائم التشغيل",
     "card_height": "ارتفاع البطاقة (بكسل)",
     "card_height_helper": "ارتفاع أقل = صورة أصغر",

@@ -49,7 +49,9 @@
   "config": {
     "title": "Titre de la carte",
     "config_entry_id": "Instance Music Assistant",
-    "speakers": "Haut-parleurs",
+    "config_entry_helper": "Sélectionnez votre instance Music Assistant. Le champ est rempli automatiquement s'il n'y en a qu'une.",
+    "speakers": "Enceintes",
+    "speakers_helper": "Sélectionnez les lecteurs Music Assistant, pas l'enceinte d'origine d'une autre intégration.",
     "limit": "Nombre de playlists",
     "card_height": "Hauteur de la carte (px)",
     "card_height_helper": "Hauteur réduite = image réduite",

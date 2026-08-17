@@ -31,8 +31,10 @@ export interface HomeAssistant {
     domain: string,
     service: string,
     serviceData?: Record<string, unknown>,
-    target?: HassServiceTarget
-  ) => Promise<void>;
+    target?: HassServiceTarget,
+    notifyOnError?: boolean,
+    returnResponse?: boolean
+  ) => Promise<{ context?: { id: string }; response?: Record<string, unknown> } | void>;
   callWS: <T>(message: HassWebSocketMessage) => Promise<T>;
   connection: {
     subscribeMessage: <T>(

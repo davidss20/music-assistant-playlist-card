@@ -22,9 +22,10 @@ import type {
   MassQueueItem,
 } from './types';
 import { TABS } from './types';
+import { extractArrayItems, resolveMusicAssistantEntryId, unwrapServiceResponse } from './mass-api';
 
 // Card information for HACS
-const CARD_VERSION = '1.12.1';
+const CARD_VERSION = '1.13.0';
 
 // Log card info on load
 console.info(
@@ -93,6 +94,9 @@ export class MusicAssistantPlaylistCard extends LitElement {
   @state() private _queueError: string | null = null;
   @state() private _massQueueAvailable: boolean | null = null;
   @state() private _currentQueueItemId: string | null = null;
+
+  // Auto-detected Music Assistant instance when config_entry_id is missing
+  @state() private _resolvedEntryId = '';
 
   // Apply styles
   static styles = cardStyles;
@@ -180,11 +184,19 @@ export class MusicAssistantPlaylistCard extends LitElement {
 
       // Update RTL direction
       this._updateDirection();
+    }
 
-      // Load playlists if config is ready
-      if (this._config && changedProps.get('hass') === undefined) {
-        this._loadPlaylists();
-      }
+    const hassJustSet = changedProps.has('hass') && changedProps.get('hass') === undefined && this.hass;
+    const oldConfig = changedProps.get('_config') as MusicAssistantPlaylistCardConfig | undefined;
+    const configChanged = changedProps.has('_config') && this.hass && this._config;
+    const shouldReloadPlaylists =
+      hassJustSet ||
+      (configChanged &&
+        (!oldConfig ||
+          oldConfig.config_entry_id !== this._config.config_entry_id ||
+          JSON.stringify(oldConfig.speakers) !== JSON.stringify(this._config.speakers)));
+    if (shouldReloadPlaylists) {
+      this._loadPlaylists();
     }
   }
 
@@ -200,79 +212,106 @@ export class MusicAssistantPlaylistCard extends LitElement {
   }
 
   /**
+   * Active Music Assistant config entry ID (configured or auto-detected)
+   */
+  private get _massEntryId(): string {
+    return this._config?.config_entry_id || this._resolvedEntryId || '';
+  }
+
+  /**
+   * Resolve a valid Music Assistant config_entry_id, auto-detecting when missing.
+   */
+  private async _ensureConfigEntryId(): Promise<string | undefined> {
+    if (this._config?.config_entry_id) {
+      this._resolvedEntryId = this._config.config_entry_id;
+      return this._config.config_entry_id;
+    }
+    if (this._resolvedEntryId) {
+      return this._resolvedEntryId;
+    }
+    if (!this.hass) {
+      return undefined;
+    }
+
+    try {
+      const entryId = await resolveMusicAssistantEntryId(
+        this.hass.callWS.bind(this.hass),
+        [this._selectedSpeaker, ...(this._config?.speakers || [])].filter(Boolean)
+      );
+      if (entryId) {
+        this._resolvedEntryId = entryId;
+      }
+      return entryId;
+    } catch (error) {
+      console.warn('[music-assistant-playlist-card] Failed to resolve MA config entry:', error);
+      return undefined;
+    }
+  }
+
+  /**
+   * Call a Music Assistant service and return the unwrapped response payload.
+   */
+  private async _callMassService<T extends Record<string, unknown>>(
+    service: string,
+    serviceData: Record<string, unknown>
+  ): Promise<T | undefined> {
+    const result = await this.hass.callWS<unknown>({
+      type: 'call_service',
+      domain: 'music_assistant',
+      service,
+      service_data: serviceData,
+      return_response: true,
+    });
+    return unwrapServiceResponse<T>(result);
+  }
+
+  /**
+   * Fetch playlists for a Music Assistant instance
+   */
+  private async _fetchPlaylists(configEntryId: string): Promise<MusicAssistantPlaylist[]> {
+    const payload = await this._callMassService<Record<string, unknown>>('get_library', {
+      config_entry_id: configEntryId,
+      media_type: 'playlist',
+      limit: 1000,
+      offset: 0,
+      order_by: 'name',
+    });
+    return extractArrayItems<MusicAssistantPlaylist>(payload);
+  }
+
+  /**
    * Load playlists from Music Assistant
    */
   private async _loadPlaylists(): Promise<void> {
-    if (!this.hass || !this._config?.config_entry_id) return;
+    if (!this.hass || !this._config) return;
+
+    const configEntryId = await this._ensureConfigEntryId();
+    if (!configEntryId) return;
 
     this._loading = true;
     this._error = null;
 
     try {
-      // Use the call_service WebSocket API with return_response
-      // Response format: { response: { playlists: [...] } } where playlists key is media_type + 's'
-      const response = await this.hass.callWS<{ 
-        response: { 
-          playlists?: MusicAssistantPlaylist[];
-          items?: MusicAssistantPlaylist[];
-        } 
-      }>({
-        type: 'call_service',
-        domain: 'music_assistant',
-        service: 'get_library',
-        service_data: {
-          config_entry_id: this._config.config_entry_id,
-          media_type: 'playlist',
-          // Don't pass favorite parameter - it filters results!
-          // favorite: false means "only non-favorites"
-          // favorite: true means "only favorites"  
-          // No parameter = all playlists
-          limit: 1000,
-          offset: 0,
-          order_by: 'name',
-        },
-        return_response: true,
-      });
-
-      console.info('[music-assistant-playlist-card] Raw response:', response);
-      console.info('[music-assistant-playlist-card] Response keys:', response?.response ? Object.keys(response.response) : 'no response');
-      
-      // Log full response structure for debugging
-      if (response?.response) {
-        for (const [key, value] of Object.entries(response.response)) {
-          if (Array.isArray(value)) {
-            console.info(`[music-assistant-playlist-card] Key "${key}" has ${value.length} items`);
-          } else {
-            console.info(`[music-assistant-playlist-card] Key "${key}":`, value);
-          }
-        }
-      }
-
-      // Extract playlists from response - check both 'playlists' and 'items' keys
-      if (response?.response?.playlists) {
-        this._playlists = response.response.playlists;
-        console.info('[music-assistant-playlist-card] Found in playlists key:', this._playlists.length);
-      } else if (response?.response?.items) {
-        this._playlists = response.response.items;
-        console.info('[music-assistant-playlist-card] Found in items key:', this._playlists.length);
-      } else if (response?.response && typeof response.response === 'object') {
-        // Try to find any array in the response
-        const keys = Object.keys(response.response);
-        for (const key of keys) {
-          const value = (response.response as Record<string, unknown>)[key];
-          if (Array.isArray(value) && value.length > 0) {
-            this._playlists = value as MusicAssistantPlaylist[];
-            console.info('[music-assistant-playlist-card] Found playlists in key:', key);
-            break;
-          }
-        }
-      } else {
-        this._playlists = [];
-      }
-      
+      this._playlists = await this._fetchPlaylists(configEntryId);
       console.info('[music-assistant-playlist-card] Loaded playlists:', this._playlists.length);
     } catch (error) {
       console.error('[music-assistant-playlist-card] Failed to load playlists:', error);
+
+      try {
+        const detectedId = await resolveMusicAssistantEntryId(
+          this.hass.callWS.bind(this.hass),
+          [this._selectedSpeaker, ...(this._config?.speakers || [])].filter(Boolean)
+        );
+        if (detectedId && detectedId !== configEntryId) {
+          this._resolvedEntryId = detectedId;
+          this._playlists = await this._fetchPlaylists(detectedId);
+          this._error = null;
+          return;
+        }
+      } catch (retryError) {
+        console.error('[music-assistant-playlist-card] Playlist retry failed:', retryError);
+      }
+
       this._error = localize('error.load_failed');
     } finally {
       this._loading = false;
@@ -330,7 +369,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Uses browse_media as the primary method (standard HA API that works with playlist URI)
    */
   private async _loadPlaylistTracks(playlist: MusicAssistantPlaylist): Promise<void> {
-    if (!this.hass || !this._config?.config_entry_id) return;
+    if (!this.hass || !this._massEntryId) return;
 
     console.info('[music-assistant-playlist-card] Loading tracks for playlist:', playlist.name, 'item_id:', playlist.item_id, 'uri:', playlist.uri);
 
@@ -387,7 +426,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
             domain: 'music_assistant',
             service: 'get_item',
             service_data: {
-              config_entry_id: this._config.config_entry_id,
+              config_entry_id: this._massEntryId,
               media_type: 'playlist',
               item_id: playlist.item_id,
             },
@@ -426,7 +465,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
             domain: 'music_assistant',
             service: 'get_library',
             service_data: {
-              config_entry_id: this._config.config_entry_id,
+              config_entry_id: this._massEntryId,
               media_type: 'playlist_tracks',
               item_id: playlist.item_id,
               limit: 500,
@@ -1293,7 +1332,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Perform search using Music Assistant API
    */
   private async _performSearch(): Promise<void> {
-    if (!this.hass || !this._config?.config_entry_id || !this._globalSearchQuery.trim()) {
+    if (!this.hass || !this._massEntryId || !this._globalSearchQuery.trim()) {
       return;
     }
 
@@ -1312,7 +1351,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
         domain: 'music_assistant',
         service: 'search',
         service_data: {
-          config_entry_id: this._config.config_entry_id,
+          config_entry_id: this._massEntryId,
           name: this._globalSearchQuery,
           media_type: [this._searchMediaType],
           library_only: false,
@@ -1353,7 +1392,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Called when search is empty to show browsable content
    */
   private async _loadLibrary(reset = true): Promise<void> {
-    if (!this.hass || !this._config?.config_entry_id) return;
+    if (!this.hass || !this._massEntryId) return;
 
     if (reset) {
       this._libraryItems = [];
@@ -1378,7 +1417,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
         domain: 'music_assistant',
         service: 'get_library',
         service_data: {
-          config_entry_id: this._config.config_entry_id,
+          config_entry_id: this._massEntryId,
           media_type: this._searchMediaType,
           limit: this._libraryLimit,
           offset: this._libraryOffset,
@@ -1511,7 +1550,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Toggle favorite status for a search result
    */
   private async _toggleFavorite(result: MusicAssistantSearchResult, _event: Event): Promise<void> {
-    if (!this.hass || !this._config?.config_entry_id) {
+    if (!this.hass || !this._massEntryId) {
       console.warn('[music-assistant-playlist-card] Cannot toggle favorite: missing hass or config');
       return;
     }
@@ -1561,28 +1600,28 @@ export class MusicAssistantPlaylistCard extends LitElement {
       // Approach 2: add_to_library / remove_from_library
       async () => {
         await this.hass!.callService('music_assistant', newFavoriteStatus ? 'add_to_library' : 'remove_from_library', {
-          config_entry_id: this._config.config_entry_id,
+          config_entry_id: this._massEntryId,
           uri: mediaUri,
         });
       },
       // Approach 3: add_item_to_library / remove_item_from_library
       async () => {
         await this.hass!.callService('music_assistant', newFavoriteStatus ? 'add_item_to_library' : 'remove_item_from_library', {
-          config_entry_id: this._config.config_entry_id,
+          config_entry_id: this._massEntryId,
           uri: mediaUri,
         });
       },
       // Approach 4: favorite / unfavorite service
       async () => {
         await this.hass!.callService('music_assistant', newFavoriteStatus ? 'favorite' : 'unfavorite', {
-          config_entry_id: this._config.config_entry_id,
+          config_entry_id: this._massEntryId,
           uri: mediaUri,
         });
       },
       // Approach 5: set_favorite service
       async () => {
         await this.hass!.callService('music_assistant', 'set_favorite', {
-          config_entry_id: this._config.config_entry_id,
+          config_entry_id: this._massEntryId,
           uri: mediaUri,
           favorite: newFavoriteStatus,
         });
@@ -2126,7 +2165,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
    */
   private _isConfigValid(): boolean {
     return !!(
-      this._config?.config_entry_id &&
+      (this._config?.config_entry_id || this._resolvedEntryId) &&
       this._config?.speakers &&
       this._config.speakers.length > 0
     );
@@ -2136,7 +2175,7 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Render configuration warning
    */
   private _renderConfigWarning(): TemplateResult {
-    const missingConfig = !this._config?.config_entry_id;
+    const missingConfig = !this._massEntryId;
     const missingSpeakers = !this._config?.speakers || this._config.speakers.length === 0;
 
     let message = '';
@@ -2160,7 +2199,8 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Check if we're in preview/picker mode (no hass or stub config)
    */
   private _isPreviewMode(): boolean {
-    return !this.hass || !this._config?.config_entry_id || this._config.config_entry_id === '';
+    const hasInstance = !!(this._config?.config_entry_id || this._resolvedEntryId);
+    return !this.hass || !hasInstance;
   }
 
   /**

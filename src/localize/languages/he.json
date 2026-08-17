@@ -49,7 +49,9 @@
   "config": {
     "title": "כותרת הכרטיס",
     "config_entry_id": "מופע Music Assistant",
+    "config_entry_helper": "בחר את מופע Music Assistant. אם מותקן מופע אחד בלבד, השדה יתמלא אוטומטית.",
     "speakers": "רמקולים",
+    "speakers_helper": "בחר ישויות נגן של Music Assistant, לא את הרמקול המקורי מאינטגרציה אחרת.",
     "limit": "מספר פלייליסטים",
     "card_height": "גובה הכרטיס (פיקסלים)",
     "card_height_helper": "גובה קטן יותר = תמונה קטנה יותר",

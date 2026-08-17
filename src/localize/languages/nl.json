@@ -49,7 +49,9 @@
   "config": {
     "title": "Kaarttitel",
     "config_entry_id": "Music Assistant instantie",
+    "config_entry_helper": "Selecteer je Music Assistant-instantie. Dit veld wordt automatisch ingevuld als er maar één is geïnstalleerd.",
     "speakers": "Speakers",
+    "speakers_helper": "Selecteer Music Assistant-spelers, niet de oorspronkelijke speaker van een andere integratie.",
     "limit": "Aantal afspeellijsten",
     "card_height": "Kaarthoogte (px)",
     "card_height_helper": "Kleinere hoogte = kleinere afbeelding",

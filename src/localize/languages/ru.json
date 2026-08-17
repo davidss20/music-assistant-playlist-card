@@ -49,7 +49,9 @@
   "config": {
     "title": "Заголовок карточки",
     "config_entry_id": "Экземпляр Music Assistant",
+    "config_entry_helper": "Выберите экземпляр Music Assistant. Поле заполняется автоматически, если установлен только один.",
     "speakers": "Колонки",
+    "speakers_helper": "Выберите проигрыватели Music Assistant, а не исходную колонку из другой интеграции.",
     "limit": "Количество плейлистов",
     "card_height": "Высота карточки (px)",
     "card_height_helper": "Меньше высота = меньше обложка",

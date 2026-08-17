@@ -49,7 +49,9 @@
   "config": {
     "title": "カードタイトル",
     "config_entry_id": "Music Assistant インスタンス",
+    "config_entry_helper": "Music Assistant インスタンスを選択します。1つだけインストールされている場合は自動入力されます。",
     "speakers": "スピーカー",
+    "speakers_helper": "他の統合の元のスピーカーではなく、Music Assistant プレーヤーを選択してください。",
     "limit": "プレイリスト数",
     "card_height": "カードの高さ (px)",
     "card_height_helper": "高さを小さく = アートワークを小さく",

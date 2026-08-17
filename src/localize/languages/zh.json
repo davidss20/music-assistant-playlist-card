@@ -49,7 +49,9 @@
   "config": {
     "title": "卡片标题",
     "config_entry_id": "Music Assistant 实例",
+    "config_entry_helper": "选择 Music Assistant 实例。如果只安装了一个实例，将自动填写。",
     "speakers": "扬声器",
+    "speakers_helper": "请选择 Music Assistant 播放器实体，而不是其他集成中的原始扬声器。",
     "limit": "播放列表数量",
     "card_height": "卡片高度 (px)",
     "card_height_helper": "高度越小 = 封面越小",

@@ -3,10 +3,11 @@
  * Visual editor for card configuration in Home Assistant
  */
 
-import { LitElement, html, TemplateResult, nothing, PropertyValues } from 'lit';
+import { LitElement, html, TemplateResult, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { editorStyles } from './styles';
 import { localize, setLanguage, getSupportedLanguages } from './localize/localize';
+import { resolveMusicAssistantEntryId } from './mass-api';
 import type { HomeAssistant, MusicAssistantPlaylistCardConfig } from './types';
 
 // Event helper for config changes
@@ -25,9 +26,10 @@ const fireEvent = (
   node.dispatchEvent(event);
 };
 
-interface MusicAssistantInstance {
-  entry_id: string;
-  title: string;
+interface HaFormSchema {
+  name: string;
+  selector: Record<string, unknown>;
+  required?: boolean;
 }
 
 @customElement('music-assistant-playlist-card-editor')
@@ -36,11 +38,7 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
 
   @state() private _config!: MusicAssistantPlaylistCardConfig;
 
-  @state() private _selectedNewSpeaker: string = '';
-
-  @state() private _massInstances: MusicAssistantInstance[] = [];
-
-  @state() private _loadingInstances = false;
+  @state() private _helpersLoaded = false;
 
   static styles = editorStyles;
 
@@ -50,7 +48,6 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
   public setConfig(config: MusicAssistantPlaylistCardConfig): void {
     this._config = config;
 
-    // Update language
     if (this.hass) {
       const configLang = config.language;
       if (configLang && configLang !== 'auto') {
@@ -61,50 +58,75 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
     }
   }
 
-  /**
-   * Called when properties change
-   */
+  protected async firstUpdated(): Promise<void> {
+    await this._loadHaComponents();
+    await this._autoDetectMassInstance();
+  }
+
   protected updated(changedProps: PropertyValues): void {
     super.updated(changedProps);
 
-    if (changedProps.has('hass') && this.hass && this._massInstances.length === 0) {
-      this._loadMusicAssistantInstances();
+    if (changedProps.has('hass') && this.hass && this._config && !this._config.config_entry_id) {
+      this._autoDetectMassInstance();
     }
   }
 
   /**
-   * Load Music Assistant instances from Home Assistant
+   * Ensure ha-form / ha-selector are registered in the Lovelace editor.
    */
-  private async _loadMusicAssistantInstances(): Promise<void> {
-    if (!this.hass || this._loadingInstances) return;
+  private async _loadHaComponents(): Promise<void> {
+    if (customElements.get('ha-form') && customElements.get('ha-selector')) {
+      this._helpersLoaded = true;
+      return;
+    }
 
-    this._loadingInstances = true;
+    const loadCardHelpers = (
+      window as unknown as {
+        loadCardHelpers?: () => Promise<{
+          createCardElement: (config: Record<string, unknown>) => Promise<{
+            constructor?: { getConfigElement?: () => Promise<unknown> };
+          }>;
+        }>;
+      }
+    ).loadCardHelpers;
 
     try {
-      // Get all config entries
-      const configEntries = await this.hass.callWS<Array<{
-        entry_id: string;
-        domain: string;
-        title: string;
-        state: string;
-      }>>({
-        type: 'config_entries/get',
-      });
-
-      // Filter for Music Assistant entries
-      this._massInstances = configEntries
-        .filter(entry => entry.domain === 'music_assistant' && entry.state === 'loaded')
-        .map(entry => ({
-          entry_id: entry.entry_id,
-          title: entry.title || 'Music Assistant',
-        }));
-
-      console.info('[music-assistant-playlist-card] Found MA instances:', this._massInstances);
+      if (loadCardHelpers) {
+        const helpers = await loadCardHelpers();
+        const card = await helpers.createCardElement({ type: 'entities', entities: [] });
+        await card?.constructor?.getConfigElement?.();
+      }
     } catch (error) {
-      console.error('[music-assistant-playlist-card] Failed to load MA instances:', error);
-      this._massInstances = [];
-    } finally {
-      this._loadingInstances = false;
+      console.warn('[music-assistant-playlist-card] Could not preload HA form components:', error);
+    }
+
+    this._helpersLoaded = true;
+  }
+
+  /**
+   * Auto-select the Music Assistant instance when only one exists,
+   * or when speakers already point at a Music Assistant player.
+   */
+  private async _autoDetectMassInstance(): Promise<void> {
+    if (!this.hass || !this._config || this._config.config_entry_id) {
+      return;
+    }
+
+    try {
+      const entryId = await resolveMusicAssistantEntryId(
+        this.hass.callWS.bind(this.hass),
+        this._config.speakers || []
+      );
+
+      if (entryId) {
+        this._config = {
+          ...this._config,
+          config_entry_id: entryId,
+        };
+        this._configChanged(this._config);
+      }
+    } catch (error) {
+      console.warn('[music-assistant-playlist-card] Failed to auto-detect MA instance:', error);
     }
   }
 
@@ -116,118 +138,132 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
   }
 
   /**
-   * Handle text input changes
+   * Handle ha-form value changes
    */
-  private _valueChanged(ev: Event): void {
-    const target = ev.target as HTMLInputElement | HTMLSelectElement;
-    const configKey = target.dataset.configKey as keyof MusicAssistantPlaylistCardConfig;
-    
-    if (!configKey) return;
-
-    let value: string | number | boolean = target.value;
-
-    // Handle number inputs
-    if (target.type === 'number') {
-      value = parseInt(target.value, 10);
-      if (isNaN(value)) return;
-    }
-
-    // Handle checkbox
-    if (target.type === 'checkbox') {
-      value = (target as HTMLInputElement).checked;
-    }
-
-    this._config = {
-      ...this._config,
-      [configKey]: value,
-    };
-
-    this._configChanged(this._config);
-  }
-
-  /**
-   * Handle Music Assistant instance selection
-   */
-  private _instanceChanged(ev: Event): void {
-    const target = ev.target as HTMLSelectElement;
-    
-    this._config = {
-      ...this._config,
-      config_entry_id: target.value,
-    };
-
-    this._configChanged(this._config);
-  }
-
-  /**
-   * Handle columns selection
-   */
-  private _columnsChanged(ev: Event): void {
-    const target = ev.target as HTMLSelectElement;
-    const value = target.value;
-
-    this._config = {
-      ...this._config,
-      columns: value === 'auto' ? 'auto' : parseInt(value, 10),
-    };
-
-    this._configChanged(this._config);
-  }
-
-  /**
-   * Remove a speaker from the list
-   */
-  private _removeSpeaker(speaker: string): void {
-    this._config = {
-      ...this._config,
-      speakers: (this._config.speakers || []).filter((s) => s !== speaker),
-    };
-
-    this._configChanged(this._config);
-  }
-
-  /**
-   * Handle speaker selection from entity picker
-   */
-  private _speakerPickerChanged(ev: CustomEvent): void {
+  private _valueChanged(ev: CustomEvent): void {
     ev.stopPropagation();
-    const value = ev.detail?.value;
-    console.log('[editor] Speaker picker changed:', value);
-    this._selectedNewSpeaker = value || '';
-  }
-
-  /**
-   * Add the selected speaker to the list
-   */
-  private _addSelectedSpeaker(): void {
-    if (!this._selectedNewSpeaker) return;
-    
-    // Check if already exists
-    if (this._config.speakers?.includes(this._selectedNewSpeaker)) {
-      console.log('[editor] Speaker already exists:', this._selectedNewSpeaker);
-      this._selectedNewSpeaker = '';
+    const value = ev.detail?.value as Partial<MusicAssistantPlaylistCardConfig> | undefined;
+    if (!value) {
       return;
     }
-    
-    const newSpeakers = [...(this._config.speakers || []), this._selectedNewSpeaker];
+
+    let columns: number | 'auto' = 'auto';
+    const rawColumns = value.columns as unknown;
+    if (rawColumns === 'auto' || rawColumns === undefined || rawColumns === null || rawColumns === '') {
+      columns = 'auto';
+    } else {
+      const parsed = typeof rawColumns === 'number' ? rawColumns : parseInt(String(rawColumns), 10);
+      columns = Number.isNaN(parsed) ? 'auto' : parsed;
+    }
+
+    const speakers = Array.isArray(value.speakers)
+      ? value.speakers.filter((speaker): speaker is string => typeof speaker === 'string' && speaker.length > 0)
+      : typeof value.speakers === 'string' && value.speakers
+        ? [value.speakers]
+        : [];
+
     this._config = {
       ...this._config,
-      speakers: newSpeakers,
+      ...value,
+      type: this._config.type,
+      columns,
+      speakers,
     };
+
     this._configChanged(this._config);
-    console.log('[editor] Added speaker:', this._selectedNewSpeaker, 'Total:', newSpeakers.length);
-    
-    // Reset picker
-    this._selectedNewSpeaker = '';
+
+    if (!this._config.config_entry_id && speakers.length > 0) {
+      this._autoDetectMassInstance();
+    }
   }
 
-  /**
-   * Get friendly name for an entity
-   */
-  private _getEntityName(entityId: string): string {
-    if (!this.hass) return entityId;
-    const entity = this.hass.states[entityId];
-    return entity?.attributes?.friendly_name || entityId;
+  private _computeLabel = (schema: HaFormSchema): string => {
+    return localize(`config.${schema.name}`);
+  };
+
+  private _computeHelper = (schema: HaFormSchema): string => {
+    if (schema.name === 'config_entry_id') {
+      return localize('config.config_entry_helper');
+    }
+    if (schema.name === 'speakers') {
+      return localize('config.speakers_helper');
+    }
+    if (schema.name === 'card_height') {
+      return localize('config.card_height_helper');
+    }
+    return '';
+  };
+
+  private _getSchema(): HaFormSchema[] {
+    const supportedLanguages = getSupportedLanguages();
+
+    return [
+      {
+        name: 'config_entry_id',
+        required: true,
+        selector: {
+          config_entry: {
+            integration: 'music_assistant',
+          },
+        },
+      },
+      {
+        name: 'speakers',
+        required: true,
+        selector: {
+          entity: {
+            multiple: true,
+            filter: {
+              domain: 'media_player',
+              integration: 'music_assistant',
+            },
+          },
+        },
+      },
+      {
+        name: 'title',
+        selector: { text: {} },
+      },
+      {
+        name: 'limit',
+        selector: { number: { min: 1, max: 1000, mode: 'box' } },
+      },
+      {
+        name: 'card_height',
+        selector: { number: { min: 400, max: 1000, mode: 'box' } },
+      },
+      {
+        name: 'columns',
+        selector: {
+          select: {
+            mode: 'dropdown',
+            options: [
+              { value: 'auto', label: localize('config.columns_auto') },
+              { value: '2', label: '2' },
+              { value: '3', label: '3' },
+              { value: '4', label: '4' },
+              { value: '5', label: '5' },
+              { value: '6', label: '6' },
+            ],
+          },
+        },
+      },
+      {
+        name: 'language',
+        selector: {
+          select: {
+            mode: 'dropdown',
+            options: [
+              { value: 'auto', label: localize('config.language_auto') },
+              ...supportedLanguages.map((lang) => ({
+                value: lang,
+                label: lang.toUpperCase(),
+              })),
+            ],
+          },
+        },
+      },
+    ];
   }
 
   /**
@@ -238,160 +274,31 @@ export class MusicAssistantPlaylistCardEditor extends LitElement {
       return html``;
     }
 
-    const supportedLanguages = getSupportedLanguages();
+    if (!this._helpersLoaded && !customElements.get('ha-form')) {
+      return html`<div class="editor-container">${localize('common.loading')}</div>`;
+    }
+
+    const data = {
+      ...this._config,
+      config_entry_id: this._config.config_entry_id || '',
+      speakers: this._config.speakers || [],
+      title: this._config.title || '',
+      limit: this._config.limit ?? 50,
+      card_height: this._config.card_height ?? 680,
+      columns: String(this._config.columns ?? 'auto'),
+      language: this._config.language || 'auto',
+    };
 
     return html`
       <div class="editor-container">
-        <!-- Basic Settings -->
-        <div class="section-title">Basic Settings</div>
-
-        <div class="form-row">
-          <label class="form-label">${localize('config.title')}</label>
-          <ha-textfield
-            .value=${this._config.title || ''}
-            .configKey=${'title'}
-            data-config-key="title"
-            @input=${this._valueChanged}
-            placeholder="My Playlists"
-          ></ha-textfield>
-        </div>
-
-        <div class="form-row">
-          <label class="form-label">${localize('config.config_entry_id')}</label>
-          ${this._massInstances.length > 0
-            ? html`
-                <ha-select
-                  .value=${this._config.config_entry_id || ''}
-                  @selected=${this._instanceChanged}
-                  @closed=${(e: Event) => e.stopPropagation()}
-                >
-                  <mwc-list-item value="">Select instance...</mwc-list-item>
-                  ${this._massInstances.map(
-                    (instance) => html`
-                      <mwc-list-item value=${instance.entry_id}>
-                        ${instance.title}
-                      </mwc-list-item>
-                    `
-                  )}
-                </ha-select>
-              `
-            : html`
-                <ha-textfield
-                  .value=${this._config.config_entry_id || ''}
-                  data-config-key="config_entry_id"
-                  @input=${this._valueChanged}
-                  placeholder="01KD2Q1R471MB35ZRQ82C6CN2S"
-                  required
-                ></ha-textfield>
-              `}
-        </div>
-
-        <!-- Speakers -->
-        <div class="section-title">${localize('config.speakers')}</div>
-
-        <div class="form-row">
-          ${this._config.speakers && this._config.speakers.length > 0
-            ? html`
-                <div class="speakers-list">
-                  ${this._config.speakers.map(
-                    (speaker) => html`
-                      <div class="speaker-chip">
-                        <ha-icon icon="mdi:speaker"></ha-icon>
-                        <span>${this._getEntityName(speaker)}</span>
-                        <button
-                          class="remove-btn"
-                          @click=${() => this._removeSpeaker(speaker)}
-                          title="Remove"
-                        >
-                          <ha-icon icon="mdi:close"></ha-icon>
-                        </button>
-                      </div>
-                    `
-                  )}
-                </div>
-              `
-            : nothing}
-
-          <div class="add-speaker-row">
-            <ha-selector
-              .hass=${this.hass}
-              .selector=${{ entity: { domain: 'media_player' } }}
-              .value=${this._selectedNewSpeaker}
-              @value-changed=${this._speakerPickerChanged}
-              .label=${'Select speaker'}
-            ></ha-selector>
-            <mwc-button
-              raised
-              @click=${this._addSelectedSpeaker}
-              .disabled=${!this._selectedNewSpeaker}
-            >
-              Add
-            </mwc-button>
-          </div>
-        </div>
-
-        <!-- Display Settings -->
-        <div class="section-title">Display Settings</div>
-
-        <div class="form-row">
-          <label class="form-label">${localize('config.limit')}</label>
-          <ha-textfield
-            type="number"
-            .value=${String(this._config.limit || 25)}
-            data-config-key="limit"
-            @input=${this._valueChanged}
-            min="1"
-            max="1000"
-          ></ha-textfield>
-        </div>
-
-        <div class="form-row">
-          <label class="form-label">${localize('config.card_height')}</label>
-          <ha-textfield
-            type="number"
-            .value=${String(this._config.card_height || 680)}
-            data-config-key="card_height"
-            @input=${this._valueChanged}
-            min="400"
-            max="1000"
-            helper="${localize('config.card_height_helper')}"
-          ></ha-textfield>
-        </div>
-
-        <div class="form-row">
-          <label class="form-label">${localize('config.columns')}</label>
-          <ha-select
-            .value=${String(this._config.columns || 'auto')}
-            @selected=${this._columnsChanged}
-            @closed=${(e: Event) => e.stopPropagation()}
-          >
-            <mwc-list-item value="auto">${localize('config.columns_auto')}</mwc-list-item>
-            <mwc-list-item value="2">2</mwc-list-item>
-            <mwc-list-item value="3">3</mwc-list-item>
-            <mwc-list-item value="4">4</mwc-list-item>
-            <mwc-list-item value="5">5</mwc-list-item>
-            <mwc-list-item value="6">6</mwc-list-item>
-          </ha-select>
-        </div>
-
-        <!-- Language Settings -->
-        <div class="section-title">${localize('config.language')}</div>
-
-        <div class="form-row">
-          <ha-select
-            .value=${this._config.language || 'auto'}
-            data-config-key="language"
-            @selected=${this._valueChanged}
-            @closed=${(e: Event) => e.stopPropagation()}
-          >
-            <mwc-list-item value="auto">${localize('config.language_auto')}</mwc-list-item>
-            ${supportedLanguages.map(
-              (lang) => html`
-                <mwc-list-item value=${lang}>${lang.toUpperCase()}</mwc-list-item>
-              `
-            )}
-          </ha-select>
-        </div>
+        <ha-form
+          .hass=${this.hass}
+          .data=${data}
+          .schema=${this._getSchema()}
+          .computeLabel=${this._computeLabel}
+          .computeHelper=${this._computeHelper}
+          @value-changed=${this._valueChanged}
+        ></ha-form>
       </div>
     `;
   }

@@ -49,7 +49,9 @@
   "config": {
     "title": "Kartentitel",
     "config_entry_id": "Music Assistant Instanz",
+    "config_entry_helper": "Wählen Sie Ihre Music Assistant-Instanz. Bei nur einer Installation wird das Feld automatisch ausgefüllt.",
     "speakers": "Lautsprecher",
+    "speakers_helper": "Wählen Sie Music Assistant-Player, nicht den ursprünglichen Lautsprecher einer anderen Integration.",
     "limit": "Anzahl der Wiedergabelisten",
     "card_height": "Kartenhöhe (px)",
     "card_height_helper": "Kleinere Höhe = kleineres Artwork",

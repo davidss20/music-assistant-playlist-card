@@ -49,7 +49,9 @@
   "config": {
     "title": "Título de la tarjeta",
     "config_entry_id": "Instancia de Music Assistant",
+    "config_entry_helper": "Seleccione su instancia de Music Assistant. Se completa automáticamente si solo hay una instalada.",
     "speakers": "Altavoces",
+    "speakers_helper": "Seleccione reproductores de Music Assistant, no el altavoz original de otra integración.",
     "limit": "Número de listas de reproducción",
     "card_height": "Altura de la tarjeta (px)",
     "card_height_helper": "Menor altura = imagen más pequeña",

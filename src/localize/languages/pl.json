@@ -49,7 +49,9 @@
   "config": {
     "title": "Tytuł karty",
     "config_entry_id": "Instancja Music Assistant",
+    "config_entry_helper": "Wybierz instancję Music Assistant. Pole zostanie wypełnione automatycznie, jeśli jest tylko jedna.",
     "speakers": "Głośniki",
+    "speakers_helper": "Wybierz odtwarzacze Music Assistant, a nie oryginalny głośnik z innej integracji.",
     "limit": "Liczba playlist",
     "card_height": "Wysokość karty (px)",
     "card_height_helper": "Mniejsza wysokość = mniejsza okładka",

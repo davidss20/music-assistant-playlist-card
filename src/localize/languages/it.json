@@ -49,7 +49,9 @@
   "config": {
     "title": "Titolo scheda",
     "config_entry_id": "Istanza Music Assistant",
+    "config_entry_helper": "Seleziona l'istanza di Music Assistant. Il campo viene compilato automaticamente se ne è installata solo una.",
     "speakers": "Altoparlanti",
+    "speakers_helper": "Seleziona i player di Music Assistant, non l'altoparlante originale di un'altra integrazione.",
     "limit": "Numero di playlist",
     "card_height": "Altezza scheda (px)",
     "card_height_helper": "Altezza minore = immagine più piccola",

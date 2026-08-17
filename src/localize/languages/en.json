@@ -49,7 +49,9 @@
   "config": {
     "title": "Card Title",
     "config_entry_id": "Music Assistant Instance",
+    "config_entry_helper": "Select your Music Assistant instance. This is filled automatically when only one instance is installed.",
     "speakers": "Speakers",
+    "speakers_helper": "Select Music Assistant player entities, not the original speaker from another integration.",
     "limit": "Number of Playlists",
     "card_height": "Card Height (px)",
     "card_height_helper": "Smaller height = smaller artwork",

@@ -2097,8 +2097,11 @@ export const editorStyles = css`
   }
 
   ha-textfield,
-  ha-select {
+  ha-select,
+  ha-form,
+  ha-selector {
     width: 100%;
+    display: block;
   }
 
   ha-formfield {
