@@ -22,10 +22,10 @@ import type {
   MassQueueItem,
 } from './types';
 import { TABS } from './types';
-import { extractArrayItems, resolveMusicAssistantEntryId, unwrapServiceResponse } from './mass-api';
+import { extractArrayItems, listMusicAssistantEntryIds, unwrapServiceResponse } from './mass-api';
 
 // Card information for HACS
-const CARD_VERSION = '1.13.0';
+const CARD_VERSION = '1.13.1';
 
 // Log card info on load
 console.info(
@@ -219,42 +219,29 @@ export class MusicAssistantPlaylistCard extends LitElement {
   }
 
   /**
-   * Resolve a valid Music Assistant config_entry_id, auto-detecting when missing.
-   */
-  private async _ensureConfigEntryId(): Promise<string | undefined> {
-    if (this._config?.config_entry_id) {
-      this._resolvedEntryId = this._config.config_entry_id;
-      return this._config.config_entry_id;
-    }
-    if (this._resolvedEntryId) {
-      return this._resolvedEntryId;
-    }
-    if (!this.hass) {
-      return undefined;
-    }
-
-    try {
-      const entryId = await resolveMusicAssistantEntryId(
-        this.hass.callWS.bind(this.hass),
-        [this._selectedSpeaker, ...(this._config?.speakers || [])].filter(Boolean)
-      );
-      if (entryId) {
-        this._resolvedEntryId = entryId;
-      }
-      return entryId;
-    } catch (error) {
-      console.warn('[music-assistant-playlist-card] Failed to resolve MA config entry:', error);
-      return undefined;
-    }
-  }
-
-  /**
    * Call a Music Assistant service and return the unwrapped response payload.
    */
   private async _callMassService<T extends Record<string, unknown>>(
     service: string,
     serviceData: Record<string, unknown>
   ): Promise<T | undefined> {
+    try {
+      const viaService = await this.hass.callService(
+        'music_assistant',
+        service,
+        serviceData,
+        undefined,
+        false,
+        true
+      );
+      const unwrapped = unwrapServiceResponse<T>(viaService);
+      if (unwrapped) {
+        return unwrapped;
+      }
+    } catch (error) {
+      console.warn('[music-assistant-playlist-card] callService failed, trying callWS:', error);
+    }
+
     const result = await this.hass.callWS<unknown>({
       type: 'call_service',
       domain: 'music_assistant',
@@ -269,14 +256,95 @@ export class MusicAssistantPlaylistCard extends LitElement {
    * Fetch playlists for a Music Assistant instance
    */
   private async _fetchPlaylists(configEntryId: string): Promise<MusicAssistantPlaylist[]> {
-    const payload = await this._callMassService<Record<string, unknown>>('get_library', {
-      config_entry_id: configEntryId,
-      media_type: 'playlist',
-      limit: 1000,
-      offset: 0,
-      order_by: 'name',
-    });
-    return extractArrayItems<MusicAssistantPlaylist>(payload);
+    const attempts: Array<Record<string, unknown>> = [
+      {
+        config_entry_id: configEntryId,
+        media_type: 'playlist',
+        limit: 500,
+        offset: 0,
+        order_by: 'name',
+      },
+      {
+        config_entry_id: configEntryId,
+        media_type: 'playlist',
+        limit: 500,
+        offset: 0,
+      },
+    ];
+
+    let lastError: unknown;
+    for (const serviceData of attempts) {
+      try {
+        const payload = await this._callMassService<Record<string, unknown>>('get_library', serviceData);
+        return extractArrayItems<MusicAssistantPlaylist>(payload);
+      } catch (error) {
+        lastError = error;
+        console.warn('[music-assistant-playlist-card] get_library failed:', serviceData, error);
+      }
+    }
+
+    throw lastError instanceof Error ? lastError : new Error('get_library failed');
+  }
+
+  /**
+   * Fetch playlists by browsing a Music Assistant media player.
+   * Works even when config_entry_id is missing or invalid.
+   */
+  private async _fetchPlaylistsViaBrowse(): Promise<MusicAssistantPlaylist[]> {
+    const entityId = this._selectedSpeaker || this._config?.speakers?.[0];
+    if (!this.hass || !entityId) {
+      return [];
+    }
+
+    const attempts = [
+      { media_content_id: 'playlists', media_content_type: 'music_assistant' },
+      { media_content_id: 'playlists', media_content_type: 'playlist' },
+      { media_content_id: 'library://playlist', media_content_type: 'playlist' },
+    ];
+
+    for (const attempt of attempts) {
+      try {
+        const result = await this.hass.callWS<{
+          children?: Array<{
+            title?: string;
+            media_content_id?: string;
+            thumbnail?: string;
+          }>;
+        }>({
+          type: 'media_player/browse_media',
+          entity_id: entityId,
+          ...attempt,
+        });
+
+        const children = result?.children ?? [];
+        const playlists = children
+          .filter((child) => child.media_content_id && child.title)
+          .map((child) => {
+            const uri = child.media_content_id as string;
+            return {
+              item_id: uri.split('/').pop() || uri,
+              uri,
+              name: child.title as string,
+              image: child.thumbnail,
+              provider: 'library',
+              favorite: false,
+            };
+          });
+
+        if (playlists.length > 0) {
+          console.info(
+            '[music-assistant-playlist-card] Loaded playlists via browse_media:',
+            playlists.length,
+            attempt
+          );
+          return playlists;
+        }
+      } catch (error) {
+        console.warn('[music-assistant-playlist-card] browse_media failed:', attempt, error);
+      }
+    }
+
+    return [];
   }
 
   /**
@@ -285,31 +353,34 @@ export class MusicAssistantPlaylistCard extends LitElement {
   private async _loadPlaylists(): Promise<void> {
     if (!this.hass || !this._config) return;
 
-    const configEntryId = await this._ensureConfigEntryId();
-    if (!configEntryId) return;
-
     this._loading = true;
     this._error = null;
 
-    try {
-      this._playlists = await this._fetchPlaylists(configEntryId);
-      console.info('[music-assistant-playlist-card] Loaded playlists:', this._playlists.length);
-    } catch (error) {
-      console.error('[music-assistant-playlist-card] Failed to load playlists:', error);
+    const speakerIds = [this._selectedSpeaker, ...(this._config.speakers || [])].filter(Boolean);
+    const entryIds = await listMusicAssistantEntryIds(
+      this.hass.callWS.bind(this.hass),
+      speakerIds
+    );
+    const storedId = this._config.config_entry_id || this._resolvedEntryId;
+    const idsToTry = [...new Set([storedId, ...entryIds].filter(Boolean))];
 
-      try {
-        const detectedId = await resolveMusicAssistantEntryId(
-          this.hass.callWS.bind(this.hass),
-          [this._selectedSpeaker, ...(this._config?.speakers || [])].filter(Boolean)
-        );
-        if (detectedId && detectedId !== configEntryId) {
-          this._resolvedEntryId = detectedId;
-          this._playlists = await this._fetchPlaylists(detectedId);
-          this._error = null;
+    try {
+      for (const entryId of idsToTry) {
+        try {
+          const playlists = await this._fetchPlaylists(entryId);
+          this._resolvedEntryId = entryId;
+          this._playlists = playlists;
+          console.info('[music-assistant-playlist-card] Loaded playlists:', playlists.length, 'entry:', entryId);
           return;
+        } catch (error) {
+          console.warn('[music-assistant-playlist-card] Playlist load failed for entry', entryId, error);
         }
-      } catch (retryError) {
-        console.error('[music-assistant-playlist-card] Playlist retry failed:', retryError);
+      }
+
+      const browsed = await this._fetchPlaylistsViaBrowse();
+      if (browsed.length > 0) {
+        this._playlists = browsed;
+        return;
       }
 
       this._error = localize('error.load_failed');

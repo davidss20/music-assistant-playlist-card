@@ -87,32 +87,62 @@ export function uniqueMusicAssistantEntryIds(entries: EntityRegistryEntry[]): st
 }
 
 /**
+ * List Music Assistant config_entry_id values, preferring IDs that belong to the given speakers.
+ */
+export async function listMusicAssistantEntryIds(
+  callWS: <T>(msg: { type: string; [key: string]: unknown }) => Promise<T>,
+  preferredEntityIds: string[] = []
+): Promise<string[]> {
+  const ids: string[] = [];
+
+  const addId = (id?: string | null): void => {
+    if (id && !ids.includes(id)) {
+      ids.push(id);
+    }
+  };
+
+  try {
+    const entries = await callWS<EntityRegistryEntry[]>({
+      type: 'config/entity_registry/list',
+    });
+
+    for (const entityId of preferredEntityIds) {
+      const match = entries.find(
+        (entry) =>
+          entry.entity_id === entityId &&
+          entry.platform === 'music_assistant' &&
+          entry.config_entry_id
+      );
+      addId(match?.config_entry_id);
+    }
+
+    uniqueMusicAssistantEntryIds(entries).forEach(addId);
+  } catch (error) {
+    console.warn('[music-assistant-playlist-card] Entity registry lookup failed:', error);
+  }
+
+  try {
+    const configEntries = await callWS<Array<{ entry_id: string; domain?: string }>>({
+      type: 'config_entries/get',
+      domain: 'music_assistant',
+    });
+    for (const entry of configEntries) {
+      addId(entry.entry_id);
+    }
+  } catch (error) {
+    console.warn('[music-assistant-playlist-card] Config entry lookup failed:', error);
+  }
+
+  return ids;
+}
+
+/**
  * Resolve a Music Assistant config_entry_id from speakers or the only installed instance.
  */
 export async function resolveMusicAssistantEntryId(
   callWS: <T>(msg: { type: string; [key: string]: unknown }) => Promise<T>,
   preferredEntityIds: string[] = []
 ): Promise<string | undefined> {
-  const entries = await callWS<EntityRegistryEntry[]>({
-    type: 'config/entity_registry/list',
-  });
-
-  for (const entityId of preferredEntityIds) {
-    const match = entries.find(
-      (entry) =>
-        entry.entity_id === entityId &&
-        entry.platform === 'music_assistant' &&
-        entry.config_entry_id
-    );
-    if (match?.config_entry_id) {
-      return match.config_entry_id;
-    }
-  }
-
-  const ids = uniqueMusicAssistantEntryIds(entries);
-  if (ids.length === 1) {
-    return ids[0];
-  }
-
-  return undefined;
+  const ids = await listMusicAssistantEntryIds(callWS, preferredEntityIds);
+  return ids[0];
 }
